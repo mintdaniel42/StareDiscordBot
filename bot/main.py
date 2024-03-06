@@ -2,33 +2,18 @@ import os
 import time
 
 import discord
-from discord import app_commands
+from discord.ext import commands
 
 from config import GUILD_ID, DISCORD_TOKEN
 from embeds import Entry
 
-intents = discord.Intents.default()
-client = discord.Client(intents=intents)
-tree = app_commands.CommandTree(client)
+bot = commands.Bot()
 
 
-@tree.command(name="edituser", description="Eintrag bearbeiten", guild=discord.Object(id=GUILD_ID))
-async def edit_user(interaction):
-    await interaction.response.send_message("Hello!")
-
-
-@tree.command(name="showuser", description="Eintrag ansehen", guild=discord.Object(id=GUILD_ID))
-async def edit_user(interaction):
-    await interaction.response.send_message("Hello!")
-
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    await message.channel.send(embed=Entry(
-        "MintDaniel42",
+@bot.slash_command(name="showuser", description="Eintrag anzeigen", guild_ids=[GUILD_ID])
+async def edit_user(ctx, username: str):
+    await ctx.respond(embed=Entry(
+        username,
         **{
             "rating": "#1 | S-Tier",
             "points": 42_000_000,
@@ -39,4 +24,4 @@ async def on_message(message):
         }
     ))
 
-client.run(DISCORD_TOKEN)
+bot.run(DISCORD_TOKEN)
