@@ -31,3 +31,7 @@ class Database:
     def has_entry(self, uuid: str):
         self.cursor.execute("SELECT uuid FROM entries WHERE uuid = ?", (uuid,))
         return self.cursor.fetchone() is not None
+
+    def close(self):
+        self.cursor.close()
+        self.connection.close()
