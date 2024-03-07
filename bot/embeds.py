@@ -13,7 +13,7 @@ class Entry(discord.Embed):
                              color=0x00ff00)
             self.set_thumbnail(url=self.userdata['data']['player']['avatar'])
             self.add_field(name="Tierlistrating", value=rating, inline=True)
-            self.add_field(name="Geschätzte Punkte", value=f"{points:,}", inline=True)
+            self.add_field(name="Geschätzte Punkte", value=points, inline=True)
             self.add_field(name="im Modus seit",
                            value=datetime.datetime.utcfromtimestamp(joined).strftime("%m/%Y") if joined >= 0 else "---",
                            inline=True)
