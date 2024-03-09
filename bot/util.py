@@ -13,4 +13,4 @@ def convert_string_to_int(number: str) -> int:
             1_000_000_000_000 if number.endswith("t") else 1)
         )
                                                      )
-    return int(number) if multiplier == 1 else int(float(number[:-1]) * multiplier)
+    return int(number) if multiplier == 1 else int(round(float(number[:-1]) * multiplier))
