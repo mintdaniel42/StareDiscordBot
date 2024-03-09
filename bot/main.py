@@ -66,7 +66,7 @@ async def edit_user(ctx, username: str, key: str, value: str):
 
 @bot.slash_command(name="adduser", description="Eintrag hinzufügen", guild_ids=[GUILD_ID])
 async def add_user(ctx, username: str, rating: str, points: str,
-                   joined: str, secondary: bool, banned: bool, cheating: bool):
+                   joined: str, secondary: bool = False, banned: bool = False, cheating: bool = False):
     if discord.utils.get(ctx.guild.roles, id=int(CREATE_ROLE_ID)) not in ctx.author.roles:
         await ctx.respond("Du darfst diesen Befehl nicht benutzen!", ephemeral=EPHEMERAL)
         return
