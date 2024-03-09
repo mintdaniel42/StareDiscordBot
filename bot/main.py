@@ -4,6 +4,7 @@ from discord.ext import commands
 from config import GUILD_ID, DISCORD_TOKEN, VIEW_ROLE_ID, EDIT_ROLE_ID, CREATE_ROLE_ID, EPHEMERAL
 from embeds import Entry, List
 from data import Database
+from util import validate_string_format, convert_string_to_int
 
 import requests
 
@@ -51,17 +52,20 @@ async def edit_user(ctx, username: str, key: str, value: str):
     if key in ("secondary", "banned", "cheating"):
         db.edit_entry(uuid, key, 1 if value.lower() in ("1", "true", "yes", "ja") else 0)
     elif key == "points":
-        db.edit_entry(uuid, key, int(value))
+        if not validate_string_format(value):
+            await ctx.respond("Das ist keine gültige Zahl!", ephemeral=EPHEMERAL)
+            return
+        db.edit_entry(uuid, key, convert_string_to_int(value))
     elif key in ("rating", "joined"):
         db.edit_entry(uuid, key, value)
     else:
-        await ctx.respond("Dieses Feld existiert nicht", ephemeral=EPHEMERAL)
+        await ctx.respond("Dieses Feld existiert nicht!", ephemeral=EPHEMERAL)
         return
     await ctx.respond(f"Die Änderungen am Feld `{key}` für den Eintrag `\"{username}\"` wurden gespeichert!", ephemeral=EPHEMERAL)
 
 
 @bot.slash_command(name="adduser", description="Eintrag hinzufügen", guild_ids=[GUILD_ID])
-async def add_user(ctx, username: str, rating: str, points: int,
+async def add_user(ctx, username: str, rating: str, points: str,
                    joined: str, secondary: bool, banned: bool, cheating: bool):
     if discord.utils.get(ctx.guild.roles, id=int(CREATE_ROLE_ID)) not in ctx.author.roles:
         await ctx.respond("Du darfst diesen Befehl nicht benutzen!", ephemeral=EPHEMERAL)
@@ -74,7 +78,10 @@ async def add_user(ctx, username: str, rating: str, points: int,
     if db.has_entry(uuid):
         await ctx.respond(f"Der Eintrag für den Nutzer {username} existiert bereits!", ephemeral=EPHEMERAL)
         return
-    db.add_entry(uuid, rating, points, joined, secondary, banned, cheating)
+    if not validate_string_format(points):
+        await ctx.respond("Der Wert vom Feld `points` ist keine gültige Zahl!", ephemeral=EPHEMERAL)
+        return
+    db.add_entry(uuid, rating, convert_string_to_int(points), joined, secondary, banned, cheating)
     await ctx.respond(f"Der Eintrag für den Nutzer {username} wurde angelegt!", ephemeral=EPHEMERAL)
 
 try:
