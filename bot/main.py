@@ -20,7 +20,7 @@ async def show_user(ctx, username: str):
     if not response['success']:
         await ctx.respond(f"Der Nutzer {username} existiert nicht!", ephemeral=EPHEMERAL)
         return
-    uuid = response['data']['player']['username']
+    uuid = response['data']['player']['id']
     await ctx.respond(embed=Entry(
         uuid,
         **db.get_entry(uuid)
@@ -70,7 +70,7 @@ async def add_user(ctx, username: str, rating: str, points: int,
     if not response['success']:
         await ctx.respond(f"Der Nutzer {username} existiert nicht!", ephemeral=EPHEMERAL)
         return
-    uuid = response['data']['player']['username']
+    uuid = response['data']['player']['id']
     if db.has_entry(uuid):
         await ctx.respond(f"Der Eintrag für den Nutzer {username} existiert bereits!", ephemeral=EPHEMERAL)
         return
