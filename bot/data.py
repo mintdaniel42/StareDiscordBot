@@ -34,9 +34,9 @@ class Database:
         self.cursor.execute("SELECT uuid FROM entries WHERE uuid = ?", (uuid,))
         return self.cursor.fetchone() is not None
 
-    def get_entries(self, page, order: str = "points"):
-        self.cursor.execute("SELECT uuid, points FROM entries ORDER BY ? DESC LIMIT ?, ?",
-                            (order, page * ENTRIES_PER_PAGE, ENTRIES_PER_PAGE))
+    def get_entries(self, page):
+        self.cursor.execute("SELECT uuid, points FROM entries ORDER BY points DESC LIMIT ?, ?",
+                            (page * ENTRIES_PER_PAGE, ENTRIES_PER_PAGE))
         result = self.cursor.fetchall()
         entries = list()
         for entry in result:
