@@ -1,5 +1,6 @@
 import sqlite3
-
+from math import ceil
+from config import ENTRIES_PER_PAGE
 
 class Database:
     def __init__(self):
@@ -31,6 +32,18 @@ class Database:
     def has_entry(self, uuid: str):
         self.cursor.execute("SELECT uuid FROM entries WHERE uuid = ?", (uuid,))
         return self.cursor.fetchone() is not None
+
+    def get_entries(self, page):
+        self.cursor.execute("SELECT uuid, points FROM entries ORDER BY points DESC LIMIT ?, ?", (page*ENTRIES_PER_PAGE, ENTRIES_PER_PAGE))
+        result = self.cursor.fetchall()
+        entries = list()
+        for entry in result:
+            entries.append(entry[0])
+        return entries
+
+    def get_pages(self):
+        self.cursor.execute("SELECT COUNT(uuid) FROM entries")
+        return ceil(self.cursor.fetchone()[0] / ENTRIES_PER_PAGE)
 
     def close(self):
         self.cursor.close()

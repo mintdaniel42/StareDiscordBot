@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 from config import GUILD_ID, DISCORD_TOKEN, VIEW_ROLE_ID, EDIT_ROLE_ID, CREATE_ROLE_ID, EPHEMERAL
-from embeds import Entry
+from embeds import Entry, List
 from data import Database
 
 import requests
@@ -13,7 +13,7 @@ db = Database()
 
 @bot.slash_command(name="showuser", description="Eintrag anzeigen", guild_ids=[GUILD_ID])
 async def show_user(ctx, username: str):
-    if discord.utils.get(ctx.guild.roles, id=int(CREATE_ROLE_ID)) not in ctx.author.roles:
+    if discord.utils.get(ctx.guild.roles, id=int(VIEW_ROLE_ID)) not in ctx.author.roles:
         await ctx.respond("Du darfst diesen Befehl nicht benutzen!", ephemeral=EPHEMERAL)
         return
     response = requests.request("GET", "https://playerdb.co/api/player/minecraft/" + username).json()
@@ -27,9 +27,20 @@ async def show_user(ctx, username: str):
     ), ephemeral=EPHEMERAL)
 
 
+@bot.slash_command(name="listusers", description="Einträge auflisten", guild_ids=[GUILD_ID])
+async def list_users(ctx, page: int = 1):
+    if discord.utils.get(ctx.guild.roles, id=int(VIEW_ROLE_ID)) not in ctx.author.roles:
+        await ctx.respond("Du darfst diesen Befehl nicht benutzen!", ephemeral=EPHEMERAL)
+        return
+    if 0 >= page or page > db.get_pages():
+        await ctx.respond(f"Die Seite {page} gibt es nicht!", ephemeral=EPHEMERAL)
+        return
+    await ctx.respond(embed=List(page - 1, db))
+
+
 @bot.slash_command(name="edituser", description="Eintrag bearbeiten", guild_ids=[GUILD_ID])
 async def edit_user(ctx, username: str, key: str, value: str):
-    if discord.utils.get(ctx.guild.roles, id=int(CREATE_ROLE_ID)) not in ctx.author.roles:
+    if discord.utils.get(ctx.guild.roles, id=int(EDIT_ROLE_ID)) not in ctx.author.roles:
         await ctx.respond("Du darfst diesen Befehl nicht benutzen!", ephemeral=EPHEMERAL)
         return
     response = requests.request("GET", "https://playerdb.co/api/player/minecraft/" + username).json()
