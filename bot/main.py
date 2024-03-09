@@ -47,7 +47,7 @@ async def edit_user(ctx, username: str, key: str, value: str):
     if not response['success']:
         await ctx.respond(f"Der Nutzer {username} existiert nicht!", ephemeral=EPHEMERAL)
         return
-    uuid = response['data']['player']['username']
+    uuid = response['data']['player']['id']
     if key in ("secondary", "banned", "cheating"):
         db.edit_entry(uuid, key, 1 if value.lower() in ("1", "true", "yes", "ja") else 0)
     elif key == "points":
@@ -57,7 +57,7 @@ async def edit_user(ctx, username: str, key: str, value: str):
     else:
         await ctx.respond("Dieses Feld existiert nicht", ephemeral=EPHEMERAL)
         return
-    await ctx.respond(f"Die Änderungen am Feld {key} wurden gespeichert!", ephemeral=EPHEMERAL)
+    await ctx.respond(f"Die Änderungen am Feld `{key}` für den Eintrag `\"{username}\"` wurden gespeichert!", ephemeral=EPHEMERAL)
 
 
 @bot.slash_command(name="adduser", description="Eintrag hinzufügen", guild_ids=[GUILD_ID])

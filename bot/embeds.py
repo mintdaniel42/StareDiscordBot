@@ -32,5 +32,6 @@ class List(discord.Embed):
                          description=f"Spieler durchsuchen (Seite {str(page + 1)} / {db.get_pages()})",
                          color=COLOR)
         for entry in range(len(self.entries)):
+            username = requests.request("GET", "https://playerdb.co/api/player/minecraft/" + self.entries[entry]).json()['data']['player']['username']
             self.add_field(name=f"#{ENTRIES_PER_PAGE * page + entry + 1}",
-                           value=self.entries[entry], inline=False)
+                           value=username, inline=False)
