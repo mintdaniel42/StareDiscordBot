@@ -30,6 +30,7 @@ async def show_user(ctx, username: str):
 
 @bot.slash_command(name="listusers", description="Einträge auflisten", guild_ids=[GUILD_ID])
 async def list_users(ctx, page: int = 1):
+    print(f"/listusers triggered by {ctx.author}")
     if discord.utils.get(ctx.guild.roles, id=int(VIEW_ROLE_ID)) not in ctx.author.roles:
         await ctx.respond("Du darfst diesen Befehl nicht benutzen!", ephemeral=EPHEMERAL)
         return
@@ -37,6 +38,7 @@ async def list_users(ctx, page: int = 1):
         await ctx.respond(f"Die Seite {page} gibt es nicht!", ephemeral=EPHEMERAL)
         return
     await ctx.respond(embed=List(page - 1, db))
+    print(f"/listusers finished")
 
 
 @bot.slash_command(name="edituser", description="Eintrag bearbeiten", guild_ids=[GUILD_ID])
