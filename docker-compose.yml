@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  bot:
+    container_name: stare-bot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./.data:/usr/src/app/.data
+    env_file:
+      - .env

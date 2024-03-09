@@ -2,9 +2,10 @@ import sqlite3
 from math import ceil
 from config import ENTRIES_PER_PAGE
 
+
 class Database:
     def __init__(self):
-        self.connection = sqlite3.connect("data.db")
+        self.connection = sqlite3.connect(".data/data.db")
         self.cursor = self.connection.cursor()
         self.cursor.execute("CREATE TABLE IF NOT EXISTS entries (uuid TEXT, rating TEXT, "
                             "points INTEGER, joined TEXT, secondary INTEGER, banned INTEGER, cheating INTEGER)")
@@ -34,7 +35,8 @@ class Database:
         return self.cursor.fetchone() is not None
 
     def get_entries(self, page):
-        self.cursor.execute("SELECT uuid, points FROM entries ORDER BY points DESC LIMIT ?, ?", (page*ENTRIES_PER_PAGE, ENTRIES_PER_PAGE))
+        self.cursor.execute("SELECT uuid, points FROM entries ORDER BY points DESC LIMIT ?, ?",
+                            (page * ENTRIES_PER_PAGE, ENTRIES_PER_PAGE))
         result = self.cursor.fetchall()
         entries = list()
         for entry in result:
