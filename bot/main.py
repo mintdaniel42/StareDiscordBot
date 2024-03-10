@@ -84,7 +84,7 @@ async def add_user(ctx, username: str, rating: str, points: str,
         await ctx.respond("Der Wert vom Feld `points` ist keine gültige Zahl!", ephemeral=EPHEMERAL)
         return
     db.add_entry(uuid, rating, convert_string_to_int(points), joined, secondary, banned, cheating)
-    await ctx.respond(f"Der Eintrag für den Nutzer {username} wurde angelegt!", ephemeral=EPHEMERAL)
+    await ctx.respond(f"Der Eintrag für den Nutzer {username} wurde angelegt!", embed=Entry(uuid, **db.get_entry(uuid)), ephemeral=EPHEMERAL)
 
 try:
     bot.run(DISCORD_TOKEN)
