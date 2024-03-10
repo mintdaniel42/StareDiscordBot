@@ -1,6 +1,6 @@
 import discord
 import requests
-from config import ENTRIES_PER_PAGE, HIGHSCORE_ICON, COLOR
+from config import ENTRIES_PER_PAGE, COLOR
 
 
 class Entry(discord.Embed):
@@ -12,7 +12,7 @@ class Entry(discord.Embed):
                              color=COLOR)
             self.set_thumbnail(url=f"https://mc-heads.net/avatar/{uuid}")
             self.add_field(name="Tierlistrating", value=rating, inline=True)
-            self.add_field(name="Geschätzte Punkte", value=str(points), inline=True)
+            self.add_field(name="Geschätzte Punkte", value="{:,}".format(points).replace(',', '.'), inline=True)
             self.add_field(name="im Modus seit",
                            value=joined,
                            inline=True)
