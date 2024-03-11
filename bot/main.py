@@ -72,7 +72,8 @@ async def edit_user(ctx, username: str, key: str, value: str):
     else:
         await ctx.respond("Dieses Feld existiert nicht!", ephemeral=EPHEMERAL)
         return
-    await ctx.respond(f"Die Änderungen am Feld `{key}` für den Eintrag `\"{username}\"` wurden gespeichert!", ephemeral=EPHEMERAL)
+    await ctx.respond(f"Die Änderungen am Feld `{key}` für den Eintrag `\"{username}\"` wurden gespeichert!",
+                      embed=Entry(uuid, **db.get_entry(uuid)), ephemeral=EPHEMERAL)
 
 
 @bot.slash_command(name="adduser", description="Eintrag hinzufügen", guild_ids=[GUILD_ID])
