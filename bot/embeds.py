@@ -10,7 +10,7 @@ class Entry(discord.Embed):
             super().__init__(title="Hide 'n' Seek Spielerdatenbank",
                              description=f"Spielername: {self.userdata['data']['player']['username']}",
                              color=COLOR)
-            self.set_thumbnail(url=f"https://mc-heads.net/avatar/{uuid}")
+            self.set_thumbnail(url=f"https://minotar.net/armor/bust/{uuid.__str__()}")
             self.add_field(name="Tierlistrating", value=rating, inline=True)
             self.add_field(name="Geschätzte Punkte", value="{:,}".format(points).replace(',', '.'), inline=True)
             self.add_field(name="im Modus seit",
