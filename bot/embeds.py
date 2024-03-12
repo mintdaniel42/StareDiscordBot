@@ -1,3 +1,5 @@
+import traceback
+
 import discord
 import requests
 from config import ENTRIES_PER_PAGE, COLOR
@@ -35,3 +37,13 @@ class List(discord.Embed):
             username = requests.request("GET", "https://playerdb.co/api/player/minecraft/" + self.entries[entry]).json()['data']['player']['username']
             self.add_field(name=f"#{ENTRIES_PER_PAGE * page + entry + 1}",
                            value=username, inline=False)
+
+
+class Error(discord.Embed):
+    def __init__(self,  msg: str, exception: Exception) -> None:
+        super().__init__(title="Kritischer Fehler", description="Dein Befehl hat zu einem Fehler geführt." +
+                                                                "(aber keine Sorge, es ist nichts schlimmes passiert." +
+                                                                "Schicke einfach einen Screenshot dieser Nachricht " +
+                                                                "an einen Entwickler oder Admin!")
+        self.add_field(name="Nachricht", value=msg)
+        self.add_field(name="Exception", value="\n".join(traceback.format_exception_only(exception)))
