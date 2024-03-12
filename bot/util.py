@@ -14,3 +14,15 @@ def convert_string_to_int(number: str) -> int:
         )
                                                      )
     return int(round(float(number))) if multiplier == 1 else int(round(float(number[:-1]) * multiplier))
+
+
+def get_ranking_icon(level: int) -> str | None:
+    if level == 0:
+        return "https://minecraft.wiki/images/Netherite_Ingot_JE1_BE2.png"
+    elif level == 1:
+        return "https://minecraft.wiki/images/Diamond_JE3_BE3.png"
+    elif level in (2, 3):
+        return "https://minecraft.wiki/images/Gold_Ingot_JE4_BE2.png"
+    elif level in (4, 5):
+        return "https://minecraft.wiki/images/Iron_Ingot_JE3_BE2.png"
+    return None

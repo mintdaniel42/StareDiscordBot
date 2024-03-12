@@ -15,6 +15,10 @@ bot = commands.Bot()
 db = Database()
 
 
+async def handle_error(ctx, command: str, exception: Exception) -> None:
+    await ctx.respond(embed=Error(command, exception), ephemeral=True)
+
+
 @bot.slash_command(name="showuser", description="Eintrag anzeigen", guild_ids=[GUILD_ID])
 async def show_user(ctx, username: str):
     if discord.utils.get(ctx.guild.roles, id=int(VIEW_ROLE_ID)) not in ctx.author.roles:
@@ -75,8 +79,8 @@ async def edit_user(ctx, username: str, key: str, value: str):
             return
         await ctx.respond(f"Die Änderungen am Feld `{key}` für den Eintrag `\"{username}\"` wurden gespeichert!",
                           embed=Entry(uuid, **db.get_entry(uuid)), ephemeral=EPHEMERAL)
-    except Exception as error:
-        await ctx.respond(embed=Error(f"/edituser key {key} value {value}", error), ephemeral=True)
+    except Exception as exception:
+        await handle_error(ctx, f"/edituser key {key} value {value}", exception)
 
 
 @bot.slash_command(name="adduser", description="Eintrag hinzufügen", guild_ids=[GUILD_ID])
@@ -100,10 +104,10 @@ async def add_user(ctx, username: str, rating: str, points: str,
         db.add_entry(uuid, rating, convert_string_to_int(points), joined, secondary, banned, cheating)
         await ctx.respond(f"Der Eintrag für den Nutzer {username} wurde angelegt!", embed=Entry(uuid, **db.get_entry(uuid)),
                           ephemeral=EPHEMERAL)
-    except Exception as error:
-        await ctx.respond(embed=Error(f"/adduser username {username} rating {rating} points {points}" +
-                                      f" joined {joined} secondary {secondary} banned {banned} cheating {cheating}",
-                                      error), ephemeral=True)
+    except Exception as exception:
+        await handle_error(ctx, f"/adduser username {username} rating {rating} points {points}" +
+                           f" joined {joined} secondary {secondary} banned {banned} cheating {cheating}",
+                           exception)
 
 try:
     bot.run(DISCORD_TOKEN)
