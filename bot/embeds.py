@@ -41,8 +41,8 @@ class List(discord.Embed):
 
 class Error(discord.Embed):
     def __init__(self,  msg: str, exception: Exception) -> None:
-        super().__init__(title="Kritischer Fehler", description="Dein Befehl hat zu einem Fehler geführt." +
-                                                                "(aber keine Sorge, es ist nichts schlimmes passiert." +
+        super().__init__(title="Kritischer Fehler", description="Dein Befehl hat zu einem Fehler geführt" +
+                                                                "(aber keine Sorge, es ist nichts schlimmes passiert)." +
                                                                 "Schicke einfach einen Screenshot dieser Nachricht " +
                                                                 "an einen Entwickler oder Admin!")
         self.add_field(name="Nachricht", value=msg)
