@@ -1,9 +1,9 @@
 import re
 
 
-def validate_string_format(s: str) -> bool:
-    pattern = r"(\d+(?:[\.\d]*)?[,\d]+)([KMBT]?)"
-    return bool(re.match(pattern, s))
+def validate_string_format(string: str) -> bool:
+    pattern = r"\b(\d+(\.\d+)?([KkMmBbTt]?|\.))\b"
+    return bool(re.fullmatch(pattern, string))
 
 
 def convert_string_to_int(number: str) -> int:
