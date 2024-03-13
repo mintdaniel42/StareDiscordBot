@@ -1,14 +1,16 @@
 import sqlite3
 from math import ceil
 from config import ENTRIES_PER_PAGE
+from time import time
 
 
 class Database:
     def __init__(self) -> None:
         self.connection = sqlite3.connect(".data/data.db")
         self.cursor = self.connection.cursor()
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS entries (uuid TEXT, rating TEXT, "
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS entries (uuid TEXT primary key, rating TEXT, "
                             "points INTEGER, joined TEXT, secondary INTEGER, banned INTEGER, cheating INTEGER)")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS requests (timestamp INTEGER, uuid TEXT, key TEXT, value TEXT)")
 
     def get_entry(self, uuid: str) -> dict:
         self.cursor.execute("SELECT * FROM entries WHERE uuid = ?", (uuid,))
@@ -46,6 +48,28 @@ class Database:
     def get_pages(self) -> int:
         self.cursor.execute("SELECT COUNT(uuid) FROM entries")
         return ceil(self.cursor.fetchone()[0] / ENTRIES_PER_PAGE)
+
+    def add_request(self, timestamp: int, uuid: str, key: str, value: str | int):
+        self._purge_requests()
+        self.cursor.execute("DELETE FROM requests WHERE key = ? AND uuid = ?",
+                            (key, uuid))
+        self.cursor.execute("INSERT INTO requests VALUES (?, ?, ?, ?)", (timestamp, uuid, key, value))
+        self.connection.commit()
+
+    def approve_request(self, timestamp: int) -> str:
+        self.cursor.execute("SELECT * FROM requests WHERE timestamp = ?", (timestamp,))
+        result = self.cursor.fetchone()
+        uuid = None
+        if result:
+            self.cursor.execute(f"UPDATE entries SET {result[2]} = ? WHERE uuid = ?", (result[3], result[1]))
+            self.cursor.execute("SELECT uuid, timestamp FROM requests WHERE timestamp = ?", (timestamp,))
+            uuid = self.cursor.fetchone()[0]
+        self.cursor.execute("DELETE FROM requests WHERE timestamp = ?", (timestamp,))
+        self.connection.commit()
+        return uuid
+
+    def _purge_requests(self):
+        self.cursor.execute("DELETE FROM requests WHERE timestamp > ?", (round(time() * 1000) + 124800000,))
 
     def close(self) -> None:
         self.cursor.close()

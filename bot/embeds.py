@@ -42,10 +42,23 @@ class List(discord.Embed):
 
 
 class Error(discord.Embed):
-    def __init__(self,  msg: str, exception: Exception) -> None:
-        super().__init__(title="Kritischer Fehler", description="Dein Befehl hat zu einem Fehler geführt" +
-                                                                "(aber keine Sorge, es ist nichts schlimmes passiert)." +
-                                                                "Schicke einfach einen Screenshot dieser Nachricht " +
-                                                                "an einen Entwickler oder Admin!")
+    def __init__(self, msg: str, exception: Exception) -> None:
+        super().__init__(title="Kritischer Fehler", description="Dein Befehl hat zu einem Fehler geführt "
+                                                                "(aber keine Sorge, es ist nichts schlimmes passiert). "
+                                                                "Schicke einfach einen Screenshot dieser Nachricht "
+                                                                "an einen Entwickler oder Admin!", color=COLOR)
         self.add_field(name="Nachricht", value=msg)
         self.add_field(name="Exception", value="\n".join(traceback.format_exception_only(exception)))
+
+
+class ApprovalRequired(discord.Embed):
+    def __init__(self, timestamp: int, uuid: str, key: str, value_new: str | int, value_old: str | int):
+        super().__init__(title="Anfrage zum Ändern",
+                         description="Ein Nutzer möchte eine Änderung an der Datenbank vornehmen. Führe zum Freigeben "
+                                     "der Änderung den unten genannten Befehl aus!", color=COLOR)
+        username = requests.request("GET", "https://playerdb.co/api/player/minecraft/" + uuid).json()['data']['player']['username']
+        self.add_field(name="Nutzer", value=username)
+        self.add_field(name="Feld", value=key)
+        self.add_field(name="Neuer Wert", value=value_new)
+        self.add_field(name="Alter Wert", value=value_old)
+        self.add_field(name="Befehl zum Freigeben", value=f"/approve {timestamp}")
