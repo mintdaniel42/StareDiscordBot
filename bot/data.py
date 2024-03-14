@@ -22,7 +22,7 @@ class Database:
 
     def edit_entry(self, uuid: str, key: str, value) -> None:
         self.cursor.execute(f"UPDATE entries SET {key} = ? WHERE uuid = ?", (value, uuid))
-        self.connection.commit()
+        self._save()
 
     def add_entry(self, uuid: str, rating: str, points: int, joined: str, secondary: bool, banned: bool,
                   cheating: bool) -> None:
@@ -30,7 +30,7 @@ class Database:
                                                                                  1 if secondary else 0,
                                                                                  1 if banned else 0,
                                                                                  1 if cheating else 0))
-        self.connection.commit()
+        self._save()
 
     def has_entry(self, uuid: str) -> bool:
         self.cursor.execute("SELECT uuid FROM entries WHERE uuid = ?", (uuid,))
@@ -54,7 +54,7 @@ class Database:
         self.cursor.execute("DELETE FROM requests WHERE key = ? AND uuid = ?",
                             (key, uuid))
         self.cursor.execute("INSERT INTO requests VALUES (?, ?, ?, ?)", (timestamp, uuid, key, value))
-        self.connection.commit()
+        self._save()
 
     def approve_request(self, timestamp: int) -> str:
         self.cursor.execute("SELECT * FROM requests WHERE timestamp = ?", (timestamp,))
@@ -65,11 +65,15 @@ class Database:
             self.cursor.execute("SELECT uuid, timestamp FROM requests WHERE timestamp = ?", (timestamp,))
             uuid = self.cursor.fetchone()[0]
         self.cursor.execute("DELETE FROM requests WHERE timestamp = ?", (timestamp,))
-        self.connection.commit()
+        self._save()
         return uuid
 
     def _purge_requests(self):
         self.cursor.execute("DELETE FROM requests WHERE timestamp > ?", (round(time() * 1000) + 124800000,))
+
+    def _save(self):
+        if self.connection.total_changes % 5 == 0:
+            self.connection.commit()
 
     def close(self) -> None:
         self.cursor.close()
