@@ -8,4 +8,5 @@ VIEW_ROLE_ID = os.getenv('VIEW_ROLE_ID')
 REQUEST_CHANNEL_ID = int(os.getenv('REQUEST_CHANNEL_ID'))
 EPHEMERAL = True if os.getenv('EPHEMERAL') == 1 else 0
 ENTRIES_PER_PAGE = int(os.getenv('ENTRIES_PER_PAGE'))
-COLOR = int(os.getenv('COLOR'), 16)
+COLOR_NORMAl = int(os.getenv('COLOR_NORMAL'), 16)
+COLOR_REQUEST = int(os.getenv('COLOR_REQUEST'), 16)
