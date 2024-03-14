@@ -81,5 +81,6 @@ class Database:
             self.connection.commit()
 
     def close(self) -> None:
+        self.connection.commit()
         self.cursor.close()
         self.connection.close()
