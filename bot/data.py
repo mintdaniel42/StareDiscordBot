@@ -68,6 +68,11 @@ class Database:
         self._save()
         return uuid
 
+    def has_request(self, timestamp: int) -> bool:
+        self.cursor.execute("SELECT timestamp FROM requests WHERE timestamp = ?", (timestamp,))
+        print(self.cursor.fetchone())
+        return self.cursor.fetchone()
+
     def _purge_requests(self):
         self.cursor.execute("DELETE FROM requests WHERE timestamp > ?", (round(time() * 1000) + 124800000,))
 

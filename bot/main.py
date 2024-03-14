@@ -145,6 +145,9 @@ async def approve(ctx, timestamp: int):
         if discord.utils.get(ctx.guild.roles, id=int(EDIT_ROLE_ID)) not in ctx.author.roles:
             await ctx.respond("Du darfst diesen Befehl nicht benutzen!", ephemeral=EPHEMERAL)
             return
+        if not db.has_request(timestamp):
+            await ctx.respond("Die Änderung wurde bereits freigegeben oder existiert nicht mehr!")
+            return
         uuid = db.approve_request(timestamp)
         await ctx.respond("Die Änderung wurde erfolgreich freigegeben!", embed=Entry(uuid, **db.get_entry(uuid)))
     except Exception as exception:
