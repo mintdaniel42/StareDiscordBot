@@ -1,17 +1,22 @@
 import discord
 
-from embeds import List
+from embeds import List, AdvancedEntry, GroupEntry
 from data import Database
 
 
 class MoreInformationButton(discord.ui.View):
-    def __init__(self):
+    def __init__(self, username: str, uuid: str):
         super().__init__()
+        self.username = username
+        self.uuid = uuid
 
     @discord.ui.button(label="Mehr Informationen", style=discord.ButtonStyle.primary, disabled=True)
-    async def button_callback(self, button, interaction):
-        #await interaction.respond()
-        pass
+    async def more_information_callback(self, button, interaction):
+        await interaction.respond(embed=AdvancedEntry(username=self.username, uuid=self.uuid))
+
+    @discord.ui.button(label="Gruppierung anzeigen", style=discord.ButtonStyle.primary, disabled=True)
+    async def show_group_callback(self, button, interaction):
+        await interaction.respond(embed=GroupEntry())
 
 
 class ListButtons(discord.ui.View):
