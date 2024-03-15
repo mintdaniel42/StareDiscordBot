@@ -35,12 +35,6 @@ async def show_user(ctx, username: str):
         uuid=uuid,
         **db.get_entry(uuid)
     ), view=MoreInformationButton(username=username, uuid=uuid), ephemeral=EPHEMERAL)
-    if random.random() >= .2:
-        await bot.change_presence(activity=discord.Activity(name=username, type=discord.ActivityType.watching))
-    elif random.random() >= 0.9:
-        await bot.change_presence(activity=discord.Activity(name="Minecraft", type=discord.ActivityType.playing))
-    else:
-        await bot.change_presence(activity=None)
 
 
 @bot.slash_command(name="listusers", description="Einträge auflisten", guild_ids=[GUILD_ID])
