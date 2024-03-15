@@ -31,9 +31,10 @@ async def show_user(ctx, username: str):
         return
     uuid = response['data']['player']['id']
     await ctx.respond(embed=Entry(
+        response['data']['player']['username'],
         uuid,
         **db.get_entry(uuid)
-    ), view=MoreInformationButton(), ephemeral=EPHEMERAL)
+    ), view=MoreInformationButton(username=username, uuid=uuid), ephemeral=EPHEMERAL)
     if random.random() >= .2:
         await bot.change_presence(activity=discord.Activity(name=username, type=discord.ActivityType.watching))
     elif random.random() >= 0.9:

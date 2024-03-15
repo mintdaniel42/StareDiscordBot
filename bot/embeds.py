@@ -7,25 +7,36 @@ from util import get_ranking_icon
 
 
 class Entry(discord.Embed):
-    def __init__(self, uuid, rating="---", points=0, joined="---", secondary=False, banned=False, cheating=False):
-        self.userdata = requests.request("GET", "https://playerdb.co/api/player/minecraft/" + uuid).json()
-        if self.userdata['success']:
-            super().__init__(title="Hide 'n' Seek Spielerdatenbank",
-                             description=f"Spielername: {self.userdata['data']['player']['username']}",
-                             color=COLOR_NORMAl)
-            self.set_thumbnail(url=f"https://minotar.net/armor/bust/{uuid.__str__()}")
-            self.add_field(name="Tierlistrating", value=rating, inline=True)
-            self.add_field(name="Geschätzte Punkte", value="{:,}".format(points).replace(',', '.'), inline=True)
-            self.add_field(name="im Modus seit",
-                           value=joined,
-                           inline=True)
-            self.add_field(name="Zweitaccount", value="✅" if secondary else "❌", inline=True)
-            self.add_field(name="Gebannt", value="✅" if banned else "❌", inline=True)
-            self.add_field(name="Cheater", value="✅" if cheating else "❌", inline=True)
-        else:
-            super().__init__(title="Hide 'n' Seek Spielerdatenbank",
-                             description=f"{uuid} konnte nicht gefunden werden",
-                             color=COLOR_NORMAl)
+    def __init__(self, username: str, uuid: str, rating: str = "---", points: int = 0,
+                 joined: str = "---", secondary: bool = False, banned: bool = False, cheating: bool = False):
+        super().__init__(title="Hide 'n' Seek Spielerdatenbank",
+                         description=f"Spielername: {username}",
+                         color=COLOR_NORMAl)
+        self.set_thumbnail(url=f"https://minotar.net/armor/bust/{uuid.__str__()}")
+        self.add_field(name="Tierlistrating", value=rating, inline=True)
+        self.add_field(name="Geschätzte Punkte", value="{:,}".format(points).replace(',', '.'), inline=True)
+        self.add_field(name="im Modus seit",
+                       value=joined,
+                       inline=True)
+        self.add_field(name="Zweitaccount", value="✅" if secondary else "❌", inline=True)
+        self.add_field(name="Gebannt", value="✅" if banned else "❌", inline=True)
+        self.add_field(name="Cheater", value="✅" if cheating else "❌", inline=True)
+
+
+class AdvancedEntry(discord.Embed):
+    def __init__(self, username: str, uuid: str, note: str = "---", top10: str = "Nie", group: str = None):
+        super().__init__(title="Hide 'n' Seek Spielerdatenbank",
+                         description=f"Spielername: {username}",
+                         color=COLOR_NORMAl)
+        self.set_thumbnail(url=f"https://minotar.net/armor/bust/{uuid.__str__()}")
+        self.add_field(name="Notiz", value=note, inline=False)
+        self.add_field(name="Top 10", value=top10, inline=True)
+        self.add_field(name="Gruppierung", value=group, inline=True)
+
+
+class GroupEntry(discord.Embed):
+    def __init__(self):
+        super().__init__()
 
 
 class List(discord.Embed):
