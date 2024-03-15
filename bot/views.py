@@ -29,10 +29,10 @@ class ListButtons(discord.ui.View):
 
     @discord.ui.button(label="Vorherige Seite", row=0, style=discord.ButtonStyle.primary)
     async def previous_page_callback(self, button, interaction):
-        await interaction.respond(embed=List(max(self.page - 1, 0), self.db),
-                                  view=ListButtons(max(self.page, 0), self.db))
+        await interaction.edit(embed=List(max(self.page - 1, 0), self.db),
+                               view=ListButtons(max(self.page, 0), self.db))
 
     @discord.ui.button(label="Nächste Seite", row=0, style=discord.ButtonStyle.primary)
     async def next_page_callback(self, button, interaction):
-        await interaction.respond(embed=List(min(self.page + 1, self.db.get_pages()), self.db),
-                                  view=ListButtons(min(self.page + 1, self.db.get_pages()), self.db))
+        await interaction.edit(embed=List(min(self.page + 1, self.db.get_pages()), self.db),
+                               view=ListButtons(min(self.page + 1, self.db.get_pages()), self.db))
