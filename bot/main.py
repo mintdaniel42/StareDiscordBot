@@ -8,8 +8,7 @@ from config import GUILD_ID, DISCORD_TOKEN, VIEW_ROLE_ID, EDIT_ROLE_ID, CREATE_R
 from embeds import Entry, List, Error, ApprovalRequired
 from data import Database
 from util import validate_string_format, convert_string_to_int
-from modals import MyModal
-from views import ListButtons
+from views import ListButtons, MoreInformationButton
 
 import requests
 
@@ -34,7 +33,7 @@ async def show_user(ctx, username: str):
     await ctx.respond(embed=Entry(
         uuid,
         **db.get_entry(uuid)
-    ), ephemeral=EPHEMERAL)
+    ), view=MoreInformationButton(), ephemeral=EPHEMERAL)
     if random.random() >= .2:
         await bot.change_presence(activity=discord.Activity(name=username, type=discord.ActivityType.watching))
     elif random.random() >= 0.9:
@@ -154,13 +153,6 @@ async def approve(ctx, timestamp: int):
         await ctx.respond("Die Änderung wurde erfolgreich freigegeben!", embed=Entry(uuid, **db.get_entry(uuid)))
     except Exception as exception:
         await handle_error(ctx, f"/approve timestamp {timestamp}", exception)
-
-
-@bot.slash_command()
-async def modal_slash(ctx: discord.ApplicationContext):
-    """Shows an example of a modal dialog being invoked from a slash command."""
-    modal = MyModal(title="Modal via Slash Command")
-    await ctx.send_modal(modal)
 
 
 try:
