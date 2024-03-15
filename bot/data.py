@@ -8,9 +8,13 @@ class Database:
     def __init__(self) -> None:
         self.connection = sqlite3.connect(".data/data.db")
         self.cursor = self.connection.cursor()
+
         self.cursor.execute("CREATE TABLE IF NOT EXISTS entries (uuid TEXT primary key, rating TEXT, "
                             "points INTEGER, joined TEXT, secondary INTEGER, banned INTEGER, cheating INTEGER)")
         self.cursor.execute("CREATE TABLE IF NOT EXISTS requests (timestamp INTEGER, uuid TEXT, key TEXT, value TEXT)")
+
+        self.cursor.execute("SELECT COUNT(uuid) FROM entries")
+        self.entries: int = self.cursor.fetchone()[0]
 
     def get_entry(self, uuid: str) -> dict:
         self.cursor.execute("SELECT * FROM entries WHERE uuid = ?", (uuid,))
@@ -30,6 +34,7 @@ class Database:
                                                                                  1 if secondary else 0,
                                                                                  1 if banned else 0,
                                                                                  1 if cheating else 0))
+        self.entries += 1
         self._save()
 
     def has_entry(self, uuid: str) -> bool:
@@ -46,8 +51,7 @@ class Database:
         return entries
 
     def get_pages(self) -> int:
-        self.cursor.execute("SELECT COUNT(uuid) FROM entries")
-        return ceil(self.cursor.fetchone()[0] / ENTRIES_PER_PAGE)
+        return ceil(self.entries / ENTRIES_PER_PAGE)
 
     def add_request(self, timestamp: int, uuid: str, key: str, value: str | int):
         self._purge_requests()

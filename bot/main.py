@@ -8,6 +8,8 @@ from config import GUILD_ID, DISCORD_TOKEN, VIEW_ROLE_ID, EDIT_ROLE_ID, CREATE_R
 from embeds import Entry, List, Error, ApprovalRequired
 from data import Database
 from util import validate_string_format, convert_string_to_int
+from modals import MyModal
+from views import ListButtons
 
 import requests
 
@@ -50,7 +52,7 @@ async def list_users(ctx, page: int = 1):
     if 0 >= page or page > db.get_pages():
         await ctx.respond(f"Die Seite {page} gibt es nicht!", ephemeral=EPHEMERAL)
         return
-    await ctx.respond(embed=List(page - 1, db))
+    await ctx.respond(embed=List(page - 1, db), view=ListButtons(page - 1, db))
     print(f"/listusers finished")
 
 
@@ -152,6 +154,13 @@ async def approve(ctx, timestamp: int):
         await ctx.respond("Die Änderung wurde erfolgreich freigegeben!", embed=Entry(uuid, **db.get_entry(uuid)))
     except Exception as exception:
         await handle_error(ctx, f"/approve timestamp {timestamp}", exception)
+
+
+@bot.slash_command()
+async def modal_slash(ctx: discord.ApplicationContext):
+    """Shows an example of a modal dialog being invoked from a slash command."""
+    modal = MyModal(title="Modal via Slash Command")
+    await ctx.send_modal(modal)
 
 
 try:
