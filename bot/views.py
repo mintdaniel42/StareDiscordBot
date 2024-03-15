@@ -10,6 +10,7 @@ class MoreInformationButton(discord.ui.View):
         self.username = username
         self.uuid = uuid
 
+    """
     @discord.ui.button(label="Mehr Informationen", style=discord.ButtonStyle.primary, disabled=True)
     async def more_information_callback(self, button, interaction):
         await interaction.respond(embed=AdvancedEntry(username=self.username, uuid=self.uuid))
@@ -17,6 +18,7 @@ class MoreInformationButton(discord.ui.View):
     @discord.ui.button(label="Gruppierung anzeigen", style=discord.ButtonStyle.primary, disabled=True)
     async def show_group_callback(self, button, interaction):
         await interaction.respond(embed=GroupEntry())
+    """
 
 
 class ListButtons(discord.ui.View):
