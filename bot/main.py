@@ -108,7 +108,8 @@ async def edit_user(ctx, username: str, key: str, value: str):
             await ctx.respond("Dieses Feld existiert nicht!", ephemeral=EPHEMERAL)
             return
         await ctx.respond(f"Die Änderungen am Feld `{key}` für den Eintrag `\"{username}\"` wurden gespeichert!",
-                          embed=Entry(uuid, **db.get_entry(uuid)), ephemeral=EPHEMERAL)
+                          embed=Entry(uuid, response['data']['player']['username'],
+                                      **db.get_entry(uuid)), ephemeral=EPHEMERAL)
     except Exception as exception:
         await handle_error(ctx, f"/edituser key {key} value {value}", exception)
 
@@ -133,7 +134,7 @@ async def add_user(ctx, username: str, rating: str, points: str,
             return
         db.add_entry(uuid, rating, convert_string_to_int(points), joined, secondary, banned, cheating)
         await ctx.respond(f"Der Eintrag für den Nutzer {username} wurde angelegt!",
-                          embed=Entry(uuid, **db.get_entry(uuid)),
+                          embed=Entry(uuid, response['data']['player']['username'], **db.get_entry(uuid)),
                           ephemeral=EPHEMERAL)
     except Exception as exception:
         await handle_error(ctx, f"/adduser username {username} rating {rating} points {points}" +
@@ -151,7 +152,9 @@ async def approve(ctx, timestamp: int):
             await ctx.respond("Die Änderung wurde bereits freigegeben oder existiert nicht mehr!")
             return
         uuid = db.approve_request(timestamp)
-        await ctx.respond("Die Änderung wurde erfolgreich freigegeben!", embed=Entry(uuid, **db.get_entry(uuid)))
+        response = requests.request("GET", "https://playerdb.co/api/player/minecraft/" + uuid).json()
+        await ctx.respond("Die Änderung wurde erfolgreich freigegeben!",
+                          embed=Entry(uuid, response['data']['player']['username'], **db.get_entry(uuid)))
     except Exception as exception:
         await handle_error(ctx, f"/approve timestamp {timestamp}", exception)
 
