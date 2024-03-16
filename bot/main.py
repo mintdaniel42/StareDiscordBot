@@ -9,6 +9,7 @@ from embeds import Entry, List, Error, ApprovalRequired
 from data import Database
 from util import validate_string_format, convert_string_to_int
 from views import ListButtons, MoreInformationButton
+from resources import Strings
 
 import requests
 
@@ -20,14 +21,14 @@ async def handle_error(ctx, command: str, exception: Exception) -> None:
     await ctx.respond(embed=Error(command, exception), ephemeral=True)
 
 
-@bot.slash_command(name="showuser", description="Eintrag anzeigen", guild_ids=[GUILD_ID])
+@bot.slash_command(name="showuser", description=Strings.commands_showuser_description, guild_ids=[GUILD_ID])
 async def show_user(ctx, username: str):
     if discord.utils.get(ctx.guild.roles, id=int(VIEW_ROLE_ID)) not in ctx.author.roles:
-        await ctx.respond("Du darfst diesen Befehl nicht benutzen!", ephemeral=EPHEMERAL)
+        await ctx.respond(Strings.errors_commands_permission, ephemeral=EPHEMERAL)
         return
     response = requests.request("GET", "https://playerdb.co/api/player/minecraft/" + username).json()
     if not response['success']:
-        await ctx.respond(f"Der Nutzer {username} existiert nicht!", ephemeral=EPHEMERAL)
+        await ctx.respond(Strings.errors_commands_nonexistent_user.format(username=username), ephemeral=EPHEMERAL)
         return
     uuid = response['data']['player']['id']
     await ctx.respond(embed=Entry(
@@ -37,28 +38,28 @@ async def show_user(ctx, username: str):
     ), view=MoreInformationButton(username=username, uuid=uuid), ephemeral=EPHEMERAL)
 
 
-@bot.slash_command(name="listusers", description="Einträge auflisten", guild_ids=[GUILD_ID])
+@bot.slash_command(name="listusers", description=Strings.commands_listusers_description, guild_ids=[GUILD_ID])
 async def list_users(ctx, page: int = 1):
     print(f"/listusers triggered by {ctx.author}")
     if discord.utils.get(ctx.guild.roles, id=int(VIEW_ROLE_ID)) not in ctx.author.roles:
-        await ctx.respond("Du darfst diesen Befehl nicht benutzen!", ephemeral=EPHEMERAL)
+        await ctx.respond(Strings.errors_commands_permission, ephemeral=EPHEMERAL)
         return
     if 0 >= page or page > db.get_pages():
-        await ctx.respond(f"Die Seite {page} gibt es nicht!", ephemeral=EPHEMERAL)
+        await ctx.respond(Strings.errors_commands_nonexistent_page.format(page=page), ephemeral=EPHEMERAL)
         return
     await ctx.respond(embed=List(page - 1, db), view=ListButtons(page - 1, db))
     print(f"/listusers finished")
 
 
-@bot.slash_command(name="edituser", description="Eintrag bearbeiten", guild_ids=[GUILD_ID])
+@bot.slash_command(name="edituser", description=Strings.commands_edituser_description, guild_ids=[GUILD_ID])
 async def edit_user(ctx, username: str, key: str, value: str):
     try:
         if discord.utils.get(ctx.guild.roles, id=int(VIEW_ROLE_ID)) not in ctx.author.roles:
-            await ctx.respond("Du darfst diesen Befehl nicht benutzen!", ephemeral=EPHEMERAL)
+            await ctx.respond(Strings.errors_commands_permission, ephemeral=EPHEMERAL)
             return
         response = requests.request("GET", "https://playerdb.co/api/player/minecraft/" + username).json()
         if not response['success']:
-            await ctx.respond(f"Der Nutzer {username} existiert nicht!", ephemeral=EPHEMERAL)
+            await ctx.respond(Strings.errors_commands_nonexistent_user.format(username=username), ephemeral=EPHEMERAL)
             return
         uuid = response['data']['player']['id']
         if key in ("secondary", "banned", "cheating"):
@@ -66,9 +67,7 @@ async def edit_user(ctx, username: str, key: str, value: str):
                 timestamp: int = round(time.time() * 1000)
                 db.add_request(timestamp, uuid, key,
                                1 if value.lower() in ("1", "true", "yes", "ja") else 0)
-                await ctx.respond(f"Die Änderungen am Feld `{key}` für den Eintrag `\"{username}\"` wurden gespeichert "
-                                  "und werden als Nächstes von einem Admin oder"
-                                  "Moderator geprüft und (hoffentlich) freigegeben.")
+                await ctx.respond(Strings.commands_edituser_request_new.format(key=key, username=username))
                 await bot.get_channel(REQUEST_CHANNEL_ID).send(embed=ApprovalRequired(timestamp, uuid, key, value,
                                                                                       db.get_entry(uuid)[key]))
                 return
@@ -80,9 +79,7 @@ async def edit_user(ctx, username: str, key: str, value: str):
             if discord.utils.get(ctx.guild.roles, id=int(EDIT_ROLE_ID)) not in ctx.author.roles:
                 timestamp: int = round(time.time() * 1000)
                 db.add_request(timestamp, uuid, key, convert_string_to_int(value))
-                await ctx.respond(f"Die Änderungen am Feld `{key}` für den Eintrag `\"{username}\"` wurden gespeichert "
-                                  "und werden als Nächstes von einem Admin oder "
-                                  "Moderator geprüft und (hoffentlich) freigegeben.")
+                await ctx.respond(Strings.commands_edituser_request_new.format(key=key, username=username))
                 await bot.get_channel(REQUEST_CHANNEL_ID).send(embed=ApprovalRequired(timestamp, uuid, key, value,
                                                                                       db.get_entry(uuid)[key]))
                 return
@@ -91,9 +88,7 @@ async def edit_user(ctx, username: str, key: str, value: str):
             if discord.utils.get(ctx.guild.roles, id=int(EDIT_ROLE_ID)) not in ctx.author.roles:
                 timestamp: int = round(time.time() * 1000)
                 db.add_request(timestamp, uuid, key, value)
-                await ctx.respond(f"Die Änderungen am Feld `{key}` für den Eintrag `\"{username}\"` wurden gespeichert "
-                                  "und werden als Nächstes von einem Admin oder"
-                                  "Moderator geprüft und (hoffentlich) freigegeben.")
+                await ctx.respond(Strings.commands_edituser_request_new.format(key=key, username=username))
                 await bot.get_channel(REQUEST_CHANNEL_ID).send(embed=ApprovalRequired(timestamp, uuid, key, value,
                                                                                       db.get_entry(uuid)[key]))
                 return
