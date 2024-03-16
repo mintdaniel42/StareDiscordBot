@@ -9,9 +9,9 @@ class Database:
         self.connection = sqlite3.connect(".data/data.db")
         self.cursor = self.connection.cursor()
 
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS entries (uuid TEXT primary key, rating TEXT, "
-                            "points INTEGER, joined TEXT, secondary INTEGER, banned INTEGER, cheating INTEGER)")
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS requests (timestamp INTEGER, uuid TEXT, key TEXT, value TEXT)")
+        self.cursor.execute("PRAGMA user_version")
+        self.version = self.cursor.fetchone()[0]
+        self._run_migrations()
 
         self.cursor.execute("SELECT COUNT(uuid) FROM entries")
         self.entries: int = self.cursor.fetchone()[0]
@@ -83,6 +83,34 @@ class Database:
     def _save(self):
         if self.connection.total_changes % 5 == 0:
             self.connection.commit()
+
+    def _run_migrations(self) -> None:
+        print(f"Database Version: {self.version}")
+        if self.version == 0:
+            self._v1()
+        if self.version == 1:
+            self._v2()
+        if self.version == 2:
+            self._v3()
+        print(f"Migrated to Database Version: {self.version}")
+        self.connection.commit()
+
+    def _v1(self) -> None:
+        self.cursor.execute("CREATE TABLE entries (uuid TEXT, rating TEXT, "
+                            "points INTEGER, joined TEXT, secondary INTEGER, banned INTEGER, cheating INTEGER)")
+        self.cursor.execute("PRAGMA user_version = 1")
+        self.version = 1
+
+    def _v2(self) -> None:
+        self.cursor.execute("CREATE TABLE requests (timestamp INTEGER, uuid TEXT, key TEXT, value TEXT)")
+        self.cursor.execute("PRAGMA user_version = 2")
+        self.version = 2
+
+    def _v3(self) -> None:
+        self.cursor.execute("ALTER TABLE entries ADD COLUMN \"group\" TEXT, note TEXT")
+        self.cursor.execute("CREATE TABLE groups (uuid TEXT PRIMARY KEY, name TEXT, created TEXT)")
+        self.cursor.execute("PRAGMA user_version = 3")
+        self.version = 3
 
     def close(self) -> None:
         self.connection.commit()
