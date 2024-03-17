@@ -88,10 +88,6 @@ class Database:
         print(f"Database Version: {self.version}")
         if self.version == 0:
             self._v1()
-        if self.version == 1:
-            self._v2()
-        if self.version == 2:
-            self._v3()
         print(f"Migrated to Database Version: {self.version}")
         self.connection.commit()
 
@@ -100,17 +96,6 @@ class Database:
                             "points INTEGER, joined TEXT, secondary INTEGER, banned INTEGER, cheating INTEGER)")
         self.cursor.execute("PRAGMA user_version = 1")
         self.version = 1
-
-    def _v2(self) -> None:
-        self.cursor.execute("CREATE TABLE requests (timestamp INTEGER, uuid TEXT, key TEXT, value TEXT)")
-        self.cursor.execute("PRAGMA user_version = 2")
-        self.version = 2
-
-    def _v3(self) -> None:
-        self.cursor.execute("ALTER TABLE entries ADD COLUMN \"group\" TEXT, note TEXT")
-        self.cursor.execute("CREATE TABLE groups (uuid TEXT PRIMARY KEY, name TEXT, created TEXT)")
-        self.cursor.execute("PRAGMA user_version = 3")
-        self.version = 3
 
     def close(self) -> None:
         self.connection.commit()
