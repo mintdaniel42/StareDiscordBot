@@ -39,6 +39,8 @@ class Strings:
     errors_commands_nonexistent_user: str = "Der Nutzer {username} existiert nicht!"
     errors_commands_nonexistent_page: str = "Die Seite {page} gibt es nicht!"
 
+    logging_autosave_ran: str = "Ran autosave task (again in {seconds}s)"
+
 
 class Colors:
     embed_normal: int = COLOR_NORMAl

@@ -1,13 +1,18 @@
 import sqlite3
+from threading import Timer
 from math import ceil
 from config import ENTRIES_PER_PAGE
 from time import time
+from resources import Strings
 
 
 class Database:
     def __init__(self) -> None:
-        self.connection = sqlite3.connect(".data/data.db")
+        self.connection = sqlite3.connect(".data/data.db", check_same_thread=False)
         self.cursor = self.connection.cursor()
+        self.lock: bool = False
+
+        self._autosave_timer()
 
         self.cursor.execute("PRAGMA user_version")
         self.version = self.cursor.fetchone()[0]
@@ -81,8 +86,10 @@ class Database:
         self.cursor.execute("DELETE FROM requests WHERE timestamp > ?", (round(time() * 1000) + 124800000,))
 
     def _save(self):
-        if self.connection.total_changes % 5 == 0:
+        if self.connection.total_changes % 5 == 0 and not self.lock:
+            self.lock = True
             self.connection.commit()
+            self.lock = False
 
     def _run_migrations(self) -> None:
         print(f"Database Version: {self.version}")
@@ -96,6 +103,15 @@ class Database:
                             "points INTEGER, joined TEXT, secondary INTEGER, banned INTEGER, cheating INTEGER)")
         self.cursor.execute("PRAGMA user_version = 1")
         self.version = 1
+
+    def _autosave_timer(self) -> None:
+        seconds: int = 300 - int(time()) % 300
+        Timer(seconds, self._autosave_timer).start()
+        if not self.lock:
+            self.lock = True
+            self.connection.commit()
+            self.lock = False
+        print(Strings.logging_autosave_ran.format(seconds=seconds))
 
     def close(self) -> None:
         self.connection.commit()
