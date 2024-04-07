@@ -88,6 +88,7 @@ class Database:
     def _save(self):
         if self.connection.total_changes % 5 == 0 and not self.lock:
             self.lock = True
+            self._purge_requests()
             self.connection.commit()
             self.lock = False
 
@@ -109,6 +110,7 @@ class Database:
         Timer(seconds, self._autosave_timer).start()
         if not self.lock:
             self.lock = True
+            self._purge_requests()
             self.connection.commit()
             self.lock = False
         print(Strings.logging_autosave_ran.format(seconds=seconds))
