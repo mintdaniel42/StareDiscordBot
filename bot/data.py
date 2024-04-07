@@ -83,7 +83,7 @@ class Database:
         return self.cursor.fetchone()
 
     def _purge_requests(self):
-        self.cursor.execute("DELETE FROM requests WHERE timestamp > ?", (round(time() * 1000) + 124800000,))
+        self.cursor.execute("DELETE FROM requests WHERE timestamp < ?", (round(time() * 1000) - 172_800_000,))
 
     def _save(self):
         if self.connection.total_changes % 5 == 0 and not self.lock:
