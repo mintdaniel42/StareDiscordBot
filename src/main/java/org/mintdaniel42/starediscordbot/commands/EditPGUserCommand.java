@@ -40,7 +40,7 @@ public final class EditPGUserCommand implements DBACommand {
         }
 
         // check permission level
-        if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId())) {
+        if (DCHelper.lacksRole(event.getMember(), Options.getEditRoleId())) {
             event.reply(Bot.strings.getString("you_do_not_have_the_permission_to_use_this_command")).queue();
             return;
         }

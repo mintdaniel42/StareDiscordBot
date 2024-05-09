@@ -40,7 +40,7 @@ public final class AddPGUserCommand implements DBACommand {
         }
 
         // check permission level
-        if (!DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
+        if (DCHelper.lacksRole(event.getMember(), Options.getCreateRoleId())) {
             event.reply(Bot.strings.getString("you_do_not_have_the_permission_to_use_this_command")).queue();
             return;
         }

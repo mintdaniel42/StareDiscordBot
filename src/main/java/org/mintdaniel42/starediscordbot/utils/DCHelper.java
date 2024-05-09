@@ -15,9 +15,9 @@ import java.util.regex.Pattern;
 
 @UtilityClass
 public class DCHelper {
-    public boolean hasRole(@Nullable Member member, long role_id) {
-        if (member == null) return false;
-        return member.getRoles().stream().anyMatch(role -> role.getIdLong() == role_id);
+    public boolean lacksRole(@Nullable Member member, long role_id) {
+        if (member == null) return true;
+        return member.getRoles().stream().noneMatch(role -> role.getIdLong() == role_id);
     }
 
     public @NonNull String[] autoCompleteUsername(@NonNull DatabaseAdapter databaseAdapter, @NonNull String input) {
@@ -30,7 +30,7 @@ public class DCHelper {
                 .toArray(String[]::new);
     }
 
-    public @NonNull List<Command.Choice> autocompleteDouble(String input) {
+    public @NonNull List<Command.Choice> autocompleteDouble(@NonNull String input) {
         List<Command.Choice> choices = new ArrayList<>();
         if (input.isBlank()) return choices;
         Matcher matcher = Pattern.compile("[+-]?((\\d+(\\.\\d*)?)|(\\.\\d+))").matcher(input);
