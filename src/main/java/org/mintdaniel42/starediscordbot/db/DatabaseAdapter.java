@@ -224,14 +224,6 @@ public final class DatabaseAdapter implements AutoCloseable {
         return false;
     }
 
-    public boolean hasUsernameModel(@NonNull UUID uuid) {
-        try {
-            return usernameModelDao.idExists(uuid);
-        } catch (SQLException ignored) {
-            return false;
-        }
-    }
-
     public void close() throws Exception{
         connectionSource.close();
     }
