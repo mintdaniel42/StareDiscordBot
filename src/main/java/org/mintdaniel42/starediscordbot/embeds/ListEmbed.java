@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.HNSUserModel;
@@ -17,6 +18,7 @@ import java.util.List;
 public class ListEmbed {
     private final byte entriesPerPage = Options.getEntriesPerPage();
 
+    @Contract(value = "_, _, _ -> new")
     public MessageEmbed createHnsList(@NonNull DatabaseAdapter databaseAdapter, @NonNull List<HNSUserModel> hnsUserModels, int page) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle(Bot.strings.getString("hide_n_seek_player_database"));
@@ -31,6 +33,7 @@ public class ListEmbed {
         return embedBuilder.build();
     }
 
+    @Contract(value = "_, _, _ -> new")
     public MessageEmbed createPgList(@NonNull DatabaseAdapter databaseAdapter, @NonNull List<PGUserModel> pgUserModels, int page) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle(Bot.strings.getString("partygames_player_database"));

@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.HNSUserModel;
@@ -13,6 +14,7 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 
 @UtilityClass
 public class UserEmbed {
+    @Contract(pure = true, value = "_, _ -> new")
     public @NonNull MessageEmbed of(@NonNull DatabaseAdapter databaseAdapter, @NonNull HNSUserModel hnsUserModel) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
@@ -30,6 +32,7 @@ public class UserEmbed {
         return embedBuilder.build();
     }
 
+    @Contract(pure = true, value = "_, _ -> new")
     public @NonNull MessageEmbed of(@NonNull DatabaseAdapter databaseAdapter, @NonNull PGUserModel pgUserModel) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
@@ -47,7 +50,8 @@ public class UserEmbed {
         return embedBuilder.build();
     }
 
-    private static String formatNumber(double value) {
+    @Contract(pure = true, value = "_ -> new")
+    private @NonNull String formatNumber(double value) {
         if (value >= 5_000_000_000L) return Math.round(value / 1_000_000_000L) + "B";
         else if (value >= 5_000_000L) return Math.round(value / 1_000_000) + "M";
         else if (value >= 5_000) return Math.round(value / 1_000) + "K";
