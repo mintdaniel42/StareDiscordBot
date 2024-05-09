@@ -21,11 +21,11 @@ public class UserEmbed {
         embedBuilder.setColor(Options.getColorNormal());
         embedBuilder.setThumbnail(MCHelper.getThumbnail(hnsUserModel.getUuid()));
         embedBuilder.addField(Bot.strings.getString("rating"), hnsUserModel.getRating(), true);
-        embedBuilder.addField(Bot.strings.getString("points"), String.valueOf(hnsUserModel.getPoints()), true);
+        embedBuilder.addField(Bot.strings.getString("points"), formatNumber(hnsUserModel.getPoints()), true);
         embedBuilder.addField(Bot.strings.getString("joined"), hnsUserModel.getJoined(), true);
-        embedBuilder.addField(Bot.strings.getString("secondary"), String.valueOf(hnsUserModel.isSecondary()), true);
-        embedBuilder.addField(Bot.strings.getString("banned"), String.valueOf(hnsUserModel.isBanned()), true);
-        embedBuilder.addField(Bot.strings.getString("cheating"), String.valueOf(hnsUserModel.isCheating()), true);
+        embedBuilder.addField(Bot.strings.getString("secondary"), hnsUserModel.isSecondary() ? "✅" : "❌", true);
+        embedBuilder.addField(Bot.strings.getString("banned"), hnsUserModel.isBanned() ? "✅" : "❌", true);
+        embedBuilder.addField(Bot.strings.getString("cheating"), hnsUserModel.isCheating() ? "✅" : "❌", true);
 
         return embedBuilder.build();
     }
@@ -38,12 +38,19 @@ public class UserEmbed {
         embedBuilder.setColor(Options.getColorNormal());
         embedBuilder.setThumbnail(MCHelper.getThumbnail(pgUserModel.getUuid()));
         embedBuilder.addField(Bot.strings.getString("rating"), pgUserModel.getRating(), true);
-        embedBuilder.addField(Bot.strings.getString("points"), String.valueOf(pgUserModel.getPoints()), true);
+        embedBuilder.addField(Bot.strings.getString("points"), formatNumber(pgUserModel.getPoints()), true);
         embedBuilder.addField(Bot.strings.getString("joined"), pgUserModel.getJoined(), true);
-        embedBuilder.addField(Bot.strings.getString("luck"), String.valueOf(pgUserModel.getLuck()), true);
-        embedBuilder.addField(Bot.strings.getString("quota"), String.valueOf(pgUserModel.getQuota()), true);
-        embedBuilder.addField(Bot.strings.getString("winrate"), String.valueOf(pgUserModel.getWinrate()), true);
+        embedBuilder.addField(Bot.strings.getString("luck"), String.format("%s%%", pgUserModel.getLuck()), true);
+        embedBuilder.addField(Bot.strings.getString("quota"), String.format("%s%%", pgUserModel.getQuota()), true);
+        embedBuilder.addField(Bot.strings.getString("winrate"), String.format("%s%%", pgUserModel.getWinrate()), true);
 
         return embedBuilder.build();
+    }
+
+    private static String formatNumber(double value) {
+        if (value >= 5_000_000_000L) return Math.round(value / 1_000_000_000L) + "B";
+        else if (value >= 5_000_000L) return Math.round(value / 1_000_000) + "M";
+        else if (value >= 5_000) return Math.round(value / 1_000) + "K";
+        else return String.valueOf(value);
     }
 }
