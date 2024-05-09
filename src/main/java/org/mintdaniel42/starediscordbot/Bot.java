@@ -4,6 +4,7 @@ import fr.leonarddoo.dba.loader.DBALoader;
 import lombok.NonNull;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
@@ -21,6 +22,13 @@ public final class Bot extends ListenerAdapter {
         JDABuilder.createLight(Options.getToken())
                 .addEventListeners(this)
                 .build();
+    }
+
+    @Override
+    public void onShutdown(@NonNull ShutdownEvent event) {
+        try {
+            databaseAdapter.close();
+        } catch (Exception ignored) {}
     }
 
     @Override
