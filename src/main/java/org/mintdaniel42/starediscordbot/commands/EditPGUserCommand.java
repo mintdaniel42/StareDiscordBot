@@ -80,8 +80,7 @@ public final class EditPGUserCommand implements DBACommand {
             PGUserModel pgUserModel = builder.build();
             if (databaseAdapter.editPgUser(pgUserModel) == 0) event.reply(Bot.strings.getString("the_entry_could_not_be_updated")).queue();
             else {
-                event.reply(Bot.strings.getString("the_entry_was_successfully_updated")).queue();
-                event.getChannel().sendMessageEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue();
+                event.reply(Bot.strings.getString("the_entry_was_successfully_updated")).setEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue();
             }
         }
     }

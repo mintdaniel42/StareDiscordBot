@@ -75,8 +75,7 @@ public final class AddPGUserCommand implements DBACommand {
             PGUserModel pgUserModel = builder.build();
             if (!databaseAdapter.addPgUser(pgUserModel)) event.reply(Bot.strings.getString("the_entry_could_not_be_created")).queue();
             else {
-                event.reply(Bot.strings.getString("the_entry_was_successfully_created")).queue();
-                event.getChannel().sendMessageEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue();
+                event.reply(Bot.strings.getString("the_entry_was_successfully_created")).setEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue();
             }
         }
     }
