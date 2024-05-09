@@ -93,7 +93,7 @@ public final class EditHNSUserCommand implements DBACommand {
         OptionMapping usernameMapping = event.getOption("username");
         String focusedOption = event.getFocusedOption().getName();
 
-        if (focusedOption.equals("points") && pointsMapping != null && !pointsMapping.getAsString().isBlank()) event.replyChoices(DCHelper.autocompleteDouble(pointsMapping.getAsDouble())).queue();
+        if (focusedOption.equals("points") && pointsMapping != null && !pointsMapping.getAsString().isBlank()) event.replyChoices(DCHelper.autocompleteDouble(pointsMapping.getAsString())).queue();
         else if (focusedOption.equals("username") && usernameMapping != null) event.replyChoiceStrings(DCHelper.autoCompleteUsername(databaseAdapter, usernameMapping.getAsString())).queue();
     }
 }

@@ -10,6 +10,8 @@ import org.mintdaniel42.starediscordbot.db.UsernameModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @UtilityClass
 public class DCHelper {
@@ -28,12 +30,15 @@ public class DCHelper {
                 .toArray(String[]::new);
     }
 
-    public @NonNull List<Command.Choice> autocompleteDouble(double input) {
+    public @NonNull List<Command.Choice> autocompleteDouble(String input) {
         List<Command.Choice> choices = new ArrayList<>();
-        if (input >= 1_000_000) return choices;
-        choices.add(new Command.Choice(input + "K", input * 1_000));
-        choices.add(new Command.Choice(input + "M", input * 1_000_000));
-        choices.add(new Command.Choice(input + "B", input * 1_000_000_000));
+        if (input.isBlank()) return choices;
+        Matcher matcher = Pattern.compile("[+-]?((\\d+(\\.\\d*)?)|(\\.\\d+))").matcher(input);
+        double number = matcher.find() ? Double.parseDouble(matcher.group()) : 0;
+        if (number >= 1_000_000) return choices;
+        if (!input.endsWith("m") || !input.endsWith("b")) choices.add(new Command.Choice(number + "K", number * 1_000D));
+        if (!input.endsWith("k") || !input.endsWith("b")) choices.add(new Command.Choice(number + "M", number * 1_000_000D));
+        if (!input.endsWith("k") || !input.endsWith("m")) choices.add(new Command.Choice(number + "B", number * 1_000_000_000D));
         return choices;
     }
 }
