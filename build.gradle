@@ -1,0 +1,39 @@
+plugins {
+    id('java')
+    id('application')
+    alias(libs.plugins.lombok)
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation(libs.jda)
+    implementation(libs.discordannotations)
+    implementation(libs.ormlite)
+    implementation(libs.jdbc.sqlite)
+    implementation(libs.json)
+    implementation(libs.slf4j.api)
+    implementation(libs.slf4j.simple)
+}
+
+group = 'org.mintdaniel42.starediscordbot'
+version = '1.0-SNAPSHOT'
+application.mainClass = "${project.group}.Bot"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.jar {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    manifest.attributes("Main-Class": application.mainClass)
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it)}
+    }
+}

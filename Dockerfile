@@ -1,10 +1,17 @@
-FROM python:3
+FROM gradle:8.7.0-jdk21 AS build
+
+COPY --chown=gradle:gradle . /home/gradle/src
+
+WORKDIR /home/gradle/src
+
+RUN gradle build --no-daemon
+
+FROM amazoncorretto:21
 
 WORKDIR /usr/src/app
 
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+VOLUME /usr/src/app/.data
 
-COPY ./bot ./
+COPY --from=build /home/gradle/src/build/libs/*.jar /usr/src/app/executable.jar
 
-ENTRYPOINT [ "python", "/usr/src/app/main.py" ]
+ENTRYPOINT [ "java", "-jar", "/usr/src/app/executable.jar" ]

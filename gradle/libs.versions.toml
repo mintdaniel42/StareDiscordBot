@@ -1,0 +1,22 @@
+[versions]
+jda = "5.0.0-beta.23"
+ormlite = "6.1"
+jdbc-sqlite = "3.45.3.0"
+okhttp = "4.12.0"
+json = "20240303"
+slf4j = "1.7.25"
+discordannotations = "2.0.0"
+lombok = "8.6"
+
+[libraries]
+jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
+ormlite = { module = "com.j256.ormlite:ormlite-jdbc", version.ref = "ormlite" }
+jdbc-sqlite = { module = "org.xerial:sqlite-jdbc", version.ref = "jdbc-sqlite" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+json = { module = "org.json:json", version.ref = "json" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+discordannotations = { module = "com.github.Leonarddoo:DiscordBotAnnotation", version.ref = "discordannotations"}
+
+[plugins]
+lombok = { id = "io.freefair.lombok", version.ref = "lombok"}
