@@ -45,3 +45,5 @@ Snap.*.trc
 
 ### Project Specific ###
 app*
+.data/**
+**.env
