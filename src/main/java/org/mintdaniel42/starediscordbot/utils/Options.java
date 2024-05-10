@@ -19,6 +19,9 @@ public class Options {
 
     @Getter private final long requestChannelId = Long.parseLong(System.getenv("REQUEST_CHANNEL_ID"));
 
+    @Getter private final long cleanInterval = 300_000; // in millis
+    @Getter private final long maxRequestAge = 172_800_000; // in millis
+
     @Getter private final Locale locale = Locale.GERMANY;
 
     private final int colorNormal = Integer.parseInt(System.getenv("COLOR_NORMAL"), 16);

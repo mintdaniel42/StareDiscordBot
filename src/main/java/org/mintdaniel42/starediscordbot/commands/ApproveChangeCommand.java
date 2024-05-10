@@ -54,7 +54,7 @@ public final class ApproveChangeCommand implements DBACommand {
         event.replyChoiceLongs(Objects.requireNonNull(databaseAdapter.getPendingRequests())
                 .stream()
                 .map(RequestModel::getTimestamp)
-                .filter(timestamp -> timestamp < now - 172800)
+                .filter(timestamp -> timestamp > now - Options.getMaxRequestAge())
                 .filter(timestamp -> String.valueOf(timestamp).startsWith(id))
                 .limit(25)
                 .toList())
