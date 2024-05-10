@@ -18,7 +18,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Command(name = "approve", description = "Änderungen freigeben")
-@Option(type = OptionType.NUMBER, name = "id", description = "ID der Änderung", required = true, autocomplete = true)
+@Option(type = OptionType.INTEGER, name = "id", description = "ID der Änderung", required = true, autocomplete = true)
 @RequiredArgsConstructor
 public final class ApproveChangeCommand implements DBACommand {
     private final DatabaseAdapter databaseAdapter;
@@ -32,9 +32,17 @@ public final class ApproveChangeCommand implements DBACommand {
         }
 
         // check permission level
-        if (DCHelper.lacksRole(event.getMember(), Options.getEditRoleId())) {
+        if (DCHelper.lacksRole(event.getMember(), Options.getEditRoleId()) && DCHelper.lacksRole(event.getMember(), Options.getCreateRoleId())) {
             event.reply(Bot.strings.getString("you_do_not_have_the_permission_to_use_this_command")).queue();
             return;
+        }
+
+        // try to merge the change
+        OptionMapping idMapping = event.getOption("id");
+        if (!(idMapping == null) && databaseAdapter.mergeRequest(idMapping.getAsLong())) {
+            event.reply(Bot.strings.getString("request_was_successfully_merged")).queue();
+        } else {
+            event.reply(Bot.strings.getString("request_could_not_be_merged")).queue();
         }
     }
 
