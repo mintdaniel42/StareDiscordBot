@@ -9,8 +9,6 @@ import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInterac
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.PGUserModel;
@@ -45,9 +43,9 @@ public final class ListPGUsersCommand implements DBACommand {
         if (entriesList != null && !entriesList.isEmpty()) {
             event.deferReply().queue(interactionHook -> {
                 interactionHook.editOriginalEmbeds(ListEmbed.createPgList(databaseAdapter, entriesList, page)).queue();
-                interactionHook.editOriginalComponents(ActionRow.of(
+                /*interactionHook.editOriginalComponents(ActionRow.of(
                         Button.secondary("previous_page_button", Bot.strings.getString("previous_page")).asDisabled(),
-                        Button.secondary("next_page_button", Bot.strings.getString("next_page")).asDisabled())).queue();
+                        Button.secondary("next_page_button", Bot.strings.getString("next_page")).asDisabled())).queue();*/
             });
         } else {
             event.reply(Bot.strings.getString("no_entries_available")).queue();
