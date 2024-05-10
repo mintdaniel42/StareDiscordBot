@@ -43,8 +43,8 @@ public final class Bot extends ListenerAdapter {
                 new AddHNSUserCommand(databaseAdapter),
                 new AddPGUserCommand(databaseAdapter),
 
-                new EditHNSUserCommand(databaseAdapter),    // TODO: requesting changes
-                new EditPGUserCommand(databaseAdapter),     // TODO: requesting changes
+                new EditHNSUserCommand(databaseAdapter),
+                new EditPGUserCommand(databaseAdapter),
 
                 new ShowHNSUserCommand(databaseAdapter),
                 new ShowPGUserCommand(databaseAdapter),
