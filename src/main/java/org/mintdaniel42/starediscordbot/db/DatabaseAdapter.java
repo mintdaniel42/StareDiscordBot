@@ -3,6 +3,7 @@ package org.mintdaniel42.starediscordbot.db;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import lombok.NonNull;
@@ -12,6 +13,8 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 @Slf4j
@@ -35,6 +38,7 @@ public final class DatabaseAdapter implements AutoCloseable {
         metaDataModelDao = DaoManager.createDao(connectionSource, MetaDataModel.class);
 
         prepareDatabase();
+        cleanDatabase();
     }
 
     private void prepareDatabase() {
@@ -65,6 +69,29 @@ public final class DatabaseAdapter implements AutoCloseable {
 	    } catch (SQLException e) {
 		    log.error("Couldn't prepare database: ", e);
 	    }
+    }
+
+    private void cleanDatabase() {
+        // reschedule
+        float next = Options.getCleanInterval() - System.currentTimeMillis() % Options.getCleanInterval();
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                cleanDatabase();
+            }
+        }, Math.round(next));
+	    log.info("Schedule next database cleaning in {} seconds", next / 1000);
+
+        // perform cleaning
+        try {
+            DeleteBuilder<RequestModel, Long> deleteBuilder = requestModelDao.deleteBuilder();
+            deleteBuilder.where()
+                    .le("timestamp", System.currentTimeMillis() - Options.getMaxRequestAge());
+            requestModelDao.delete(deleteBuilder.prepare());
+
+        } catch (SQLException e) {
+            log.error("Could not clean database: ", e);
+        }
     }
 
     public @Nullable List<HNSUserModel> getHnsUserList(int page) {
@@ -242,6 +269,7 @@ public final class DatabaseAdapter implements AutoCloseable {
      */
     public boolean mergeRequest(long id) {
         try {
+            if (!requestModelDao.idExists(id)) return false;
             RequestModel requestModel = requestModelDao.queryForId(id);
             switch (requestModel.getDatabase()) {
                 case HNS -> {
