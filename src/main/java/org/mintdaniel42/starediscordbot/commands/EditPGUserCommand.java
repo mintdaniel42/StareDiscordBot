@@ -76,7 +76,7 @@ public final class EditPGUserCommand implements DBACommand {
             PGUserModel pgUserModel = builder.build();
 
             // check permission level & edit via request
-            if (DCHelper.lacksRole(event.getMember(), Options.getEditRoleId())) {
+            if (DCHelper.lacksRole(event.getMember(), Options.getEditRoleId()) && DCHelper.lacksRole(event.getMember(), Options.getCreateRoleId())) {
                 long timestamp = Instant.now().toEpochMilli();
                 if (!databaseAdapter.addRequest(RequestModel.from(timestamp, pgUserModel))) {
                     event.reply(Bot.strings.getString("the_entry_could_not_be_updated")).queue();
