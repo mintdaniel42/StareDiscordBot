@@ -45,24 +45,32 @@ public final class DatabaseAdapter implements AutoCloseable {
 	    try {
             TableUtils.createTableIfNotExists(connectionSource, MetaDataModel.class);
             if (metaDataModelDao.countOf() == 0) {
-                TableUtils.createTableIfNotExists(connectionSource, HNSUserModel.class);
-                metaDataModelDao.create(new MetaDataModel(MetaDataModel.Version.HNS_ONLY));
+                metaDataModelDao.create(new MetaDataModel(MetaDataModel.Version.META));
             }
             while (metaDataModelDao.queryForFirst().getVersion() != dbVersion) {
                 switch (metaDataModelDao.queryForFirst().getVersion()) {
+                    case META -> {
+                        try {
+                            hnsUserModelDao.executeRawNoArgs("ALTER TABLE entries RENAME TO hns_entries");
+                        } catch (SQLException ignored) {
+                            TableUtils.createTableIfNotExists(connectionSource, HNSUserModel.class);
+                        }
+                        metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.HNS_ONLY));
+                    }
                     case HNS_ONLY -> {
-                        hnsUserModelDao.executeRawNoArgs("ALTER TABLE entries RENAME TO hns_entries");
-                        TableUtils.createTable(pgUserModelDao);
-                        metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.PG_ADDED));
+                        TableUtils.createTableIfNotExists(connectionSource, PGUserModel.class);
+                        metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.PG_ADDED));
                     }
                     case PG_ADDED -> {
-                        TableUtils.createTable(connectionSource, UsernameModel.class);
-                        metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.USERNAMES_ADDED));
+                        TableUtils.createTableIfNotExists(connectionSource, UsernameModel.class);
+                        metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.USERNAMES_ADDED));
                     }
                     case USERNAMES_ADDED -> {
-                        TableUtils.dropTable(requestModelDao, false);
-                        TableUtils.createTable(requestModelDao);
-                        metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.NEW_REQUESTS));
+                        try {
+                            requestModelDao.executeRawNoArgs("DROP TABLE requests");
+                        } catch(SQLException ignored) {}
+                        TableUtils.createTableIfNotExists(connectionSource, RequestModel.class);
+                        metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.NEW_REQUESTS));
                     }
                 }
             }
