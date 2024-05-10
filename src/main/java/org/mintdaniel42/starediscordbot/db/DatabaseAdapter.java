@@ -235,8 +235,29 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * Attempts to merge the request of the provided id into the database
+     * @param id id of the request
+     * @return {@code true} if request could be merged, false otherwise
+     */
     public boolean mergeRequest(long id) {
-        return false;
+        try {
+            RequestModel requestModel = requestModelDao.queryForId(id);
+            switch (requestModel.getDatabase()) {
+                case HNS -> {
+                    return (hnsUserModelDao.update(HNSUserModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1);
+                }
+                case PG -> {
+                    return (pgUserModelDao.update(PGUserModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1);
+                }
+                case null, default -> {
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Request could not be merged: ", e);
+            return false;
+        }
     }
 
     public void close() throws Exception{
