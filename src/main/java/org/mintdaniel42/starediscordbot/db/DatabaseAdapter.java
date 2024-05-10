@@ -56,10 +56,9 @@ public final class DatabaseAdapter implements AutoCloseable {
                         metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.USERNAMES_ADDED));
                     }
                     case USERNAMES_ADDED -> {
-                        //requestModelDao.executeRawNoArgs("DROP TABLE requests");
                         TableUtils.dropTable(requestModelDao, false);
                         TableUtils.createTable(requestModelDao);
-                        metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.NEW_REQUESTS)); // TODO: uncomment once finished
+                        metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.NEW_REQUESTS));
                     }
                 }
             }
@@ -184,6 +183,10 @@ public final class DatabaseAdapter implements AutoCloseable {
         } catch (SQLException ignored) {}
     }
 
+    /**
+     * @param hnsUserModel the {@link HNSUserModel} to be added
+     * @return {@code true} if it was added, else {@code false}
+     */
     public boolean addHnsUser(@NonNull HNSUserModel hnsUserModel) {
         try {
             return hnsUserModelDao.createIfNotExists(hnsUserModel).equals(hnsUserModel);
@@ -192,6 +195,10 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * @param pgUserModel the {@link PGUserModel} to be added
+     * @return {@code true} if it was added, else {@code false}
+     */
     public boolean addPgUser(@NonNull PGUserModel pgUserModel) {
         try {
             return pgUserModelDao.createIfNotExists(pgUserModel).equals(pgUserModel);
@@ -216,6 +223,10 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * @param requestModel the {@link RequestModel} to be added
+     * @return {@code true} if it was added, else {@code false}
+     */
     public boolean addRequest(@NonNull RequestModel requestModel) {
         try {
             return requestModelDao.createIfNotExists(requestModel).equals(requestModel);
