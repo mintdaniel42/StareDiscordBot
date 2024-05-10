@@ -43,7 +43,7 @@ public class UserEmbed {
         embedBuilder.addField(Bot.strings.getString("rating"), pgUserModel.getRating(), true);
         embedBuilder.addField(Bot.strings.getString("points"), formatNumber(pgUserModel.getPoints()), true);
         embedBuilder.addField(Bot.strings.getString("joined"), pgUserModel.getJoined(), true);
-        embedBuilder.addField(Bot.strings.getString("luck"), String.format("%s%%", pgUserModel.getLuck()), true);
+        embedBuilder.addField(Bot.strings.getString("luck"), String.valueOf(pgUserModel.getLuck()), true);
         embedBuilder.addField(Bot.strings.getString("quota"), String.format("%s%%", pgUserModel.getQuota()), true);
         embedBuilder.addField(Bot.strings.getString("winrate"), String.format("%s%%", pgUserModel.getWinrate()), true);
 
