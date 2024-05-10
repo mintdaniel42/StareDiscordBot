@@ -17,6 +17,8 @@ public class Options {
     @Getter private final long editRoleId = Long.parseLong(System.getenv("EDIT_ROLE_ID"));
     @Getter private final long createRoleId = Long.parseLong(System.getenv("CREATE_ROLE_ID"));
 
+    @Getter private final long requestChannelId = Long.parseLong(System.getenv("REQUEST_CHANNEL_ID"));
+
     @Getter private final Locale locale = Locale.GERMANY;
 
     private final int colorNormal = Integer.parseInt(System.getenv("COLOR_NORMAL"), 16);
