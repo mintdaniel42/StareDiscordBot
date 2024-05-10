@@ -54,9 +54,12 @@ public final class ListPGUsersCommand implements DBACommand {
 
     @Override
     public void autoComplete(CommandAutoCompleteInteractionEvent event) {
+        OptionMapping pageMapping = event.getOption("page");
+        String page = pageMapping != null ? pageMapping.getAsString() : "";
         event.replyChoiceLongs(LongStream.range(0, Math.min(databaseAdapter.getPgPages(), 25))
                 .map(operand -> operand + 1)
                 .boxed()
+                .filter(operand -> String.valueOf(operand).startsWith(page))
                 .toList()).queue();
     }
 }
