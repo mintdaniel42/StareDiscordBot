@@ -15,7 +15,19 @@ import java.util.UUID;
 public class RequestModel {
     @DatabaseField(id = true) long timestamp;
     @DatabaseField UUID uuid;
-    @DatabaseField String key;
-    @DatabaseField String value;
-    @DatabaseField String database;
+    @DatabaseField String rating;
+    @DatabaseField String joined;
+    @DatabaseField long points;
+    @DatabaseField double luck;
+    @DatabaseField double quota;
+    @DatabaseField double winrate;
+    @DatabaseField boolean secondary;
+    @DatabaseField boolean banned;
+    @DatabaseField boolean cheating;
+    @DatabaseField Database database;
+
+    public enum Database {
+        PG,
+        HNS
+    }
 }

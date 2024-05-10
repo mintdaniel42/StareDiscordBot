@@ -3,65 +3,69 @@ package org.mintdaniel42.starediscordbot.db;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.utils.Options;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 public final class DatabaseAdapter implements AutoCloseable {
-    private static final int dbVersion = 2;
+    private static final MetaDataModel.Version dbVersion = MetaDataModel.Version.NEW_REQUESTS;
     private final int entriesPerPage = Options.getEntriesPerPage();
-    private final JdbcPooledConnectionSource connectionSource;
+    private final ConnectionSource connectionSource;
     private final Dao<HNSUserModel, UUID> hnsUserModelDao;
     private final Dao<PGUserModel, UUID> pgUserModelDao;
     private final Dao<RequestModel, Long> requestModelDao;
     private final Dao<UsernameModel, UUID> usernameModelDao;
+    private final Dao<MetaDataModel, Integer> metaDataModelDao;
 
     public DatabaseAdapter(@NonNull String jdbcUrl) throws Exception {
-        prepareDatabase(jdbcUrl);
-
         connectionSource = new JdbcPooledConnectionSource(jdbcUrl);
 
         hnsUserModelDao = DaoManager.createDao(connectionSource, HNSUserModel.class);
         pgUserModelDao = DaoManager.createDao(connectionSource, PGUserModel.class);
         requestModelDao = DaoManager.createDao(connectionSource, RequestModel.class);
         usernameModelDao = DaoManager.createDao(connectionSource, UsernameModel.class);
+        metaDataModelDao = DaoManager.createDao(connectionSource, MetaDataModel.class);
 
-        TableUtils.createTableIfNotExists(connectionSource, HNSUserModel.class);
-        TableUtils.createTableIfNotExists(connectionSource, PGUserModel.class);
-        TableUtils.createTableIfNotExists(connectionSource, RequestModel.class);
-        TableUtils.createTableIfNotExists(connectionSource, UsernameModel.class);
+        prepareDatabase();
     }
 
-    private void prepareDatabase(@NonNull String jdbcUrl) {
-        try (Connection conn = DriverManager.getConnection(jdbcUrl)) {
-            ResultSet result = conn.createStatement().executeQuery("PRAGMA user_version");
-
-            int userVersion;
-
-            if (result.next() && (userVersion = result.getInt(1)) < dbVersion) while (dbVersion > userVersion) {
-                switch (userVersion) {
-                    case 1 -> {
-                        conn.createStatement().executeQuery("ALTER TABLE entries RENAME TO hns_entries");
-                        userVersion++;
-                        conn.createStatement().executeQuery("PRAGMA user_version = " + userVersion);
-                        log.debug("Upgraded database to version: {}", userVersion);
+    private void prepareDatabase() {
+	    try {
+            TableUtils.createTableIfNotExists(connectionSource, MetaDataModel.class);
+            if (metaDataModelDao.countOf() == 0) {
+                TableUtils.createTableIfNotExists(connectionSource, HNSUserModel.class);
+                metaDataModelDao.create(new MetaDataModel(MetaDataModel.Version.HNS_ONLY));
+            }
+            while (metaDataModelDao.queryForFirst().getVersion() != dbVersion) {
+                switch (metaDataModelDao.queryForFirst().getVersion()) {
+                    case HNS_ONLY -> {
+                        hnsUserModelDao.executeRawNoArgs("ALTER TABLE entries RENAME TO hns_entries");
+                        TableUtils.createTable(pgUserModelDao);
+                        metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.PG_ADDED));
+                    }
+                    case PG_ADDED -> {
+                        TableUtils.createTable(connectionSource, UsernameModel.class);
+                        metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.USERNAMES_ADDED));
+                    }
+                    case USERNAMES_ADDED -> {
+                        //requestModelDao.executeRawNoArgs("DROP TABLE requests");
+                        TableUtils.dropTable(requestModelDao, false);
+                        TableUtils.createTable(requestModelDao);
+                        metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.NEW_REQUESTS)); // TODO: uncomment once finished
                     }
                 }
             }
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+	    } catch (SQLException e) {
+		    log.error("Couldn't prepare database: ", e);
+	    }
     }
 
     public @Nullable List<HNSUserModel> getHnsUserList(int page) {
