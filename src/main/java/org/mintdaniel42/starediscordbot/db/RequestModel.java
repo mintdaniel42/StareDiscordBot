@@ -35,6 +35,7 @@ public class RequestModel {
                 .secondary(hnsUserModel.isSecondary())
                 .banned(hnsUserModel.isBanned())
                 .cheating(hnsUserModel.isCheating())
+                .database(Database.HNS)
                 .build();
     }
 
@@ -48,6 +49,7 @@ public class RequestModel {
                 .luck(pgUserModel.getLuck())
                 .quota(pgUserModel.getQuota())
                 .winrate(pgUserModel.getWinrate())
+                .database(Database.PG)
                 .build();
     }
 
