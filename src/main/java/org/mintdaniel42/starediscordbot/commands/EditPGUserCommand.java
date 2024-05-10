@@ -11,11 +11,13 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.PGUserModel;
+import org.mintdaniel42.starediscordbot.db.RequestModel;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -36,12 +38,6 @@ public final class EditPGUserCommand implements DBACommand {
         // check maintenance
         if (Options.isInMaintenance()) {
             event.reply(Bot.strings.getString("the_bot_is_currently_in_maintenance_mode")).queue();
-            return;
-        }
-
-        // check permission level
-        if (DCHelper.lacksRole(event.getMember(), Options.getEditRoleId())) {
-            event.reply(Bot.strings.getString("you_do_not_have_the_permission_to_use_this_command")).queue();
             return;
         }
 
@@ -78,6 +74,26 @@ public final class EditPGUserCommand implements DBACommand {
 
             // update the model
             PGUserModel pgUserModel = builder.build();
+
+            // check permission level & edit via request
+            if (DCHelper.lacksRole(event.getMember(), Options.getEditRoleId())) {
+                long timestamp = Instant.now().toEpochMilli();
+                if (!databaseAdapter.addRequest(RequestModel.from(timestamp, pgUserModel))) {
+                    event.reply(Bot.strings.getString("the_entry_could_not_be_updated")).queue();
+                } else {
+                    event.reply(Bot.strings.getString("the_entry_change_was_successfully_requested")).queue();
+                    event.getGuild()
+                            .getTextChannelById(Options.getRequestChannelId())
+                            .sendMessage(String.format(
+                                    Bot.strings.getString("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s"),
+                                    event.getMember().getAsMention(),
+                                    timestamp))
+                            .addEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue();
+                }
+                return;
+            }
+
+            // edit directly
             if (databaseAdapter.editPgUser(pgUserModel) == 0) event.reply(Bot.strings.getString("the_entry_could_not_be_updated")).queue();
             else {
                 event.reply(Bot.strings.getString("the_entry_was_successfully_updated")).setEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue();
