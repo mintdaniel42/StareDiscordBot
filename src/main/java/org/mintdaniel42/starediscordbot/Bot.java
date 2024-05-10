@@ -50,9 +50,9 @@ public final class Bot extends ListenerAdapter {
                 new ShowPGUserCommand(databaseAdapter),
 
                 new ListHNSUsersCommand(databaseAdapter),   // TODO: buttons
-                new ListPGUsersCommand(databaseAdapter)//,    // TODO: buttons
+                new ListPGUsersCommand(databaseAdapter),    // TODO: buttons
 
-                //new ApproveChangeCommand(databaseAdapter)   // TODO: everything
+                new ApproveChangeCommand(databaseAdapter)
         );
 
         ListButtons listButtons = new ListButtons();
