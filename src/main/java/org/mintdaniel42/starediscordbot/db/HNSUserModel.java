@@ -2,10 +2,7 @@ package org.mintdaniel42.starediscordbot.db;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -22,4 +19,16 @@ public class HNSUserModel {
     @DatabaseField boolean secondary;
     @DatabaseField boolean banned;
     @DatabaseField boolean cheating;
+
+    public static @NonNull HNSUserModel from(@NonNull RequestModel requestModel) {
+        return HNSUserModel.builder()
+                .uuid(requestModel.getUuid())
+                .rating(requestModel.getRating())
+                .joined(requestModel.getJoined())
+                .points(requestModel.getPoints())
+                .secondary(requestModel.isSecondary())
+                .banned(requestModel.isBanned())
+                .cheating(requestModel.isCheating())
+                .build();
+    }
 }

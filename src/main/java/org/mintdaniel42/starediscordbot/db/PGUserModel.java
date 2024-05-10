@@ -2,10 +2,7 @@ package org.mintdaniel42.starediscordbot.db;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -22,4 +19,16 @@ public class PGUserModel {
     @DatabaseField double luck;
     @DatabaseField double quota;
     @DatabaseField double winrate;
+
+    public static @NonNull PGUserModel from(@NonNull RequestModel requestModel) {
+        return PGUserModel.builder()
+                .uuid(requestModel.getUuid())
+                .rating(requestModel.getRating())
+                .joined(requestModel.getJoined())
+                .points(requestModel.getPoints())
+                .luck(requestModel.getLuck())
+                .quota(requestModel.getQuota())
+                .winrate(requestModel.getWinrate())
+                .build();
+    }
 }
