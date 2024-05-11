@@ -67,7 +67,6 @@ public final class ListPGUsersCommand implements DBACommand {
     }
 
     private @Nullable InteractPage getPage(int page) {
-        System.out.println(page);
         List<PGUserModel> pgUserModels = databaseAdapter.getPgUserList(page);
         if (pgUserModels == null || page >= pgUserModels.size()) return null;
         MessageEmbed list = ListEmbed.createPgList(databaseAdapter, pgUserModels, page);
