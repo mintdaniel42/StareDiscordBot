@@ -6,6 +6,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.UsernameModel;
@@ -30,7 +31,7 @@ public class MCHelper {
                 username = jsonObject.getString("username");
                 databaseAdapter.putUsername(new UsernameModel(uuid, username, Instant.now().toEpochMilli()));
                 return uuid;
-            } catch (IOException e) {
+            } catch (IOException | JSONException e) {
                 return null;
             }
         }
