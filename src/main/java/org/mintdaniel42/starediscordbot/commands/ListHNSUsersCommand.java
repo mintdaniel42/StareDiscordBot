@@ -69,7 +69,7 @@ public final class ListHNSUsersCommand implements DBACommand {
     private @Nullable InteractPage getPage(int page) {
         System.out.println(page);
         List<HNSUserModel> hnsUserModels = databaseAdapter.getHnsUserList(page);
-        if (hnsUserModels == null) return null;
+        if (hnsUserModels == null || page >= hnsUserModels.size()) return null;
         MessageEmbed list = ListEmbed.createHnsList(databaseAdapter, hnsUserModels, page);
         return InteractPage.of(list);
     }
