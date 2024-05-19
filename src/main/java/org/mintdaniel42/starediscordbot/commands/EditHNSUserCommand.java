@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.jetbrains.annotations.NotNull;
 import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.HNSUserModel;
@@ -22,10 +23,10 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 public final class EditHNSUserCommand extends ListenerAdapter {
-    private final DatabaseAdapter databaseAdapter;
+    @NotNull private final DatabaseAdapter databaseAdapter;
 
     @Override
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(@NotNull final SlashCommandInteractionEvent event) {
         if (!event.getFullCommandName().equals(Bot.CommandNames.edithnsuser.name())) return;
 
         // check maintenance
@@ -96,7 +97,7 @@ public final class EditHNSUserCommand extends ListenerAdapter {
     }
 
     @Override
-    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
+    public void onCommandAutoCompleteInteraction(@NotNull final CommandAutoCompleteInteractionEvent event) {
         if (!event.getFullCommandName().equals(Bot.CommandNames.edithnsuser.name())) return;
 
         OptionMapping pointsMapping = event.getOption("points");

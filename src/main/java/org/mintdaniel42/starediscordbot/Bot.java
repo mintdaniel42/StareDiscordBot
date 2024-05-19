@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import org.jetbrains.annotations.NotNull;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
@@ -17,9 +18,9 @@ import java.util.ResourceBundle;
 
 public final class Bot extends ListenerAdapter {
     public static final ResourceBundle strings = ResourceBundle.getBundle("strings", Options.getLocale());
-    private final DatabaseAdapter databaseAdapter;
+    @NotNull private final DatabaseAdapter databaseAdapter;
 
-	public Bot(@NonNull DatabaseAdapter databaseAdapter) {
+	public Bot(@NonNull final DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
 
         JDABuilder.createLight(Options.getToken())
@@ -44,14 +45,14 @@ public final class Bot extends ListenerAdapter {
     }
 
     @Override
-    public void onShutdown(@NonNull ShutdownEvent event) {
+    public void onShutdown(@NonNull final ShutdownEvent event) {
         try {
             databaseAdapter.close();
         } catch (Exception ignored) {}
     }
 
     @Override
-    public void onGuildReady(@NonNull GuildReadyEvent event) {
+    public void onGuildReady(@NonNull final GuildReadyEvent event) {
         // check if correct guild
         if (event.getGuild().getIdLong() != Options.getGuildId()) return;
 
@@ -113,7 +114,7 @@ public final class Bot extends ListenerAdapter {
         ).queue();
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         new Bot(new DatabaseAdapter(Options.getJdbcUrl()));
     }
 

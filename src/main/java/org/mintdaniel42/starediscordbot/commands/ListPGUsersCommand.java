@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.jetbrains.annotations.NotNull;
 import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.PGUserModel;
@@ -22,7 +23,7 @@ public final class ListPGUsersCommand extends ListenerAdapter {
     @NonNull private final DatabaseAdapter databaseAdapter;
 
     @Override
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(@NotNull final SlashCommandInteractionEvent event) {
         if (!event.getFullCommandName().equals(Bot.CommandNames.listpgusers.name())) return;
 
         // check maintenance
@@ -51,7 +52,7 @@ public final class ListPGUsersCommand extends ListenerAdapter {
     }
 
     @Override
-    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
+    public void onCommandAutoCompleteInteraction(@NotNull final CommandAutoCompleteInteractionEvent event) {
         if (!event.getFullCommandName().equals(Bot.CommandNames.listpgusers.name())) return;
 
         OptionMapping pageMapping = event.getOption("page");

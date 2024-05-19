@@ -3,6 +3,7 @@ package org.mintdaniel42.starediscordbot.utils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Locale;
@@ -32,10 +33,12 @@ public class Options {
 
     @Setter @Getter private boolean inMaintenance = false;
 
+    @NotNull
     public static Color getColorNormal() {
         return new Color(colorNormal + new Random().nextInt(maxRandomness * 2) - maxRandomness);
     }
 
+    @NotNull
     public static Color getColorRequest() {
         return new Color(colorRequest + new Random().nextInt(maxRandomness * 2) - maxRandomness);
     }

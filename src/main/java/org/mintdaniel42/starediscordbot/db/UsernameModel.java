@@ -5,6 +5,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class UsernameModel {
-    @DatabaseField(id = true) UUID uuid;
-    @DatabaseField String username;
+    @NotNull @DatabaseField(id = true) UUID uuid;
+    @NotNull @DatabaseField String username;
     @DatabaseField long lastUpdated;
 }

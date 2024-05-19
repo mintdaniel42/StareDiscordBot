@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInterac
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import org.jetbrains.annotations.NotNull;
 import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.HNSUserModel;
@@ -21,7 +22,7 @@ public final class ShowHNSUserCommand extends ListenerAdapter {
     @NonNull private final DatabaseAdapter databaseAdapter;
 
     @Override
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(@NotNull final SlashCommandInteractionEvent event) {
         if (!event.getFullCommandName().equals(Bot.CommandNames.showhnsuser.name())) return;
 
         // check maintenance
@@ -47,7 +48,7 @@ public final class ShowHNSUserCommand extends ListenerAdapter {
     }
 
     @Override
-    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
+    public void onCommandAutoCompleteInteraction(@NotNull final CommandAutoCompleteInteractionEvent event) {
         if (!event.getFullCommandName().equals(Bot.CommandNames.showhnsuser.name())) return;
 
         OptionMapping usernameMapping = event.getOption("username");

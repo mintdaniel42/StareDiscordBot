@@ -3,6 +3,7 @@ package org.mintdaniel42.starediscordbot.db;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class HNSUserModel {
-    @DatabaseField(id = true) UUID uuid;
+    @NotNull @DatabaseField(id = true) UUID uuid;
     @DatabaseField @Builder.Default String rating = "❌";
     @DatabaseField @Builder.Default String joined = "❌";
     @DatabaseField long points;
@@ -20,7 +21,7 @@ public class HNSUserModel {
     @DatabaseField boolean banned;
     @DatabaseField boolean cheating;
 
-    public static @NonNull HNSUserModel from(@NonNull RequestModel requestModel) {
+    public static @NonNull HNSUserModel from(@NonNull final RequestModel requestModel) {
         return HNSUserModel.builder()
                 .uuid(requestModel.getUuid())
                 .rating(requestModel.getRating())

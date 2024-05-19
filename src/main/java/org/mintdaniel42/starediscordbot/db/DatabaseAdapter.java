@@ -8,6 +8,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.utils.Options;
 
@@ -21,7 +22,7 @@ import java.util.UUID;
 public final class DatabaseAdapter implements AutoCloseable {
     private static final MetaDataModel.Version dbVersion = MetaDataModel.Version.NEW_REQUESTS;
     private final int entriesPerPage = Options.getEntriesPerPage();
-    private final ConnectionSource connectionSource;
+    @NotNull private final ConnectionSource connectionSource;
     private final Dao<HNSUserModel, UUID> hnsUserModelDao;
     private final Dao<PGUserModel, UUID> pgUserModelDao;
     private final Dao<RequestModel, Long> requestModelDao;
