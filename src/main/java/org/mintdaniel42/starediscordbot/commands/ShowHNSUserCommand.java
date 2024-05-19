@@ -1,14 +1,11 @@
 package org.mintdaniel42.starediscordbot.commands;
 
-import fr.leonarddoo.dba.annotation.Command;
-import fr.leonarddoo.dba.annotation.Option;
-import fr.leonarddoo.dba.element.DBACommand;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
 import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.HNSUserModel;
@@ -19,14 +16,14 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 
 import java.util.UUID;
 
-@Command(name = "showhnsuser", description = "Den Eintrag eines Hide 'n' Seek Spielers anzeigen")
-@Option(type = OptionType.STRING, name = "username", description = "Spielername", required = true, autocomplete = true)
 @RequiredArgsConstructor
-public final class ShowHNSUserCommand implements DBACommand {
+public final class ShowHNSUserCommand extends ListenerAdapter {
     @NonNull private final DatabaseAdapter databaseAdapter;
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        if (!event.getFullCommandName().equals(Bot.CommandNames.showhnsuser.name())) return;
+
         // check maintenance
         if (Options.isInMaintenance()) {
             event.reply(Bot.strings.getString("the_bot_is_currently_in_maintenance_mode")).queue();
@@ -50,7 +47,9 @@ public final class ShowHNSUserCommand implements DBACommand {
     }
 
     @Override
-    public void autoComplete(CommandAutoCompleteInteractionEvent event) {
+    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
+        if (!event.getFullCommandName().equals(Bot.CommandNames.showhnsuser.name())) return;
+
         OptionMapping usernameMapping = event.getOption("username");
         if (usernameMapping != null) event.replyChoiceStrings(DCHelper.autoCompleteUsername(databaseAdapter, usernameMapping.getAsString())).queue();
     }

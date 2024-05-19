@@ -1,13 +1,10 @@
 package org.mintdaniel42.starediscordbot.commands;
 
-import fr.leonarddoo.dba.annotation.Command;
-import fr.leonarddoo.dba.annotation.Option;
-import fr.leonarddoo.dba.element.DBACommand;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
 import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.PGUserModel;
@@ -22,19 +19,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-@Command(name = "editpguser", description = "Partygames Eintrag bearbeiten")
-@Option(type = OptionType.STRING, name = "username", description = "Spielername", required = true, autocomplete = true)
-@Option(type = OptionType.NUMBER, name = "points", description = "Punkte", autocomplete = true)
-@Option(type = OptionType.STRING, name = "rating",  description = "Bewertung")
-@Option(type = OptionType.STRING, name = "joined", description = "Im Modus seit")
-@Option(type = OptionType.NUMBER, name = "luck", description = "Würfelglück")
-@Option(type = OptionType.NUMBER, name = "quota", description = "Minispiel Gewinnquote")
-@Option(type = OptionType.NUMBER, name = "winrate", description = "Gewinnrate")
-public final class EditPGUserCommand implements DBACommand {
+public final class EditPGUserCommand extends ListenerAdapter {
     private final DatabaseAdapter databaseAdapter;
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        if (!event.getFullCommandName().equals(Bot.CommandNames.editpguser.name())) return;
+
         // check maintenance
         if (Options.isInMaintenance()) {
             event.reply(Bot.strings.getString("the_bot_is_currently_in_maintenance_mode")).queue();
@@ -102,7 +93,9 @@ public final class EditPGUserCommand implements DBACommand {
     }
 
     @Override
-    public void autoComplete(CommandAutoCompleteInteractionEvent event) {
+    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
+        if (!event.getFullCommandName().equals(Bot.CommandNames.editpguser.name())) return;
+
         OptionMapping pointsMapping = event.getOption("points");
         OptionMapping usernameMapping = event.getOption("username");
         String focusedOption = event.getFocusedOption().getName();

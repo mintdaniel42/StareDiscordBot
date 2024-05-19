@@ -1,14 +1,11 @@
 package org.mintdaniel42.starediscordbot.commands;
 
-import fr.leonarddoo.dba.annotation.Command;
-import fr.leonarddoo.dba.annotation.Option;
-import fr.leonarddoo.dba.element.DBACommand;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.mintdaniel42.starediscordbot.Bot;
@@ -20,14 +17,14 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 import java.util.List;
 import java.util.stream.LongStream;
 
-@Command(name = "listpgusers", description = "Alle Partygames Einträge auflisten")
-@Option(type = OptionType.INTEGER, name = "page", description = "Seite der Einträge", autocomplete = true)
 @RequiredArgsConstructor
-public final class ListPGUsersCommand implements DBACommand {
+public final class ListPGUsersCommand extends ListenerAdapter {
     @NonNull private final DatabaseAdapter databaseAdapter;
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        if (!event.getFullCommandName().equals(Bot.CommandNames.listpgusers.name())) return;
+
         // check maintenance
         if (Options.isInMaintenance()) {
             event.reply(Bot.strings.getString("the_bot_is_currently_in_maintenance_mode")).queue();
@@ -56,7 +53,9 @@ public final class ListPGUsersCommand implements DBACommand {
     }
 
     @Override
-    public void autoComplete(CommandAutoCompleteInteractionEvent event) {
+    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
+        if (!event.getFullCommandName().equals(Bot.CommandNames.listpgusers.name())) return;
+
         OptionMapping pageMapping = event.getOption("page");
         String page = pageMapping != null ? pageMapping.getAsString() : "";
         event.replyChoiceLongs(LongStream.range(0, Math.min(databaseAdapter.getPgPages(), 25))

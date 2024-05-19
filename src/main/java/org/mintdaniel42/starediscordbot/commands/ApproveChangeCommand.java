@@ -1,13 +1,10 @@
 package org.mintdaniel42.starediscordbot.commands;
 
-import fr.leonarddoo.dba.annotation.Command;
-import fr.leonarddoo.dba.annotation.Option;
-import fr.leonarddoo.dba.element.DBACommand;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
 import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
@@ -17,14 +14,14 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 import java.time.Instant;
 import java.util.Objects;
 
-@Command(name = "approve", description = "Änderungen freigeben")
-@Option(type = OptionType.INTEGER, name = "id", description = "ID der Änderung", required = true, autocomplete = true)
 @RequiredArgsConstructor
-public final class ApproveChangeCommand implements DBACommand {
+public final class ApproveChangeCommand extends ListenerAdapter {
     private final DatabaseAdapter databaseAdapter;
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        if (!event.getFullCommandName().equals(Bot.CommandNames.approvechange.name())) return;
+
         // check maintenance
         if (Options.isInMaintenance()) {
             event.reply(Bot.strings.getString("the_bot_is_currently_in_maintenance_mode")).queue();
@@ -47,7 +44,9 @@ public final class ApproveChangeCommand implements DBACommand {
     }
 
     @Override
-    public void autoComplete(CommandAutoCompleteInteractionEvent event) {
+    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
+        if (!event.getFullCommandName().equals(Bot.CommandNames.approvechange.name())) return;
+
         long now = Instant.now().toEpochMilli();
         OptionMapping idMapping = event.getOption("id");
         String id = idMapping != null ? idMapping.getAsString() : "";

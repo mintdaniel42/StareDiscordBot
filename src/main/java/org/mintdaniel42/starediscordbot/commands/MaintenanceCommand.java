@@ -1,21 +1,18 @@
 package org.mintdaniel42.starediscordbot.commands;
 
-import fr.leonarddoo.dba.annotation.Command;
-import fr.leonarddoo.dba.annotation.Option;
-import fr.leonarddoo.dba.element.DBACommand;
+import lombok.NonNull;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
 import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.utils.Options;
 
-@Command(name = "maintenance", description = "Wartungsmodus steuern")
-@Option(type = OptionType.BOOLEAN, name = "active", description = "Wartungsmodus aktiv", required = true)
-public final class MaintenanceCommand implements DBACommand {
+public final class MaintenanceCommand extends ListenerAdapter {
     @Override
-    public void execute(SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
+        if (!event.getFullCommandName().equals(Bot.CommandNames.maintenance.name())) return;
         Member member = event.getMember();
         if (member != null && !member.hasPermission(Permission.ADMINISTRATOR)) event.reply(Bot.strings.getString("you_do_not_have_the_permission_to_use_this_command")).queue();
         else {
