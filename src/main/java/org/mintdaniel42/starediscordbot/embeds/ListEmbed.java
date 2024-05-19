@@ -12,6 +12,7 @@ import org.mintdaniel42.starediscordbot.db.PGUserModel;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @UtilityClass
@@ -19,7 +20,7 @@ public class ListEmbed {
     private final byte entriesPerPage = Options.getEntriesPerPage();
 
     @Contract(value = "_, _, _ -> new")
-    public MessageEmbed createHnsList(@NonNull DatabaseAdapter databaseAdapter, @NonNull List<HNSUserModel> hnsUserModels, int page) {
+    public @NonNull MessageEmbed createHnsList(@NonNull DatabaseAdapter databaseAdapter, @NonNull List<HNSUserModel> hnsUserModels, int page) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle(Bot.strings.getString("hide_n_seek_player_database"));
         embedBuilder.setDescription(String.format(Bot.strings.getString("page_s_of_s"), page + 1, databaseAdapter.getHnsPages()));
@@ -34,7 +35,7 @@ public class ListEmbed {
     }
 
     @Contract(value = "_, _, _ -> new")
-    public MessageEmbed createPgList(@NonNull DatabaseAdapter databaseAdapter, @NonNull List<PGUserModel> pgUserModels, int page) {
+    public @NonNull MessageEmbed createPgList(@NonNull DatabaseAdapter databaseAdapter, @NonNull List<PGUserModel> pgUserModels, int page) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle(Bot.strings.getString("partygames_player_database"));
         embedBuilder.setDescription(String.format(Bot.strings.getString("page_s_of_s"), page + 1, databaseAdapter.getPgPages()));
@@ -46,5 +47,19 @@ public class ListEmbed {
             embedBuilder.addField("#" + (entriesPerPage * page + entry + 1), username, false);
         }
         return embedBuilder.build();
+    }
+
+    public @NonNull MessageEmbed createHnsList(@NonNull DatabaseAdapter databaseAdapter, int page) {
+        List<HNSUserModel> hnsUserModels;
+        hnsUserModels = databaseAdapter.getHnsUserList(page);
+
+        return createHnsList(databaseAdapter, hnsUserModels != null ? hnsUserModels : new ArrayList<>(0), page);
+    }
+
+    public @NonNull MessageEmbed createPgList(@NonNull DatabaseAdapter databaseAdapter, int page) {
+        List<PGUserModel> pgUserModels;
+        pgUserModels = databaseAdapter.getPgUserList(page);
+
+        return createPgList(databaseAdapter, pgUserModels != null ? pgUserModels : new ArrayList<>(0), page);
     }
 }
