@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInterac
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.HNSUserModel;
@@ -80,6 +81,7 @@ public final class EditHNSUserCommand extends ListenerAdapter {
                                     Bot.strings.getString("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s"),
                                     event.getMember().getAsMention(),
                                     timestamp))
+                            .addActionRow(Button.primary(String.format("approve:%s", timestamp), Bot.strings.getString("approve_this_change")))
                             .addEmbeds(UserEmbed.of(databaseAdapter, hnsUserModel)).queue();
                 }
                 return;
