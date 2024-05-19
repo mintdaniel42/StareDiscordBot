@@ -40,14 +40,12 @@ public final class ListHNSUsersCommand extends ListenerAdapter {
 
         List<HNSUserModel> entriesList = databaseAdapter.getHnsUserList(page);
         if (entriesList != null && !entriesList.isEmpty()) {
-            event.deferReply().queue(interactionHook -> {
-                interactionHook.editOriginalEmbeds(ListEmbed.createHnsList(databaseAdapter, entriesList, page))
-                        .setComponents(ActionRow.of(
-                                Button.primary(String.format("previous:hns:%s", page), Bot.strings.getString("previous_page")).withDisabled(page < 1),
-                                Button.primary(String.format("next:hns:%s", page), Bot.strings.getString("next_page")).withDisabled(page + 1 >= databaseAdapter.getHnsPages())
-                        ))
-                        .queue();
-            });
+            event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createHnsList(databaseAdapter, entriesList, page))
+                    .setComponents(ActionRow.of(
+                            Button.primary(String.format("previous:hns:%s", page), Bot.strings.getString("previous_page")).withDisabled(page < 1),
+                            Button.primary(String.format("next:hns:%s", page), Bot.strings.getString("next_page")).withDisabled(page + 1 >= databaseAdapter.getHnsPages())
+                    ))
+                    .queue());
         } else {
             event.reply(Bot.strings.getString("no_entries_available")).queue();
         }
