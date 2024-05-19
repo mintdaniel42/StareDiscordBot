@@ -1,4 +1,4 @@
-package org.mintdaniel42.starediscordbot.commands;
+package org.mintdaniel42.starediscordbot.commands.hns;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -7,9 +7,8 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
-import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
-import org.mintdaniel42.starediscordbot.db.PGUserModel;
+import org.mintdaniel42.starediscordbot.db.HNSUserModel;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
@@ -19,12 +18,12 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public final class AddPGUserCommand extends ListenerAdapter {
+public final class AddHNSUserCommand extends ListenerAdapter {
     @NonNull private final DatabaseAdapter databaseAdapter;
 
     @Override
     public void onSlashCommandInteraction(@NotNull final SlashCommandInteractionEvent event) {
-        if (!event.getFullCommandName().equals(Bot.CommandNames.addpguser.name())) return;
+        if (!event.getFullCommandName().equals("hns add")) return;
 
         // check maintenance
         if (Options.isInMaintenance()) {
@@ -48,9 +47,9 @@ public final class AddPGUserCommand extends ListenerAdapter {
         // check if username exists
         UUID uuid = MCHelper.getUuid(databaseAdapter, username.getAsString());
         if (uuid == null) event.reply(R.string("this_username_does_not_exist")).queue();
-        else if (databaseAdapter.hasPgUser(uuid)) event.reply(R.string("this_user_entry_already_exists")).queue();
+        else if (databaseAdapter.hasHnsUser(uuid)) event.reply(R.string("this_user_entry_already_exists")).queue();
         else {
-            PGUserModel.PGUserModelBuilder builder = PGUserModel.builder();
+            HNSUserModel.HNSUserModelBuilder builder = HNSUserModel.builder();
             builder.uuid(uuid);
 
             for (OptionMapping optionMapping : event.getOptions()) {
@@ -58,24 +57,24 @@ public final class AddPGUserCommand extends ListenerAdapter {
                     case "rating" -> builder.rating(optionMapping.getAsString());
                     case "points" -> builder.points(Math.round(optionMapping.getAsDouble()));
                     case "joined" -> builder.joined(optionMapping.getAsString());
-                    case "luck" -> builder.luck(optionMapping.getAsDouble());
-                    case "quota" -> builder.quota(optionMapping.getAsDouble());
-                    case "winrate" -> builder.winrate(optionMapping.getAsDouble());
+                    case "secondary" -> builder.secondary(optionMapping.getAsBoolean());
+                    case "banned" -> builder.banned(optionMapping.getAsBoolean());
+                    case "cheating" -> builder.cheating(optionMapping.getAsBoolean());
                 }
             }
 
             // add the entry
-            PGUserModel pgUserModel = builder.build();
-            if (!databaseAdapter.addPgUser(pgUserModel)) event.reply(R.string("the_entry_could_not_be_created")).queue();
+            HNSUserModel hnsUserModel = builder.build();
+            if (!databaseAdapter.addHnsUser(hnsUserModel)) event.reply(R.string("the_entry_could_not_be_created")).queue();
             else {
-                event.reply(R.string("the_entry_was_successfully_created")).setEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue();
+                event.reply(R.string("the_entry_was_successfully_created")).setEmbeds(UserEmbed.of(databaseAdapter, hnsUserModel)).queue();
             }
         }
     }
 
     @Override
     public void onCommandAutoCompleteInteraction(@NotNull final CommandAutoCompleteInteractionEvent event) {
-        if (!event.getFullCommandName().equals(Bot.CommandNames.addpguser.name())) return;
+        if (!event.getFullCommandName().equals("hns add")) return;
 
         OptionMapping pointsMapping = event.getOption("points");
         OptionMapping usernameMapping = event.getOption("username");

@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
-import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
@@ -23,7 +22,7 @@ public final class ApproveChangeCommand extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
-        if (!event.getFullCommandName().equals(Bot.CommandNames.approvechange.name())) return;
+        if (!event.getFullCommandName().equals("approve")) return;
 
         // check maintenance
         if (Options.isInMaintenance()) {
@@ -48,7 +47,7 @@ public final class ApproveChangeCommand extends ListenerAdapter {
 
     @Override
     public void onCommandAutoCompleteInteraction(@NonNull final CommandAutoCompleteInteractionEvent event) {
-        if (!event.getFullCommandName().equals(Bot.CommandNames.approvechange.name())) return;
+        if (!event.getFullCommandName().equals("approve")) return;
 
         long now = Instant.now().toEpochMilli();
         OptionMapping idMapping = event.getOption("id");

@@ -1,4 +1,4 @@
-package org.mintdaniel42.starediscordbot.commands;
+package org.mintdaniel42.starediscordbot.commands.hns;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
-import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.HNSUserModel;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
@@ -25,7 +24,7 @@ public final class ListHNSUsersCommand extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(@NotNull final SlashCommandInteractionEvent event) {
-        if (!event.getFullCommandName().equals(Bot.CommandNames.listhnsusers.name())) return;
+        if (!event.getFullCommandName().equals("hns list")) return;
 
         // check maintenance
         if (Options.isInMaintenance()) {
@@ -55,7 +54,7 @@ public final class ListHNSUsersCommand extends ListenerAdapter {
 
     @Override
     public void onCommandAutoCompleteInteraction(@NotNull final CommandAutoCompleteInteractionEvent event) {
-        if (!event.getFullCommandName().equals(Bot.CommandNames.listhnsusers.name())) return;
+        if (!event.getFullCommandName().equals("hns list")) return;
 
         OptionMapping pageMapping = event.getOption("page");
         String page = pageMapping != null ? pageMapping.getAsString() : "";

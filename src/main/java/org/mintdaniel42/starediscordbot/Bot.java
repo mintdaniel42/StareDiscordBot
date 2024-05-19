@@ -7,17 +7,24 @@ import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.jetbrains.annotations.NotNull;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
+import org.mintdaniel42.starediscordbot.commands.hns.AddHNSUserCommand;
+import org.mintdaniel42.starediscordbot.commands.hns.EditHNSUserCommand;
+import org.mintdaniel42.starediscordbot.commands.hns.ListHNSUsersCommand;
+import org.mintdaniel42.starediscordbot.commands.hns.ShowHNSUserCommand;
+import org.mintdaniel42.starediscordbot.commands.pg.AddPGUserCommand;
+import org.mintdaniel42.starediscordbot.commands.pg.EditPGUserCommand;
+import org.mintdaniel42.starediscordbot.commands.pg.ListPGUsersCommand;
+import org.mintdaniel42.starediscordbot.commands.pg.ShowPGUserCommand;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.utils.Options;
-
-import java.util.ResourceBundle;
+import org.mintdaniel42.starediscordbot.utils.R;
 
 public final class Bot extends ListenerAdapter {
-    public static final ResourceBundle strings = ResourceBundle.getBundle("strings", Options.getLocale());
     @NotNull private final DatabaseAdapter databaseAdapter;
 
 	public Bot(@NonNull final DatabaseAdapter databaseAdapter) {
@@ -58,76 +65,63 @@ public final class Bot extends ListenerAdapter {
 
         // setup commands
         event.getGuild().updateCommands().addCommands(
-                Commands.slash(CommandNames.maintenance.name(), strings.getString("control_maintenance"))
-                        .addOption(OptionType.BOOLEAN, "active", strings.getString("if_maintenance_should_be_enabled"), true),
+                Commands.slash("maintenance", R.string("control_maintenance"))
+                        .addOption(OptionType.BOOLEAN, "active", R.string("if_maintenance_should_be_enabled"), true),
 
-                Commands.slash(CommandNames.addhnsuser.name(), strings.getString("add_a_new_hide_n_seek_entry"))
-                        .addOption(OptionType.STRING, "username", strings.getString("minecraft_username"), true, true)
-                        .addOption(OptionType.NUMBER, "points", strings.getString("points"), true, true)
-                        .addOption(OptionType.STRING, "rating", strings.getString("rating"))
-                        .addOption(OptionType.STRING, "joined", strings.getString("joined"))
-                        .addOption(OptionType.BOOLEAN, "secondary", strings.getString("secondary"))
-                        .addOption(OptionType.BOOLEAN, "banned", strings.getString("banned"))
-                        .addOption(OptionType.BOOLEAN, "cheating", strings.getString("cheating")),
+                Commands.slash("hns", "Hide 'n' Seek")
+                        .addSubcommands(
+                                new SubcommandData("show", R.string("show_hide_n_seek_entry"))
+                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
+                                new SubcommandData("edit", R.string("edit_a_hide_n_seek_entry"))
+                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
+                                        .addOption(OptionType.NUMBER, "points", R.string("points"), false, true)
+                                        .addOption(OptionType.STRING, "rating", R.string("rating"))
+                                        .addOption(OptionType.STRING, "joined", R.string("joined"))
+                                        .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
+                                        .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
+                                        .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating")),
+                                new SubcommandData("add", R.string("add_a_new_hide_n_seek_entry"))
+                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
+                                        .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
+                                        .addOption(OptionType.STRING, "rating", R.string("rating"))
+                                        .addOption(OptionType.STRING, "joined", R.string("joined"))
+                                        .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
+                                        .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
+                                        .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating")),
+                                new SubcommandData("list", R.string("list_hide_n_seek_entries"))
+                                        .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
+                        ),
 
-                Commands.slash(CommandNames.addpguser.name(), strings.getString("add_a_new_partygames_entry"))
-                        .addOption(OptionType.STRING, "username", strings.getString("minecraft_username"), true, true)
-                        .addOption(OptionType.NUMBER, "points", strings.getString("points"), true, true)
-                        .addOption(OptionType.STRING, "rating", strings.getString("rating"))
-                        .addOption(OptionType.STRING, "joined", strings.getString("joined"))
-                        .addOption(OptionType.NUMBER, "luck", strings.getString("luck"))
-                        .addOption(OptionType.NUMBER, "quota", strings.getString("quota"))
-                        .addOption(OptionType.NUMBER, "winrate", strings.getString("winrate")),
+                Commands.slash("pg", "Partygames")
+                        .addSubcommands(
+                                new SubcommandData("show", R.string("show_partygames_entry"))
+                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
+                                new SubcommandData("edit", R.string("edit_a_partygames_entry"))
+                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
+                                        .addOption(OptionType.NUMBER, "points", R.string("points"), false, true)
+                                        .addOption(OptionType.STRING, "rating", R.string("rating"))
+                                        .addOption(OptionType.STRING, "joined", R.string("joined"))
+                                        .addOption(OptionType.NUMBER, "luck", R.string("luck"))
+                                        .addOption(OptionType.NUMBER, "quota", R.string("quota"))
+                                        .addOption(OptionType.NUMBER, "winrate", R.string("winrate")),
+                                new SubcommandData("add", R.string("add_a_new_partygames_entry"))
+                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
+                                        .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
+                                        .addOption(OptionType.STRING, "rating", R.string("rating"))
+                                        .addOption(OptionType.STRING, "joined", R.string("joined"))
+                                        .addOption(OptionType.NUMBER, "luck", R.string("luck"))
+                                        .addOption(OptionType.NUMBER, "quota", R.string("quota"))
+                                        .addOption(OptionType.NUMBER, "winrate", R.string("winrate")),
+                                new SubcommandData("list", R.string("list_partygames_entries"))
+                                        .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
+                        ),
 
-                Commands.slash(CommandNames.edithnsuser.name(), strings.getString("edit_a_hide_n_seek_entry"))
-                        .addOption(OptionType.STRING, "username", strings.getString("minecraft_username"), true, true)
-                        .addOption(OptionType.NUMBER, "points", strings.getString("points"), false,true)
-                        .addOption(OptionType.STRING, "rating", strings.getString("rating"))
-                        .addOption(OptionType.STRING, "joined", strings.getString("joined"))
-                        .addOption(OptionType.BOOLEAN, "secondary", strings.getString("secondary"))
-                        .addOption(OptionType.BOOLEAN, "banned", strings.getString("banned"))
-                        .addOption(OptionType.BOOLEAN, "cheating", strings.getString("cheating")),
-
-                Commands.slash(CommandNames.editpguser.name(), strings.getString("edit_a_partygames_entry"))
-                        .addOption(OptionType.STRING, "username", strings.getString("minecraft_username"), true, true)
-                        .addOption(OptionType.NUMBER, "points", strings.getString("points"), false,true)
-                        .addOption(OptionType.STRING, "rating", strings.getString("rating"))
-                        .addOption(OptionType.STRING, "joined", strings.getString("joined"))
-                        .addOption(OptionType.NUMBER, "luck", strings.getString("luck"))
-                        .addOption(OptionType.NUMBER, "quota", strings.getString("quota"))
-                        .addOption(OptionType.NUMBER, "winrate", strings.getString("winrate")),
-
-                Commands.slash(CommandNames.showhnsuser.name(), strings.getString("show_hide_n_seek_entry"))
-                        .addOption(OptionType.STRING, "username", strings.getString("minecraft_username"), true, true),
-
-                Commands.slash(CommandNames.showpguser.name(), strings.getString("show_partygames_entry"))
-                        .addOption(OptionType.STRING, "username", strings.getString("minecraft_username"), true, true),
-
-                Commands.slash(CommandNames.listhnsusers.name(), strings.getString("list_hide_n_seek_entries"))
-                        .addOption(OptionType.INTEGER, "page", strings.getString("page"), false, true),
-
-                Commands.slash(CommandNames.listpgusers.name(), strings.getString("list_partygames_entries"))
-                        .addOption(OptionType.INTEGER, "page", strings.getString("page"), false, true),
-
-                Commands.slash(CommandNames.approvechange.name(), strings.getString("approve_a_change"))
-                        .addOption(OptionType.INTEGER, "id", strings.getString("change_id"), false, true)
+                Commands.slash("approve", R.string("approve_a_change"))
+                        .addOption(OptionType.INTEGER, "id", R.string("change_id"), false, true)
         ).queue();
     }
 
     public static void main(final String[] args) throws Exception {
         new Bot(new DatabaseAdapter(Options.getJdbcUrl()));
-    }
-
-    public enum CommandNames {
-        maintenance,
-        addhnsuser,
-        addpguser,
-        edithnsuser,
-        editpguser,
-        showhnsuser,
-        showpguser,
-        listhnsusers,
-        listpgusers,
-        approvechange
     }
 }

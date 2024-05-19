@@ -1,4 +1,4 @@
-package org.mintdaniel42.starediscordbot.commands;
+package org.mintdaniel42.starediscordbot.commands.pg;
 
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
-import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.PGUserModel;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
@@ -27,7 +26,7 @@ public final class EditPGUserCommand extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(@NotNull final SlashCommandInteractionEvent event) {
-        if (!event.getFullCommandName().equals(Bot.CommandNames.editpguser.name())) return;
+        if (!event.getFullCommandName().equals("pg edit")) return;
 
         // check maintenance
         if (Options.isInMaintenance()) {
@@ -98,7 +97,7 @@ public final class EditPGUserCommand extends ListenerAdapter {
 
     @Override
     public void onCommandAutoCompleteInteraction(@NotNull final CommandAutoCompleteInteractionEvent event) {
-        if (!event.getFullCommandName().equals(Bot.CommandNames.editpguser.name())) return;
+        if (!event.getFullCommandName().equals("pg edit")) return;
 
         OptionMapping pointsMapping = event.getOption("points");
         OptionMapping usernameMapping = event.getOption("username");
