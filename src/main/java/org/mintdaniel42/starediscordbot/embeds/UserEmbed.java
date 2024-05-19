@@ -5,12 +5,12 @@ import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.Contract;
-import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.HNSUserModel;
 import org.mintdaniel42.starediscordbot.db.PGUserModel;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
+import org.mintdaniel42.starediscordbot.utils.R;
 
 @UtilityClass
 public class UserEmbed {
@@ -18,16 +18,16 @@ public class UserEmbed {
     public @NonNull MessageEmbed of(@NonNull DatabaseAdapter databaseAdapter, @NonNull HNSUserModel hnsUserModel) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
-        embedBuilder.setTitle(Bot.strings.getString("hide_n_seek_player_database"));
+        embedBuilder.setTitle(R.string("hide_n_seek_player_database"));
         embedBuilder.setDescription(MCHelper.getUsername(databaseAdapter, hnsUserModel.getUuid()));
         embedBuilder.setColor(Options.getColorNormal());
         embedBuilder.setThumbnail(MCHelper.getThumbnail(hnsUserModel.getUuid()));
-        embedBuilder.addField(Bot.strings.getString("rating"), hnsUserModel.getRating(), true);
-        embedBuilder.addField(Bot.strings.getString("points"), formatNumber(hnsUserModel.getPoints()), true);
-        embedBuilder.addField(Bot.strings.getString("joined"), hnsUserModel.getJoined(), true);
-        embedBuilder.addField(Bot.strings.getString("secondary"), hnsUserModel.isSecondary() ? "✅" : "❌", true);
-        embedBuilder.addField(Bot.strings.getString("banned"), hnsUserModel.isBanned() ? "✅" : "❌", true);
-        embedBuilder.addField(Bot.strings.getString("cheating"), hnsUserModel.isCheating() ? "✅" : "❌", true);
+        embedBuilder.addField(R.string("rating"), hnsUserModel.getRating(), true);
+        embedBuilder.addField(R.string("points"), formatNumber(hnsUserModel.getPoints()), true);
+        embedBuilder.addField(R.string("joined"), hnsUserModel.getJoined(), true);
+        embedBuilder.addField(R.string("secondary"), hnsUserModel.isSecondary() ? "✅" : "❌", true);
+        embedBuilder.addField(R.string("banned"), hnsUserModel.isBanned() ? "✅" : "❌", true);
+        embedBuilder.addField(R.string("cheating"), hnsUserModel.isCheating() ? "✅" : "❌", true);
 
         return embedBuilder.build();
     }
@@ -36,16 +36,16 @@ public class UserEmbed {
     public @NonNull MessageEmbed of(@NonNull DatabaseAdapter databaseAdapter, @NonNull PGUserModel pgUserModel) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
-        embedBuilder.setTitle(Bot.strings.getString("partygames_player_database"));
+        embedBuilder.setTitle(R.string("partygames_player_database"));
         embedBuilder.setDescription(MCHelper.getUsername(databaseAdapter, pgUserModel.getUuid()));
         embedBuilder.setColor(Options.getColorNormal());
         embedBuilder.setThumbnail(MCHelper.getThumbnail(pgUserModel.getUuid()));
-        embedBuilder.addField(Bot.strings.getString("rating"), pgUserModel.getRating(), true);
-        embedBuilder.addField(Bot.strings.getString("points"), formatNumber(pgUserModel.getPoints()), true);
-        embedBuilder.addField(Bot.strings.getString("joined"), pgUserModel.getJoined(), true);
-        embedBuilder.addField(Bot.strings.getString("luck"), String.valueOf(pgUserModel.getLuck()), true);
-        embedBuilder.addField(Bot.strings.getString("quota"), String.format("%s%%", pgUserModel.getQuota()), true);
-        embedBuilder.addField(Bot.strings.getString("winrate"), String.format("%s%%", pgUserModel.getWinrate()), true);
+        embedBuilder.addField(R.string("rating"), pgUserModel.getRating(), true);
+        embedBuilder.addField(R.string("points"), formatNumber(pgUserModel.getPoints()), true);
+        embedBuilder.addField(R.string("joined"), pgUserModel.getJoined(), true);
+        embedBuilder.addField(R.string("luck"), String.valueOf(pgUserModel.getLuck()), true);
+        embedBuilder.addField(R.string("quota"), String.format("%s%%", pgUserModel.getQuota()), true);
+        embedBuilder.addField(R.string("winrate"), String.format("%s%%", pgUserModel.getWinrate()), true);
 
         return embedBuilder.build();
     }

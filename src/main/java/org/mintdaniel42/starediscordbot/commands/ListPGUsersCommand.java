@@ -14,6 +14,7 @@ import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.PGUserModel;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.utils.Options;
+import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.List;
 import java.util.stream.LongStream;
@@ -28,14 +29,14 @@ public final class ListPGUsersCommand extends ListenerAdapter {
 
         // check maintenance
         if (Options.isInMaintenance()) {
-            event.reply(Bot.strings.getString("the_bot_is_currently_in_maintenance_mode")).queue();
+            event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
             return;
         }
 
         OptionMapping pageOptionMapping = event.getOption("page");
         int page = (pageOptionMapping) != null ? pageOptionMapping.getAsInt() - 1 : 0;
         if (page < 0 || page >= databaseAdapter.getPgPages()){
-            event.reply(Bot.strings.getString("this_page_does_not_exist") + page + "," + databaseAdapter.getPgPages()).queue();
+            event.reply(R.string("this_page_does_not_exist") + page + "," + databaseAdapter.getPgPages()).queue();
             return;
         }
 
@@ -43,11 +44,11 @@ public final class ListPGUsersCommand extends ListenerAdapter {
         if (entriesList != null && !entriesList.isEmpty()) {
             event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createPgList(databaseAdapter, entriesList, page))
                     .setComponents(ActionRow.of(
-                            Button.primary(String.format("previous:pg:%s", page), Bot.strings.getString("previous_page")).withDisabled(page < 1),
-                            Button.primary(String.format("next:pg:%s", page), Bot.strings.getString("next_page")).withDisabled(page + 1 >= databaseAdapter.getPgPages())
+                            Button.primary(String.format("previous:pg:%s", page), R.string("previous_page")).withDisabled(page < 1),
+                            Button.primary(String.format("next:pg:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getPgPages())
                     )).queue());
         } else {
-            event.reply(Bot.strings.getString("no_entries_available")).queue();
+            event.reply(R.string("no_entries_available")).queue();
         }
     }
 

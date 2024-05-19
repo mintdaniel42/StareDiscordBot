@@ -12,6 +12,7 @@ import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
+import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -26,22 +27,22 @@ public final class ApproveChangeCommand extends ListenerAdapter {
 
         // check maintenance
         if (Options.isInMaintenance()) {
-            event.reply(Bot.strings.getString("the_bot_is_currently_in_maintenance_mode")).queue();
+            event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
             return;
         }
 
         // check permission level
         if (DCHelper.lacksRole(event.getMember(), Options.getEditRoleId()) && DCHelper.lacksRole(event.getMember(), Options.getCreateRoleId())) {
-            event.reply(Bot.strings.getString("you_do_not_have_the_permission_to_use_this_command")).queue();
+            event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
             return;
         }
 
         // try to merge the change
         OptionMapping idMapping = event.getOption("id");
         if (!(idMapping == null) && databaseAdapter.mergeRequest(idMapping.getAsLong())) {
-            event.reply(Bot.strings.getString("request_was_successfully_merged")).queue();
+            event.reply(R.string("request_was_successfully_merged")).queue();
         } else {
-            event.reply(Bot.strings.getString("request_could_not_be_merged")).queue();
+            event.reply(R.string("request_could_not_be_merged")).queue();
         }
     }
 

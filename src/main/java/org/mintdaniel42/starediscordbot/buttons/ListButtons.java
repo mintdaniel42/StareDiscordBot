@@ -8,9 +8,9 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
+import org.mintdaniel42.starediscordbot.utils.R;
 
 @Getter
 @RequiredArgsConstructor
@@ -29,8 +29,8 @@ public final class ListButtons extends ListenerAdapter {
             messageEmbed = ListEmbed.createPgList(databaseAdapter, page);
             event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(messageEmbed).setComponents(
                     ActionRow.of(
-                            Button.primary(String.format("previous:pg:%s", page), Bot.strings.getString("previous_page")).withDisabled(page < 1),
-                            Button.primary(String.format("next:pg:%s", page), Bot.strings.getString("next_page")).withDisabled(page + 1 >= databaseAdapter.getPgPages())
+                            Button.primary(String.format("previous:pg:%s", page), R.string("previous_page")).withDisabled(page < 1),
+                            Button.primary(String.format("next:pg:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getPgPages())
                     )
             ).queue());
         }
@@ -38,8 +38,8 @@ public final class ListButtons extends ListenerAdapter {
             messageEmbed = ListEmbed.createHnsList(databaseAdapter, page);
             event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(messageEmbed).setComponents(
                     ActionRow.of(
-                            Button.primary(String.format("previous:hns:%s", page), Bot.strings.getString("previous_page")).withDisabled(page < 1),
-                            Button.primary(String.format("next:hns:%s", page), Bot.strings.getString("next_page")).withDisabled(page + 1 >= databaseAdapter.getHnsPages())
+                            Button.primary(String.format("previous:hns:%s", page), R.string("previous_page")).withDisabled(page < 1),
+                            Button.primary(String.format("next:hns:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getHnsPages())
                     )
             ).queue());
         }

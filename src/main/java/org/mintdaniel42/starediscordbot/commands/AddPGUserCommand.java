@@ -14,6 +14,7 @@ import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
+import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.UUID;
 
@@ -27,27 +28,27 @@ public final class AddPGUserCommand extends ListenerAdapter {
 
         // check maintenance
         if (Options.isInMaintenance()) {
-            event.reply(Bot.strings.getString("the_bot_is_currently_in_maintenance_mode")).queue();
+            event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
             return;
         }
 
         // check permission level
         if (DCHelper.lacksRole(event.getMember(), Options.getCreateRoleId())) {
-            event.reply(Bot.strings.getString("you_do_not_have_the_permission_to_use_this_command")).queue();
+            event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
             return;
         }
 
         // check if username is given
         OptionMapping username = event.getOption("username");
         if (username == null) {
-            event.reply(Bot.strings.getString("this_username_does_not_exist")).queue();
+            event.reply(R.string("this_username_does_not_exist")).queue();
             return;
         }
 
         // check if username exists
         UUID uuid = MCHelper.getUuid(databaseAdapter, username.getAsString());
-        if (uuid == null) event.reply(Bot.strings.getString("this_username_does_not_exist")).queue();
-        else if (databaseAdapter.hasPgUser(uuid)) event.reply(Bot.strings.getString("this_user_entry_already_exists")).queue();
+        if (uuid == null) event.reply(R.string("this_username_does_not_exist")).queue();
+        else if (databaseAdapter.hasPgUser(uuid)) event.reply(R.string("this_user_entry_already_exists")).queue();
         else {
             PGUserModel.PGUserModelBuilder builder = PGUserModel.builder();
             builder.uuid(uuid);
@@ -65,9 +66,9 @@ public final class AddPGUserCommand extends ListenerAdapter {
 
             // add the entry
             PGUserModel pgUserModel = builder.build();
-            if (!databaseAdapter.addPgUser(pgUserModel)) event.reply(Bot.strings.getString("the_entry_could_not_be_created")).queue();
+            if (!databaseAdapter.addPgUser(pgUserModel)) event.reply(R.string("the_entry_could_not_be_created")).queue();
             else {
-                event.reply(Bot.strings.getString("the_entry_was_successfully_created")).setEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue();
+                event.reply(R.string("the_entry_was_successfully_created")).setEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue();
             }
         }
     }

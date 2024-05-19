@@ -15,6 +15,7 @@ import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
+import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -30,27 +31,27 @@ public final class EditPGUserCommand extends ListenerAdapter {
 
         // check maintenance
         if (Options.isInMaintenance()) {
-            event.reply(Bot.strings.getString("the_bot_is_currently_in_maintenance_mode")).queue();
+            event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
             return;
         }
 
         // check if username is given
         OptionMapping username = event.getOption("username");
         if (username == null) {
-            event.reply(Bot.strings.getString("this_username_does_not_exist")).queue();
+            event.reply(R.string("this_username_does_not_exist")).queue();
             return;
         }
 
         // check if more than username option is given
         if (event.getOptions().size() <= 1) {
-            event.reply(Bot.strings.getString("the_entry_was_not_updated")).queue();
+            event.reply(R.string("the_entry_was_not_updated")).queue();
             return;
         }
 
         // check if username exists
         UUID uuid = MCHelper.getUuid(databaseAdapter, username.getAsString());
-        if (uuid == null) event.reply(Bot.strings.getString("this_username_does_not_exist")).queue();
-        else if (!databaseAdapter.hasPgUser(uuid)) event.reply(Bot.strings.getString("this_user_entry_does_not_exist")).queue();
+        if (uuid == null) event.reply(R.string("this_username_does_not_exist")).queue();
+        else if (!databaseAdapter.hasPgUser(uuid)) event.reply(R.string("this_user_entry_does_not_exist")).queue();
         else {
             PGUserModel.PGUserModelBuilder builder = Objects.requireNonNull(databaseAdapter.getPgUser(uuid)).toBuilder();
 
@@ -72,25 +73,25 @@ public final class EditPGUserCommand extends ListenerAdapter {
             if (DCHelper.lacksRole(event.getMember(), Options.getEditRoleId()) && DCHelper.lacksRole(event.getMember(), Options.getCreateRoleId())) {
                 long timestamp = Instant.now().toEpochMilli();
                 if (!databaseAdapter.addRequest(RequestModel.from(timestamp, pgUserModel))) {
-                    event.reply(Bot.strings.getString("the_entry_could_not_be_updated")).queue();
+                    event.reply(R.string("the_entry_could_not_be_updated")).queue();
                 } else {
-                    event.reply(Bot.strings.getString("the_entry_change_was_successfully_requested")).queue();
+                    event.reply(R.string("the_entry_change_was_successfully_requested")).queue();
                     event.getGuild()
                             .getTextChannelById(Options.getRequestChannelId())
                             .sendMessage(String.format(
-                                    Bot.strings.getString("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s"),
+                                    R.string("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s"),
                                     event.getMember().getAsMention(),
                                     timestamp))
-                            .addActionRow(Button.primary(String.format("approve:%s", timestamp), Bot.strings.getString("approve_this_change")))
+                            .addActionRow(Button.primary(String.format("approve:%s", timestamp), R.string("approve_this_change")))
                             .addEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue();
                 }
                 return;
             }
 
             // edit directly
-            if (databaseAdapter.editPgUser(pgUserModel) == 0) event.reply(Bot.strings.getString("the_entry_could_not_be_updated")).queue();
+            if (databaseAdapter.editPgUser(pgUserModel) == 0) event.reply(R.string("the_entry_could_not_be_updated")).queue();
             else {
-                event.reply(Bot.strings.getString("the_entry_was_successfully_updated")).setEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue();
+                event.reply(R.string("the_entry_was_successfully_updated")).setEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue();
             }
         }
     }
