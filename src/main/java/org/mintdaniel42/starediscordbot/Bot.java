@@ -121,6 +121,11 @@ public final class Bot extends ListenerAdapter {
         ).queue();
     }
 
+    @Override
+    public void onSlashCommandInteraction(@NotNull final SlashCommandInteractionEvent event) {
+        if (!event.isAcknowledged()) event.reply(R.string("it_looks_like_you_found_an_unfinished_command")).queue();
+    }
+
     public static void main(final String[] args) throws Exception {
         new Bot(new DatabaseAdapter(Options.getJdbcUrl()));
     }
