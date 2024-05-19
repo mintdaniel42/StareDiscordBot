@@ -1,18 +1,16 @@
 package org.mintdaniel42.starediscordbot.commands;
 
-import com.github.ygimenez.method.Pages;
-import com.github.ygimenez.model.InteractPage;
 import fr.leonarddoo.dba.annotation.Command;
 import fr.leonarddoo.dba.annotation.Option;
 import fr.leonarddoo.dba.element.DBACommand;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
-import org.jetbrains.annotations.Nullable;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.mintdaniel42.starediscordbot.Bot;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.HNSUserModel;
@@ -20,7 +18,6 @@ import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.utils.Options;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.LongStream;
 
 @Command(name = "listhnsusers", description = "Alle Hide 'n' Seek Einträge auflisten")
@@ -48,7 +45,11 @@ public final class ListHNSUsersCommand implements DBACommand {
         if (entriesList != null && !entriesList.isEmpty()) {
             event.deferReply().queue(interactionHook -> {
                 interactionHook.editOriginalEmbeds(ListEmbed.createHnsList(databaseAdapter, entriesList, page))
-                        .queue(success -> Pages.lazyPaginate(success, this::getPage, true, 60, TimeUnit.SECONDS));
+                        .setComponents(ActionRow.of(
+                                Button.primary(String.format("previous:hns:%s", page), Bot.strings.getString("previous_page")).withDisabled(page < 1),
+                                Button.primary(String.format("next:hns:%s", page), Bot.strings.getString("next_page")).withDisabled(page + 1 >= databaseAdapter.getHnsPages())
+                        ))
+                        .queue();
             });
         } else {
             event.reply(Bot.strings.getString("no_entries_available")).queue();
@@ -64,12 +65,5 @@ public final class ListHNSUsersCommand implements DBACommand {
                 .boxed()
                 .filter(operand -> String.valueOf(operand).startsWith(page))
                 .toList()).queue();
-    }
-
-    private @Nullable InteractPage getPage(int page) {
-        List<HNSUserModel> hnsUserModels = databaseAdapter.getHnsUserList(page);
-        if (hnsUserModels == null || page >= hnsUserModels.size()) return null;
-        MessageEmbed list = ListEmbed.createHnsList(databaseAdapter, hnsUserModels, page);
-        return InteractPage.of(list);
     }
 }

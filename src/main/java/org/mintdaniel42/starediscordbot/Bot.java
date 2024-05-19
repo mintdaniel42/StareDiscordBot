@@ -1,11 +1,7 @@
 package org.mintdaniel42.starediscordbot;
 
-import com.github.ygimenez.exception.InvalidHandlerException;
-import com.github.ygimenez.method.Pages;
-import com.github.ygimenez.model.PaginatorBuilder;
 import fr.leonarddoo.dba.loader.DBALoader;
 import lombok.NonNull;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
@@ -22,21 +18,14 @@ public final class Bot extends ListenerAdapter {
     public static final ResourceBundle strings = ResourceBundle.getBundle("strings", Options.getLocale());
     private final DatabaseAdapter databaseAdapter;
 
-    public Bot(@NonNull DatabaseAdapter databaseAdapter) {
+	public Bot(@NonNull DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
-        JDA jda = JDABuilder.createLight(Options.getToken())
-                .addEventListeners(this)
+		ListenerAdapter listButtons = new ListButtons(databaseAdapter);
+
+        JDABuilder.createLight(Options.getToken())
+                .addEventListeners(listButtons, this)
                 .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS)
                 .build();
-
-	    try {
-		    Pages.activate(PaginatorBuilder.createPaginator()
-				    .setHandler(jda)
-                    .shouldEventLock(true)
-		            .build());
-    } catch (InvalidHandlerException e) {
-		    throw new RuntimeException(e);
-	    }
     }
 
     @Override
@@ -64,16 +53,10 @@ public final class Bot extends ListenerAdapter {
                 new ShowHNSUserCommand(databaseAdapter),
                 new ShowPGUserCommand(databaseAdapter),
 
-                new ListHNSUsersCommand(databaseAdapter),   // TODO: buttons
-                new ListPGUsersCommand(databaseAdapter),    // TODO: buttons
+                new ListHNSUsersCommand(databaseAdapter),
+                new ListPGUsersCommand(databaseAdapter),
 
                 new ApproveChangeCommand(databaseAdapter)
-        );
-
-        DBALoader.getInstance(event.getJDA()).initDBAEvent(
-		        new ListButtons.CancelButton(),    // TODO
-                new ListButtons.PreviousPageButton(),
-		        new ListButtons.NextPageButton()// TODO
         );
     }
 
