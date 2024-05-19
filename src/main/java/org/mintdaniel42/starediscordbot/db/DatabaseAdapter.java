@@ -111,7 +111,6 @@ public final class DatabaseAdapter implements AutoCloseable {
                     .limit((long) entriesPerPage)
                     .query()
                     .stream()
-                    .filter(usernameModelDao -> usernameModelDao.getUuid() != null)
                     .toList();
         } catch (SQLException ignored) {
             return null;
@@ -126,7 +125,6 @@ public final class DatabaseAdapter implements AutoCloseable {
                     .limit((long) entriesPerPage)
                     .query()
                     .stream()
-                    .filter(usernameModelDao -> usernameModelDao.getUuid() != null)
                     .toList();
         } catch (SQLException ignored) {
             return null;
@@ -263,6 +261,7 @@ public final class DatabaseAdapter implements AutoCloseable {
      * @param requestModel the {@link RequestModel} to be added
      * @return {@code true} if it was added, else {@code false}
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean addRequest(@NonNull RequestModel requestModel) {
         try {
             return requestModelDao.createIfNotExists(requestModel).equals(requestModel);
@@ -287,7 +286,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                 case PG -> {
                     return (pgUserModelDao.update(PGUserModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1);
                 }
-                case null, default -> {
+                default -> {
                     return false;
                 }
             }
