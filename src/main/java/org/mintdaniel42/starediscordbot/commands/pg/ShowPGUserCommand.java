@@ -6,6 +6,8 @@ import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInterac
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.PGUserModel;
@@ -41,7 +43,9 @@ public final class ShowPGUserCommand extends ListenerAdapter {
         PGUserModel pgUserModel;
 
         if (uuid != null && (pgUserModel = databaseAdapter.getPgUser(uuid)) != null) {
-            event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue());
+            event.deferReply()
+                    .queue(interactionHook -> interactionHook.editOriginalEmbeds(UserEmbed.of(databaseAdapter, pgUserModel))
+                    .setComponents(ActionRow.of(Button.primary(String.format("group:%s", ""), R.string("show_group")))).queue());
         } else {
             event.reply(R.string("this_username_or_entry_does_not_exist")).queue();
         }

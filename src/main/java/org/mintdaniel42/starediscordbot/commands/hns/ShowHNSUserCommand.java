@@ -6,6 +6,8 @@ import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInterac
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.HNSUserModel;
@@ -41,7 +43,13 @@ public final class ShowHNSUserCommand extends ListenerAdapter {
         HNSUserModel hnsUserModel;
 
         if (uuid != null && (hnsUserModel = databaseAdapter.getHnsUser(uuid)) != null) {
-            event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(UserEmbed.of(databaseAdapter, hnsUserModel)).queue());
+            event.deferReply().queue(interactionHook -> interactionHook
+                    .editOriginalEmbeds(UserEmbed.of(databaseAdapter, hnsUserModel)).setComponents(
+                            ActionRow.of(
+                                    Button.primary(String.format("detailedhns:%s", uuid), R.string("more_info")),
+                                    Button.primary(String.format("group:%s", ""), R.string("show_group"))
+                            )
+                    ).queue());
         } else {
             event.reply(R.string("this_username_or_entry_does_not_exist")).queue();
         }
