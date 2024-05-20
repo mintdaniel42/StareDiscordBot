@@ -16,19 +16,9 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.mintdaniel42.starediscordbot.build.Features;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
-import org.mintdaniel42.starediscordbot.commands.ApproveChangeCommand;
-import org.mintdaniel42.starediscordbot.commands.AutoCompletionHandler;
-import org.mintdaniel42.starediscordbot.commands.MaintenanceCommand;
+import org.mintdaniel42.starediscordbot.commands.*;
 import org.mintdaniel42.starediscordbot.commands.group.CreateGroupCommand;
 import org.mintdaniel42.starediscordbot.commands.group.ShowGroupCommand;
-import org.mintdaniel42.starediscordbot.commands.hns.AddHNSUserCommand;
-import org.mintdaniel42.starediscordbot.commands.hns.EditHNSUserCommand;
-import org.mintdaniel42.starediscordbot.commands.hns.ListHNSUsersCommand;
-import org.mintdaniel42.starediscordbot.commands.hns.ShowHNSUserCommand;
-import org.mintdaniel42.starediscordbot.commands.pg.AddPGUserCommand;
-import org.mintdaniel42.starediscordbot.commands.pg.EditPGUserCommand;
-import org.mintdaniel42.starediscordbot.commands.pg.ListPGUsersCommand;
-import org.mintdaniel42.starediscordbot.commands.pg.ShowPGUserCommand;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.GroupModel;
 import org.mintdaniel42.starediscordbot.utils.Options;
@@ -49,15 +39,8 @@ public final class Bot extends ListenerAdapter {
 
                         new MaintenanceCommand(),
 
-                        new AddHNSUserCommand(databaseAdapter),
-                        new EditHNSUserCommand(databaseAdapter),
-                        new ShowHNSUserCommand(databaseAdapter),
-                        new ListHNSUsersCommand(databaseAdapter),
-
-                        new AddPGUserCommand(databaseAdapter),
-                        new EditPGUserCommand(databaseAdapter),
-                        new ShowPGUserCommand(databaseAdapter),
-                        new ListPGUsersCommand(databaseAdapter),
+                        new HNSCommand(databaseAdapter),
+                        new PGCommand(databaseAdapter),
 
                         new CreateGroupCommand(databaseAdapter),
                         new ShowGroupCommand(databaseAdapter),
@@ -92,7 +75,8 @@ public final class Bot extends ListenerAdapter {
                 Commands.slash("hns", R.string("hide_n_seek_related_commands"))
                         .addSubcommands(
                                 new SubcommandData("show", R.string("show_hide_n_seek_entry"))
-                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
+                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
+                                        .addOption(OptionType.BOOLEAN, "more", R.string("more_info")),
                                 new SubcommandData("edit", R.string("edit_a_hide_n_seek_entry"))
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                                         .addOption(OptionType.NUMBER, "points", R.string("points"), false, true)
@@ -100,7 +84,13 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.STRING, "joined", R.string("joined"))
                                         .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
                                         .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
-                                        .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating")),
+                                        .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating"))
+                                        .addOption(OptionType.STRING, "top10", R.string("top10"))
+                                        .addOption(OptionType.INTEGER, "streak", R.string("streak"))
+                                        .addOption(OptionType.STRING, "highest_rank", R.string("highest_rank"))
+                                        .addOption(OptionType.STRING, "note", R.string("note"), false, true)
+                                        .addOption(OptionType.USER, "discord", R.string("discord_tag"))
+                                        .addOption(OptionType.STRING, "tag", R.string("group_tag")),
                                 new SubcommandData("add", R.string("add_a_new_hide_n_seek_entry"))
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                                         .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)

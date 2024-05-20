@@ -19,9 +19,9 @@ public class HNSUserModel {
     @DatabaseField boolean secondary;
     @DatabaseField boolean banned;
     @DatabaseField boolean cheating;
-    @DatabaseField String top10;
+    @DatabaseField @Builder.Default String top10 = "❌";
     @DatabaseField int streak;
-    @DatabaseField String highestRank;
+    @DatabaseField @Builder.Default String highestRank = "❌";
 
     public static @NonNull HNSUserModel from(@NonNull final RequestModel requestModel) {
         return HNSUserModel.builder()
