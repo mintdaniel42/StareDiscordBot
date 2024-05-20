@@ -8,14 +8,17 @@ import java.util.UUID;
 
 @Value
 @Builder(toBuilder = true)
-@DatabaseTable(tableName = "hns_entries")
+@DatabaseTable(tableName = "users")
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class UserModel {
+	String username;
 	@DatabaseField(id = true) UUID uuid;
-	@DatabaseField String group;
+	@DatabaseField(foreign = true, foreignAutoRefresh = true, foreignAutoCreate = true) GroupModel group;
+	@DatabaseField(foreign = true, foreignAutoRefresh = true, foreignAutoCreate = true) HNSUserModel hnsUser;
+	@DatabaseField(foreign = true, foreignAutoRefresh = true, foreignAutoCreate = true) PGUserModel pgUser;
 	@DatabaseField long discord;
-	@DatabaseField String note;
+	@DatabaseField @Builder.Default String note = "❌";
 
 	public static @NonNull UserModel from(@NonNull final RequestModel requestModel) {
 		return UserModel.builder()
