@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
-import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.buttons.ShowGroupButton;
 import org.mintdaniel42.starediscordbot.commands.ApproveChangeCommand;
@@ -40,7 +39,6 @@ public final class Bot extends ListenerAdapter {
         JDABuilder.createLight(Options.getToken())
                 .addEventListeners(
                         new ListButtons(databaseAdapter),
-                        new ApproveChangeButton(databaseAdapter),
                         new ShowGroupButton(databaseAdapter),
 
                         new MaintenanceCommand(),
