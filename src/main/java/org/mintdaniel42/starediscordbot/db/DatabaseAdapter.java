@@ -8,7 +8,6 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.utils.Options;
 
@@ -20,13 +19,15 @@ import java.util.UUID;
 
 @Slf4j
 public final class DatabaseAdapter implements AutoCloseable {
-    private static final MetaDataModel.Version dbVersion = MetaDataModel.Version.NEW_REQUESTS;
+    private static final MetaDataModel.Version dbVersion = MetaDataModel.Version.GROUPS_ADDED;
     private final int entriesPerPage = Options.getEntriesPerPage();
-    @NotNull private final ConnectionSource connectionSource;
+    @NonNull private final ConnectionSource connectionSource;
     private final Dao<HNSUserModel, UUID> hnsUserModelDao;
     private final Dao<PGUserModel, UUID> pgUserModelDao;
     private final Dao<RequestModel, Long> requestModelDao;
     private final Dao<UsernameModel, UUID> usernameModelDao;
+    private final Dao<UserModel, UUID> userModelDao;
+    private final Dao<GroupModel, String> groupModelDao;
     private final Dao<MetaDataModel, Integer> metaDataModelDao;
 
     public DatabaseAdapter(@NonNull String jdbcUrl) throws Exception {
@@ -36,6 +37,8 @@ public final class DatabaseAdapter implements AutoCloseable {
         pgUserModelDao = DaoManager.createDao(connectionSource, PGUserModel.class);
         requestModelDao = DaoManager.createDao(connectionSource, RequestModel.class);
         usernameModelDao = DaoManager.createDao(connectionSource, UsernameModel.class);
+        userModelDao = DaoManager.createDao(connectionSource, UserModel.class);
+        groupModelDao = DaoManager.createDao(connectionSource, GroupModel.class);
         metaDataModelDao = DaoManager.createDao(connectionSource, MetaDataModel.class);
 
         prepareDatabase();
@@ -48,6 +51,7 @@ public final class DatabaseAdapter implements AutoCloseable {
             if (metaDataModelDao.countOf() == 0) {
                 metaDataModelDao.create(new MetaDataModel(MetaDataModel.Version.META));
             }
+            boolean hnsUserModelV2 = false;
             while (metaDataModelDao.queryForFirst().getVersion() != dbVersion) {
                 switch (metaDataModelDao.queryForFirst().getVersion()) {
                     case META -> {
@@ -55,6 +59,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                             hnsUserModelDao.executeRawNoArgs("ALTER TABLE entries RENAME TO hns_entries");
                         } catch (SQLException ignored) {
                             TableUtils.createTableIfNotExists(connectionSource, HNSUserModel.class);
+                            hnsUserModelV2 = true;
                         }
                         metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.HNS_ONLY));
                     }
@@ -69,14 +74,36 @@ public final class DatabaseAdapter implements AutoCloseable {
                     case USERNAMES_ADDED -> {
                         try {
                             requestModelDao.executeRawNoArgs("DROP TABLE requests");
-                        } catch(SQLException ignored) {}
+                        } catch(SQLException e) {
+                            log.error("Couldn't perform new_requests migration: ", e);
+                            throw new RuntimeException(e);
+                        }
                         TableUtils.createTableIfNotExists(connectionSource, RequestModel.class);
                         metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.NEW_REQUESTS));
+                    }
+                    case NEW_REQUESTS -> {
+                        TableUtils.createTableIfNotExists(connectionSource, GroupModel.class);
+                        TableUtils.createTableIfNotExists(connectionSource, UserModel.class);
+                        try {
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN tag VARCHAR");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN name VARCHAR");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN leader VARCHAR");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN relation VARCHAR");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN hnsId VARCHAR");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN pgId VARCHAR");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN groupId VARCHAR");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN discord BIGINT");
+                            metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.GROUPS_ADDED));
+                        } catch (SQLException e) {
+                            log.error("Couldn't perform groups_added migration: ", e);
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             }
 	    } catch (SQLException e) {
 		    log.error("Couldn't prepare database: ", e);
+            throw new RuntimeException(e);
 	    }
     }
 

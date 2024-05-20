@@ -23,6 +23,14 @@ public class RequestModel {
     @DatabaseField boolean secondary;
     @DatabaseField boolean banned;
     @DatabaseField boolean cheating;
+    @DatabaseField String tag;
+    @DatabaseField String name;
+    @DatabaseField UUID leader;
+    @DatabaseField GroupModel.Relation relation;
+    @DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "hnsId") HNSUserModel hnsUserModel;
+    @DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "pgId") PGUserModel pgUserModel;
+    @DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "groupId") GroupModel groupModel;
+    @DatabaseField long discord;
     @NonNull @DatabaseField Database database;
 
     public static @NonNull RequestModel from(final long timestamp, @NonNull final HNSUserModel hnsUserModel) {
@@ -53,8 +61,32 @@ public class RequestModel {
                 .build();
     }
 
+    public static @NonNull RequestModel from(final long timestamp, @NonNull final GroupModel groupModel) {
+        return RequestModel.builder()
+                .timestamp(timestamp)
+                .tag(groupModel.getTag())
+                .name(groupModel.getName())
+                .leader(groupModel.getLeader())
+                .relation(groupModel.getRelation())
+                .database(Database.GROUP)
+                .build();
+    }
+
+    public static @NonNull RequestModel from(final long timestamp, @NonNull final UserModel userModel) {
+        return RequestModel.builder()
+                .timestamp(timestamp)
+                .hnsUserModel(userModel.getHnsUserModel())
+                .pgUserModel(userModel.getPgUserModel())
+                .groupModel(userModel.getGroupModel())
+                .discord(userModel.getDiscord())
+                .database(Database.USER)
+                .build();
+    }
+
     public enum Database {
         PG,
-        HNS
+        HNS,
+        GROUP,
+        USER
     }
 }
