@@ -137,7 +137,7 @@ public final class Bot extends ListenerAdapter {
                         .addSubcommandGroups(new SubcommandGroupData("user", R.string("user_related_group_commands"))
                                 .addSubcommands(
                                         new SubcommandData("add", R.string("add_user_to_group"))
-                                                .addOption(OptionType.STRING, "group", R.string("group_tag"), true, true)
+                                                .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
                                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
                                         new SubcommandData("remove", R.string("remove_user_from_group"))
                                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
