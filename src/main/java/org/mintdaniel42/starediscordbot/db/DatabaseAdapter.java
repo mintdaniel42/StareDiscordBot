@@ -19,7 +19,6 @@ import java.util.UUID;
 
 @Slf4j
 public final class DatabaseAdapter implements AutoCloseable {
-    private static final MetaDataModel.Version dbVersion = MetaDataModel.Version.GROUPS_ADDED;
     private final int entriesPerPage = Options.getEntriesPerPage();
     @NonNull private final ConnectionSource connectionSource;
     private final Dao<HNSUserModel, UUID> hnsUserModelDao;
@@ -52,7 +51,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                 metaDataModelDao.create(new MetaDataModel(MetaDataModel.Version.META));
             }
             boolean hnsUserModelV2 = false;
-            while (metaDataModelDao.queryForFirst().getVersion() != dbVersion) {
+            while (metaDataModelDao.queryForFirst().getVersion() != MetaDataModel.Version.values()[MetaDataModel.Version.values().length - 1]) {
                 switch (metaDataModelDao.queryForFirst().getVersion()) {
                     case META -> {
                         try {
@@ -94,6 +93,22 @@ public final class DatabaseAdapter implements AutoCloseable {
                             metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.GROUPS_ADDED));
                         } catch (SQLException e) {
                             log.error("Couldn't perform groups_added migration: ", e);
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    case GROUPS_ADDED -> {
+                        try {
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN top10 VARCHAR");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN streak INTEGER");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN highestRank VARCHAR");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN note VARCHAR");
+                            hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN top10 VARCHAR");
+                            hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN streak INTEGER");
+                            hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN highestRank VARCHAR");
+                            hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN note VARCHAR");
+                            metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.HNS_V2));
+                        } catch (SQLException e) {
+                            log.error("Couldn't perform hns_v2 migration: ", e);
                             throw new RuntimeException(e);
                         }
                     }

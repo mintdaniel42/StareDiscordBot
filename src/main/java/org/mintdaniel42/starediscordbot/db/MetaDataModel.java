@@ -21,6 +21,7 @@ public class MetaDataModel {
 		PG_ADDED,
 		USERNAMES_ADDED,
 		NEW_REQUESTS,
-		GROUPS_ADDED
+		GROUPS_ADDED,
+		HNS_V2
 	}
 }

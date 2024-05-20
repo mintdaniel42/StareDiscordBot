@@ -29,6 +29,10 @@ public class RequestModel {
     @DatabaseField GroupModel.Relation relation;
     @DatabaseField String group;
     @DatabaseField long discord;
+    @DatabaseField String note;
+    @DatabaseField String top10;
+    @DatabaseField int streak;
+    @DatabaseField String highestRank;
     @NonNull @DatabaseField Database database;
 
     public static @NonNull RequestModel from(final long timestamp, @NonNull final HNSUserModel hnsUserModel) {
@@ -41,6 +45,9 @@ public class RequestModel {
                 .secondary(hnsUserModel.isSecondary())
                 .banned(hnsUserModel.isBanned())
                 .cheating(hnsUserModel.isCheating())
+                .top10(hnsUserModel.getTop10())
+                .streak(hnsUserModel.getStreak())
+                .highestRank(hnsUserModel.getHighestRank())
                 .database(Database.HNS)
                 .build();
     }
@@ -75,6 +82,7 @@ public class RequestModel {
                 .timestamp(timestamp)
                 .group(userModel.getGroup())
                 .discord(userModel.getDiscord())
+                .note(userModel.getNote())
                 .database(Database.USER)
                 .build();
     }

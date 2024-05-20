@@ -19,6 +19,9 @@ public class HNSUserModel {
     @DatabaseField boolean secondary;
     @DatabaseField boolean banned;
     @DatabaseField boolean cheating;
+    @DatabaseField String top10;
+    @DatabaseField int streak;
+    @DatabaseField String highestRank;
 
     public static @NonNull HNSUserModel from(@NonNull final RequestModel requestModel) {
         return HNSUserModel.builder()
@@ -29,6 +32,9 @@ public class HNSUserModel {
                 .secondary(requestModel.isSecondary())
                 .banned(requestModel.isBanned())
                 .cheating(requestModel.isCheating())
+                .top10(requestModel.getTop10())
+                .streak(requestModel.getStreak())
+                .highestRank(requestModel.getHighestRank())
                 .build();
     }
 }
