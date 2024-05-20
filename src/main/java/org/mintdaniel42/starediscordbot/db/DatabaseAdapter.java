@@ -198,6 +198,18 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    public @Nullable GroupModel getGroupOf(@NonNull UUID uuid) {
+        try {
+            return userModelDao.queryBuilder()
+                    .where()
+                    .eq("uuid", uuid)
+                    .queryForFirst()
+                    .getGroupModel();
+        } catch (SQLException ignored) {
+            return null;
+        }
+    }
+
     public @Nullable UserModel getUser(@NonNull UUID uuid) {
         try {
             return userModelDao.queryBuilder().where().eq("uuid", uuid).queryForFirst();
@@ -335,6 +347,33 @@ public final class DatabaseAdapter implements AutoCloseable {
     public boolean hasPgUser(@NonNull UUID uuid) {
         try {
             return pgUserModelDao.idExists(uuid);
+        } catch (SQLException ignored) {
+            return false;
+        }
+    }
+
+    public boolean hasGroup(@NonNull String tag) {
+        try {
+            return groupModelDao.idExists(tag);
+        } catch (SQLException ignored) {
+            return false;
+        }
+    }
+
+    public boolean hasGroupFor(@NonNull UUID uuid) {
+        try {
+            return userModelDao.idExists(uuid) && userModelDao.queryBuilder()
+                    .where()
+                    .isNotNull("groupId")
+                    .countOf() != 0;
+        } catch (SQLException ignored) {
+            return false;
+        }
+    }
+
+    public boolean hasUser(@NonNull UUID uuid) {
+        try {
+            return userModelDao.idExists(uuid);
         } catch (SQLException ignored) {
             return false;
         }
