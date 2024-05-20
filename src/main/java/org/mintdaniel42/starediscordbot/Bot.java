@@ -147,7 +147,7 @@ public final class Bot extends ListenerAdapter {
                         )
                         .addSubcommands(
                                 new SubcommandData("show", R.string("show_group"))
-                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), true),
+                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true),
                                 new SubcommandData("create", R.string("create_group"))
                                         .addOption(OptionType.STRING, "tag", R.string("group_tag"), true)
                                         .addOption(OptionType.STRING, "name", R.string("group_name"), true)
@@ -157,7 +157,7 @@ public final class Bot extends ListenerAdapter {
                                                 .addChoice(R.string("neutral"), GroupModel.Relation.neutral.name())
                                                 .addChoice(R.string("ally"), GroupModel.Relation.ally.name())),
                                 new SubcommandData("edit", R.string("edit_group"))
-                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), true)
+                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
                                         .addOption(OptionType.STRING, "name", R.string("group_name"))
                                         .addOption(OptionType.STRING, "leader", R.string("group_leader"), false, true)
                                         .addOptions(new OptionData(OptionType.STRING, "relation", R.string("group_relation"))
@@ -165,7 +165,8 @@ public final class Bot extends ListenerAdapter {
                                                 .addChoice(R.string("neutral"), GroupModel.Relation.neutral.name())
                                                 .addChoice(R.string("ally"), GroupModel.Relation.ally.name())),
                                 new SubcommandData("delete", R.string("delete_group"))
-                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), true)
+                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
+                                        .addOption(OptionType.BOOLEAN, "confirm", R.string("confirm_deletion"), true)
                         )
         ).queue();
     }
