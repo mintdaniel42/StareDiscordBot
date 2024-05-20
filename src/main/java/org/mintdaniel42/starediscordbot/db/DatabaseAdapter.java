@@ -190,6 +190,22 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    public @Nullable GroupModel getGroup(@NonNull String tag) {
+        try {
+            return groupModelDao.queryBuilder().where().eq("tag", tag).queryForFirst();
+        } catch (SQLException ignored) {
+            return null;
+        }
+    }
+
+    public @Nullable UserModel getUser(@NonNull UUID uuid) {
+        try {
+            return userModelDao.queryBuilder().where().eq("uuid", uuid).queryForFirst();
+        } catch (SQLException ignored) {
+            return null;
+        }
+    }
+
     public @Nullable UsernameModel getUsernameModel(@NonNull UUID uuid) {
         try {
             return usernameModelDao.queryForId(uuid);
@@ -238,6 +254,22 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    public int editGroup(@NonNull GroupModel groupModel) {
+        try {
+            return groupModelDao.update(groupModel);
+        } catch (SQLException ignored) {
+            return 0;
+        }
+    }
+
+    public int editUser(@NonNull UserModel userModel) {
+        try {
+            return userModelDao.update(userModel);
+        } catch (SQLException ignored) {
+            return 0;
+        }
+    }
+
     public void putUsername(@NonNull UsernameModel usernameModel) {
         try {
             usernameModelDao.createOrUpdate(usernameModel).getNumLinesChanged();
@@ -263,6 +295,30 @@ public final class DatabaseAdapter implements AutoCloseable {
     public boolean addPgUser(@NonNull PGUserModel pgUserModel) {
         try {
             return pgUserModelDao.createIfNotExists(pgUserModel).equals(pgUserModel);
+        } catch (SQLException ignored) {
+            return false;
+        }
+    }
+
+    /**
+     * @param groupModel the {@link GroupModel} to be added
+     * @return {@code true} if it was added, else {@code false}
+     */
+    public boolean addGroup(@NonNull GroupModel groupModel) {
+        try {
+            return groupModelDao.createIfNotExists(groupModel).equals(groupModel);
+        } catch (SQLException ignored) {
+            return false;
+        }
+    }
+
+    /**
+     * @param userModel the {@link UserModel} to be added
+     * @return {@code true} if it was added, else {@code false}
+     */
+    public boolean addUser(@NonNull UserModel userModel) {
+        try {
+            return userModelDao.createIfNotExists(userModel).equals(userModel);
         } catch (SQLException ignored) {
             return false;
         }
@@ -300,7 +356,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     /**
      * Attempts to merge the request of the provided id into the database
      * @param id id of the request
-     * @return {@code true} if request could be merged, false otherwise
+     * @return {@code true} if request could be merged, {@code false} otherwise
      */
     public boolean mergeRequest(long id) {
         try {
@@ -309,11 +365,13 @@ public final class DatabaseAdapter implements AutoCloseable {
             switch (requestModel.getDatabase()) {
                 case HNS -> {
                     return (hnsUserModelDao.update(HNSUserModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1);
-                }
-                case PG -> {
+                } case PG -> {
                     return (pgUserModelDao.update(PGUserModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1);
-                }
-                default -> {
+                } case USER -> {
+                    return (userModelDao.update(UserModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1);
+                } case GROUP -> {
+                    return (groupModelDao.update(GroupModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1);
+                } default -> {
                     return false;
                 }
             }
