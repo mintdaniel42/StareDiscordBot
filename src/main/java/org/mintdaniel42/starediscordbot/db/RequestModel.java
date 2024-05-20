@@ -27,7 +27,7 @@ public class RequestModel {
     @DatabaseField String name;
     @DatabaseField UUID leader;
     @DatabaseField GroupModel.Relation relation;
-    @DatabaseField String group;
+    @DatabaseField(foreign = true, foreignAutoRefresh = true, foreignAutoCreate = true) GroupModel group;
     @DatabaseField long discord;
     @DatabaseField String note;
     @DatabaseField String top10;
@@ -80,6 +80,7 @@ public class RequestModel {
     public static @NonNull RequestModel from(final long timestamp, @NonNull final UserModel userModel) {
         return RequestModel.builder()
                 .timestamp(timestamp)
+                .uuid(userModel.getUuid())
                 .group(userModel.getGroup())
                 .discord(userModel.getDiscord())
                 .note(userModel.getNote())
