@@ -46,7 +46,7 @@ public final class ShowHNSUserCommand extends ListenerAdapter {
                     .editOriginalEmbeds(UserEmbed.of(databaseAdapter, hnsUserModel)).setComponents(
                             ActionRow.of(
                                     Button.primary(String.format("detailedhns:%s", uuid), R.string("more_info")),
-                                    Button.primary(String.format("group:%s", ""), R.string("show_group"))
+                                    Button.primary(String.format("group:%s", uuid), R.string("show_group"))
                             )
                     ).queue());
         } else {
