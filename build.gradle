@@ -2,6 +2,7 @@ plugins {
     id('java')
     id('application')
     alias(libs.plugins.lombok)
+    alias(libs.plugins.buildConfig)
 }
 
 repositories {
@@ -34,5 +35,12 @@ tasks.jar {
 
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it)}
+    }
+}
+
+buildConfig {
+    packageName("${project.group}.build")
+    forClass(className = "Features") {
+        buildConfigField("boolean", "dev", String.valueOf(System.getenv("DEV") == "1"))
     }
 }

@@ -5,6 +5,7 @@ jdbc-sqlite = "3.45.3.0"
 json = "20240303"
 slf4j = "1.7.25"
 lombok = "8.6"
+buildConfig = "4.1.2"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
@@ -16,3 +17,4 @@ slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 
 [plugins]
 lombok = { id = "io.freefair.lombok", version.ref = "lombok"}
+buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig"}
