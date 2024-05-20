@@ -41,6 +41,6 @@ tasks.jar {
 buildConfig {
     packageName("${project.group}.build")
     forClass(className = "Features") {
-        buildConfigField("boolean", "dev", String.valueOf(System.getenv("DEV") == "1"))
+        buildConfigField(boolean, "dev", System.getenv("DEV") == "1")
     }
 }
