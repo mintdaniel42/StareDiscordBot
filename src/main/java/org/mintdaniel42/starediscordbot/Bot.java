@@ -139,6 +139,8 @@ public final class Bot extends ListenerAdapter {
                                 )
                         )
                         .addSubcommands(
+                                new SubcommandData("show", R.string("show_group"))
+                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), true),
                                 new SubcommandData("create", R.string("create_group"))
                                         .addOption(OptionType.STRING, "tag", R.string("group_tag"), true)
                                         .addOption(OptionType.STRING, "name", R.string("group_name"), true)
