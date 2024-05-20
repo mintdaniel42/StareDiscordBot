@@ -2,6 +2,7 @@ package org.mintdaniel42.starediscordbot.commands.group;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -16,7 +17,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class AddGroupCommand extends ListenerAdapter {
+public class CreateGroupCommand extends ListenerAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override
@@ -70,5 +71,13 @@ public class AddGroupCommand extends ListenerAdapter {
 				event.reply(R.string("the_group_was_successfully_created")).setEmbeds(GroupEmbed.of(databaseAdapter, groupModel)).queue();
 			}
 		}
+	}
+
+	@Override
+	public void onCommandAutoCompleteInteraction(@NonNull final CommandAutoCompleteInteractionEvent event) {
+		if (!event.getFullCommandName().equals("group create")) return;
+
+		OptionMapping usernameMapping = event.getOption("leader");
+		if (usernameMapping != null) event.replyChoiceStrings(DCHelper.autoCompleteUsername(databaseAdapter, usernameMapping.getAsString())).queue();
 	}
 }
