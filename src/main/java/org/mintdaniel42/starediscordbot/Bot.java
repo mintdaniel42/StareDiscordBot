@@ -1,6 +1,7 @@
 package org.mintdaniel42.starediscordbot;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -33,6 +34,7 @@ import org.mintdaniel42.starediscordbot.db.GroupModel;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+@Slf4j
 public final class Bot extends ListenerAdapter {
     @NonNull private final DatabaseAdapter databaseAdapter;
 
@@ -71,7 +73,10 @@ public final class Bot extends ListenerAdapter {
     public void onShutdown(@NonNull final ShutdownEvent event) {
         try {
             databaseAdapter.close();
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            log.error(R.logging("could_not_close_database"), e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -184,11 +189,11 @@ public final class Bot extends ListenerAdapter {
     }
 
     @Override
-    public void onButtonInteraction(ButtonInteractionEvent event) {
+    public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
         if (!event.isAcknowledged()) event.reply(R.string("this_button_is_not_yet_ready_to_be_pressed")).queue();
     }
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(@NonNull final String[] args) throws Exception {
         new Bot(new DatabaseAdapter(Options.getJdbcUrl()));
     }
 }
