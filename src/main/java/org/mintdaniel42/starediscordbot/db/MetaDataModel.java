@@ -4,8 +4,8 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Value;
-import org.jetbrains.annotations.NotNull;
 
 @Value
 @DatabaseTable(tableName = "metadata")
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor(force = true)
 public class MetaDataModel {
 	@DatabaseField(id = true) int id = 0;
-	@NotNull @DatabaseField Version version;
+	@NonNull @DatabaseField Version version;
 
 	public enum Version {
 		META,

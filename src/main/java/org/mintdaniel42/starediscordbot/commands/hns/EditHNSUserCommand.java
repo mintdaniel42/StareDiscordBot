@@ -1,13 +1,13 @@
 package org.mintdaniel42.starediscordbot.commands.hns;
 
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import org.jetbrains.annotations.NotNull;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.HNSUserModel;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
@@ -23,10 +23,10 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 public final class EditHNSUserCommand extends ListenerAdapter {
-    @NotNull private final DatabaseAdapter databaseAdapter;
+    @NonNull private final DatabaseAdapter databaseAdapter;
 
     @Override
-    public void onSlashCommandInteraction(@NotNull final SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
         if (!event.getFullCommandName().equals("hns edit")) return;
 
         // check maintenance
@@ -97,7 +97,7 @@ public final class EditHNSUserCommand extends ListenerAdapter {
     }
 
     @Override
-    public void onCommandAutoCompleteInteraction(@NotNull final CommandAutoCompleteInteractionEvent event) {
+    public void onCommandAutoCompleteInteraction(@NonNull final CommandAutoCompleteInteractionEvent event) {
         if (!event.getFullCommandName().equals("hns edit")) return;
 
         OptionMapping pointsMapping = event.getOption("points");

@@ -5,7 +5,6 @@ import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.UsernameModel;
@@ -23,7 +22,6 @@ public class DCHelper {
         return member.getRoles().stream().noneMatch(role -> role.getIdLong() == role_id);
     }
 
-    @NotNull
     @Contract(pure = true, value = "_, _ -> new")
     public @NonNull String[] autoCompleteUsername(@NonNull final DatabaseAdapter databaseAdapter, @NonNull final String input) {
         List<UsernameModel> usernames;

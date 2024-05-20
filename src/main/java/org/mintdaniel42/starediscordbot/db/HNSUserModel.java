@@ -3,7 +3,6 @@ package org.mintdaniel42.starediscordbot.db;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -13,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class HNSUserModel {
-    @NotNull @DatabaseField(id = true) UUID uuid;
+    @NonNull @DatabaseField(id = true) UUID uuid;
     @DatabaseField @Builder.Default String rating = "❌";
     @DatabaseField @Builder.Default String joined = "❌";
     @DatabaseField long points;

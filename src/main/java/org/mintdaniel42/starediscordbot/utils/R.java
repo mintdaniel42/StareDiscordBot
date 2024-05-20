@@ -12,4 +12,9 @@ public class R {
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("strings", Options.getLocale());
 		return resourceBundle.containsKey(string) ? resourceBundle.getString(string) : string;
 	}
+
+	public @NonNull String logging(@NonNull @PropertyKey(resourceBundle = "logging") final String string) {
+		ResourceBundle resourceBundle = ResourceBundle.getBundle("logging", Options.getLocale());
+		return resourceBundle.containsKey(string) ? resourceBundle.getString(string) : string;
+	}
 }

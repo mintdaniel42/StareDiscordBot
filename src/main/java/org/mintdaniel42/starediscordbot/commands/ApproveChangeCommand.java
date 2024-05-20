@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInterac
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import org.jetbrains.annotations.NotNull;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
@@ -18,7 +17,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 public final class ApproveChangeCommand extends ListenerAdapter {
-    @NotNull private final DatabaseAdapter databaseAdapter;
+    @NonNull private final DatabaseAdapter databaseAdapter;
 
     @Override
     public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {

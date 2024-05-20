@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
-import org.jetbrains.annotations.NotNull;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.ApproveChangeCommand;
@@ -31,7 +30,7 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 public final class Bot extends ListenerAdapter {
-    @NotNull private final DatabaseAdapter databaseAdapter;
+    @NonNull private final DatabaseAdapter databaseAdapter;
 
 	public Bot(@NonNull final DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
@@ -161,7 +160,7 @@ public final class Bot extends ListenerAdapter {
     }
 
     @Override
-    public void onSlashCommandInteraction(@NotNull final SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
         if (!event.isAcknowledged()) event.reply(R.string("it_looks_like_you_found_an_unfinished_command")).queue();
     }
 
