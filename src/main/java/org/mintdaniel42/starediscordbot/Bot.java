@@ -18,7 +18,6 @@ import org.mintdaniel42.starediscordbot.build.Features;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
 import org.mintdaniel42.starediscordbot.commands.group.CreateGroupCommand;
-import org.mintdaniel42.starediscordbot.commands.group.ShowGroupCommand;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.GroupModel;
 import org.mintdaniel42.starediscordbot.utils.Options;
@@ -41,9 +40,9 @@ public final class Bot extends ListenerAdapter {
 
                         new HNSCommand(databaseAdapter),
                         new PGCommand(databaseAdapter),
+                        new GroupCommand(databaseAdapter),
 
                         new CreateGroupCommand(databaseAdapter),
-                        new ShowGroupCommand(databaseAdapter),
 
                         new ApproveChangeCommand(databaseAdapter),
 
