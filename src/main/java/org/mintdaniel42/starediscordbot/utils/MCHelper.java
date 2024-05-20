@@ -2,6 +2,7 @@ package org.mintdaniel42.starediscordbot.utils;
 
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -16,6 +17,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @UtilityClass
+@Slf4j
 public class MCHelper {
     private static final int timeout = 172800;
 
@@ -32,6 +34,7 @@ public class MCHelper {
                 databaseAdapter.putUsername(new UsernameModel(uuid, username, Instant.now().toEpochMilli()));
                 return uuid;
             } catch (IOException | JSONException e) {
+                log.error(R.logging("could_not_fetch_uuid"), e);
                 return null;
             }
         }
@@ -48,6 +51,7 @@ public class MCHelper {
                 databaseAdapter.putUsername(new UsernameModel(uuid, username, Instant.now().toEpochMilli()));
                 return username;
             } catch (IOException e) {
+                log.error(R.logging("could_not_fetch_username"), e);
                 return null;
             }
         }
