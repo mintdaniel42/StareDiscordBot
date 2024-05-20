@@ -16,6 +16,7 @@ import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.ApproveChangeCommand;
 import org.mintdaniel42.starediscordbot.commands.MaintenanceCommand;
+import org.mintdaniel42.starediscordbot.commands.group.AddGroupCommand;
 import org.mintdaniel42.starediscordbot.commands.hns.AddHNSUserCommand;
 import org.mintdaniel42.starediscordbot.commands.hns.EditHNSUserCommand;
 import org.mintdaniel42.starediscordbot.commands.hns.ListHNSUsersCommand;
@@ -49,6 +50,7 @@ public final class Bot extends ListenerAdapter {
                         new ShowPGUserCommand(databaseAdapter),
                         new ListHNSUsersCommand(databaseAdapter),
                         new ListPGUsersCommand(databaseAdapter),
+                        new AddGroupCommand(databaseAdapter),
                         new ApproveChangeCommand(databaseAdapter),
 
                         this
