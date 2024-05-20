@@ -20,6 +20,7 @@ public class MetaDataModel {
 		HNS_ONLY,
 		PG_ADDED,
 		USERNAMES_ADDED,
-		NEW_REQUESTS
+		NEW_REQUESTS,
+		GROUPS_ADDED
 	}
 }
