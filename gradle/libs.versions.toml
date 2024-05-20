@@ -3,7 +3,7 @@ jda = "5.0.0-beta.23"
 ormlite = "6.1"
 jdbc-sqlite = "3.45.3.0"
 json = "20240303"
-slf4j = "1.7.25"
+slf4j = "2.0.13"
 lombok = "8.6"
 buildConfig = "4.1.2"
 
