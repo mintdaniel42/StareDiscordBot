@@ -27,9 +27,7 @@ public class RequestModel {
     @DatabaseField String name;
     @DatabaseField UUID leader;
     @DatabaseField GroupModel.Relation relation;
-    @DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "hnsId") HNSUserModel hnsUserModel;
-    @DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "pgId") PGUserModel pgUserModel;
-    @DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "groupId") GroupModel groupModel;
+    @DatabaseField String group;
     @DatabaseField long discord;
     @NonNull @DatabaseField Database database;
 
@@ -75,9 +73,7 @@ public class RequestModel {
     public static @NonNull RequestModel from(final long timestamp, @NonNull final UserModel userModel) {
         return RequestModel.builder()
                 .timestamp(timestamp)
-                .hnsUserModel(userModel.getHnsUserModel())
-                .pgUserModel(userModel.getPgUserModel())
-                .groupModel(userModel.getGroupModel())
+                .group(userModel.getGroup())
                 .discord(userModel.getDiscord())
                 .database(Database.USER)
                 .build();

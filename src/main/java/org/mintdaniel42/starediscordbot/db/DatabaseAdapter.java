@@ -89,9 +89,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                             requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN name VARCHAR");
                             requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN leader VARCHAR");
                             requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN relation VARCHAR");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN hnsId VARCHAR");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN pgId VARCHAR");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN groupId VARCHAR");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN \"group\" VARCHAR");
                             requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN discord BIGINT");
                             metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.GROUPS_ADDED));
                         } catch (SQLException e) {
@@ -200,11 +198,11 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     public @Nullable GroupModel getGroupOf(@NonNull UUID uuid) {
         try {
-            return userModelDao.queryBuilder()
+            return groupModelDao.queryForId(userModelDao.queryBuilder()
                     .where()
                     .eq("uuid", uuid)
                     .queryForFirst()
-                    .getGroupModel();
+                    .getGroup());
         } catch (SQLException ignored) {
             return null;
         }

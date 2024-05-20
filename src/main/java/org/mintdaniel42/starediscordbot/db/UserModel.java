@@ -13,17 +13,13 @@ import java.util.UUID;
 @NoArgsConstructor(force = true)
 public class UserModel {
 	@DatabaseField(id = true) UUID uuid;
-	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "hnsId") HNSUserModel hnsUserModel;
-	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "pgId") PGUserModel pgUserModel;
-	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "groupId") GroupModel groupModel;
+	@DatabaseField String group;
 	@DatabaseField long discord;
 
 	public static @NonNull UserModel from(@NonNull final RequestModel requestModel) {
 		return UserModel.builder()
 				.uuid(requestModel.getUuid())
-				.hnsUserModel(requestModel.getHnsUserModel())
-				.pgUserModel(requestModel.getPgUserModel())
-				.groupModel(requestModel.getGroupModel())
+				.group(requestModel.getGroup())
 				.discord(requestModel.getDiscord())
 				.build();
 	}
