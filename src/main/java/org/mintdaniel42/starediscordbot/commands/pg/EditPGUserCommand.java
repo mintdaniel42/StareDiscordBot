@@ -2,7 +2,6 @@ package org.mintdaniel42.starediscordbot.commands.pg;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -93,17 +92,5 @@ public final class EditPGUserCommand extends ListenerAdapter {
                 event.reply(R.string("the_entry_was_successfully_updated")).setEmbeds(UserEmbed.of(databaseAdapter, pgUserModel)).queue();
             }
         }
-    }
-
-    @Override
-    public void onCommandAutoCompleteInteraction(@NonNull final CommandAutoCompleteInteractionEvent event) {
-        if (!event.getFullCommandName().equals("pg edit")) return;
-
-        OptionMapping pointsMapping = event.getOption("points");
-        OptionMapping usernameMapping = event.getOption("username");
-        String focusedOption = event.getFocusedOption().getName();
-
-        if (focusedOption.equals("points") && pointsMapping != null && !pointsMapping.getAsString().isBlank()) event.replyChoices(DCHelper.autocompleteDouble(pointsMapping.getAsString())).queue();
-        else if (focusedOption.equals("username") && usernameMapping != null) event.replyChoiceStrings(DCHelper.autoCompleteUsername(databaseAdapter, usernameMapping.getAsString())).queue();
     }
 }

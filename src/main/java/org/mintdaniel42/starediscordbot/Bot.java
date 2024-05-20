@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.ApproveChangeCommand;
+import org.mintdaniel42.starediscordbot.commands.AutoCompletionHandler;
 import org.mintdaniel42.starediscordbot.commands.MaintenanceCommand;
 import org.mintdaniel42.starediscordbot.commands.group.CreateGroupCommand;
 import org.mintdaniel42.starediscordbot.commands.group.ShowGroupCommand;
@@ -38,6 +39,8 @@ public final class Bot extends ListenerAdapter {
 
         JDABuilder.createLight(Options.getToken())
                 .addEventListeners(
+                        new AutoCompletionHandler(databaseAdapter),
+
                         new ListButtons(databaseAdapter),
 
                         new MaintenanceCommand(),
@@ -128,7 +131,7 @@ public final class Bot extends ListenerAdapter {
                         ),
 
                 Commands.slash("approve", R.string("approve_a_change"))
-                        .addOption(OptionType.INTEGER, "id", R.string("change_id"), false, true),
+                        .addOption(OptionType.INTEGER, "id", R.string("change_id"), true, true),
 
                 Commands.slash("group", R.string("group_related_commands"))
                         .addSubcommandGroups(new SubcommandGroupData("user", R.string("user_related_group_commands"))

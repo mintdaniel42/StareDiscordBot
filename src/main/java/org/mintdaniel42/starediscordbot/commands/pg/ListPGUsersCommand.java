@@ -2,7 +2,6 @@ package org.mintdaniel42.starediscordbot.commands.pg;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -15,7 +14,6 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.List;
-import java.util.stream.LongStream;
 
 @RequiredArgsConstructor
 public final class ListPGUsersCommand extends ListenerAdapter {
@@ -33,7 +31,7 @@ public final class ListPGUsersCommand extends ListenerAdapter {
 
         OptionMapping pageOptionMapping = event.getOption("page");
         int page = (pageOptionMapping) != null ? pageOptionMapping.getAsInt() - 1 : 0;
-        if (page < 0 || page >= databaseAdapter.getPgPages()){
+        if (page < 0 || page >= databaseAdapter.getPgPages()) {
             event.reply(R.string("this_page_does_not_exist") + page + "," + databaseAdapter.getPgPages()).queue();
             return;
         }
@@ -48,18 +46,5 @@ public final class ListPGUsersCommand extends ListenerAdapter {
         } else {
             event.reply(R.string("no_entries_available")).queue();
         }
-    }
-
-    @Override
-    public void onCommandAutoCompleteInteraction(@NonNull final CommandAutoCompleteInteractionEvent event) {
-        if (!event.getFullCommandName().equals("pg list")) return;
-
-        OptionMapping pageMapping = event.getOption("page");
-        String page = pageMapping != null ? pageMapping.getAsString() : "";
-        event.replyChoiceLongs(LongStream.range(0, Math.min(databaseAdapter.getPgPages(), 25))
-                .map(operand -> operand + 1)
-                .boxed()
-                .filter(operand -> String.valueOf(operand).startsWith(page))
-                .toList()).queue();
     }
 }

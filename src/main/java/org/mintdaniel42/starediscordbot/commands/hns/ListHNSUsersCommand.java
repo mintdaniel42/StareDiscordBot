@@ -2,7 +2,6 @@ package org.mintdaniel42.starediscordbot.commands.hns;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -15,7 +14,6 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.List;
-import java.util.stream.LongStream;
 
 @RequiredArgsConstructor
 public final class ListHNSUsersCommand extends ListenerAdapter {
@@ -49,18 +47,5 @@ public final class ListHNSUsersCommand extends ListenerAdapter {
         } else {
             event.reply(R.string("no_entries_available")).queue();
         }
-    }
-
-    @Override
-    public void onCommandAutoCompleteInteraction(@NonNull final CommandAutoCompleteInteractionEvent event) {
-        if (!event.getFullCommandName().equals("hns list")) return;
-
-        OptionMapping pageMapping = event.getOption("page");
-        String page = pageMapping != null ? pageMapping.getAsString() : "";
-        event.replyChoiceLongs(LongStream.range(0, Math.min(databaseAdapter.getHnsPages(), 25))
-                .map(operand -> operand + 1)
-                .boxed()
-                .filter(operand -> String.valueOf(operand).startsWith(page))
-                .toList()).queue();
     }
 }
