@@ -17,7 +17,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class CreateGroupCommand extends ListenerAdapter {
+public final class CreateGroupCommand extends ListenerAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override

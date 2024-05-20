@@ -1,4 +1,4 @@
-package org.mintdaniel42.starediscordbot.buttons;
+package org.mintdaniel42.starediscordbot.commands.group;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public final class ShowGroupButton extends ListenerAdapter {
+public final class ShowGroupCommand extends ListenerAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override

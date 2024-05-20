@@ -13,10 +13,10 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
-import org.mintdaniel42.starediscordbot.buttons.ShowGroupButton;
 import org.mintdaniel42.starediscordbot.commands.ApproveChangeCommand;
 import org.mintdaniel42.starediscordbot.commands.MaintenanceCommand;
 import org.mintdaniel42.starediscordbot.commands.group.CreateGroupCommand;
+import org.mintdaniel42.starediscordbot.commands.group.ShowGroupCommand;
 import org.mintdaniel42.starediscordbot.commands.hns.AddHNSUserCommand;
 import org.mintdaniel42.starediscordbot.commands.hns.EditHNSUserCommand;
 import org.mintdaniel42.starediscordbot.commands.hns.ListHNSUsersCommand;
@@ -39,18 +39,22 @@ public final class Bot extends ListenerAdapter {
         JDABuilder.createLight(Options.getToken())
                 .addEventListeners(
                         new ListButtons(databaseAdapter),
-                        new ShowGroupButton(databaseAdapter),
 
                         new MaintenanceCommand(),
+
                         new AddHNSUserCommand(databaseAdapter),
-                        new AddPGUserCommand(databaseAdapter),
                         new EditHNSUserCommand(databaseAdapter),
-                        new EditPGUserCommand(databaseAdapter),
                         new ShowHNSUserCommand(databaseAdapter),
-                        new ShowPGUserCommand(databaseAdapter),
                         new ListHNSUsersCommand(databaseAdapter),
+
+                        new AddPGUserCommand(databaseAdapter),
+                        new EditPGUserCommand(databaseAdapter),
+                        new ShowPGUserCommand(databaseAdapter),
                         new ListPGUsersCommand(databaseAdapter),
+
                         new CreateGroupCommand(databaseAdapter),
+                        new ShowGroupCommand(databaseAdapter),
+
                         new ApproveChangeCommand(databaseAdapter),
 
                         this
