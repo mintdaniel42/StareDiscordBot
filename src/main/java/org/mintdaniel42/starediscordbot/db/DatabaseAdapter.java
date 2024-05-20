@@ -172,6 +172,19 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    public @Nullable List<GroupModel> getGroups(@NonNull final String having) {
+        try {
+            return groupModelDao.queryBuilder()
+                    .where()
+                    .like("name", "%%%s%%".formatted(having))
+                    .or()
+                    .like("tag", "%%%s%%".formatted(having))
+                    .query();
+        } catch (SQLException ignored) {
+            return null;
+        }
+    }
+
     public @Nullable HNSUserModel getHnsUser(@NonNull UUID uuid) {
         try {
             return hnsUserModelDao.queryBuilder().where().eq("uuid", uuid).queryForFirst();
