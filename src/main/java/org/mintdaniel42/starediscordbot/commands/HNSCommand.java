@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.HNSUserModel;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
@@ -74,7 +73,6 @@ public final class HNSCommand extends ListenerAdapter {
 		}
 	}
 
-	@Contract(pure = true)
 	private void hnsShow(@NonNull final SlashCommandInteractionEvent event, @NonNull final UUID uuid) {
 		UserModel userModel;
 
@@ -92,7 +90,6 @@ public final class HNSCommand extends ListenerAdapter {
 		}
 	}
 
-	@Contract(pure = true)
 	private void hnsAddOrEdit(@NonNull final SlashCommandInteractionEvent event, @NonNull final UUID uuid, @NonNull final String command) {
 		if (!databaseAdapter.hasHnsUser(uuid) && command.equals("hns edit")) event.reply(R.string("this_user_entry_does_not_exist")).queue();
 		else if (databaseAdapter.hasHnsUser(uuid) && command.equals("hns add")) event.reply(R.string("this_user_entry_already_exists")).queue();
@@ -163,7 +160,6 @@ public final class HNSCommand extends ListenerAdapter {
 		}
 	}
 
-	@Contract(pure = true)
 	private void hnsList(@NonNull final SlashCommandInteractionEvent event, final int page) {
 		List<HNSUserModel> entriesList = databaseAdapter.getHnsUserList(page);
 		if (entriesList != null && !entriesList.isEmpty()) {

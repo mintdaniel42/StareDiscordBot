@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.stream.LongStream;
 
 @RequiredArgsConstructor
-public class AutoCompletionHandler extends ListenerAdapter {
+public final class AutoCompletionHandler extends ListenerAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override

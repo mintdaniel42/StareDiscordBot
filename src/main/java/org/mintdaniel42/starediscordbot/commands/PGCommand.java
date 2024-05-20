@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.PGUserModel;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
@@ -74,7 +73,6 @@ public final class PGCommand extends ListenerAdapter {
 		}
 	}
 
-	@Contract(pure = true)
 	private void pgShow(@NonNull final SlashCommandInteractionEvent event, @NonNull final UUID uuid) {
 		UserModel userModel;
 
@@ -89,7 +87,6 @@ public final class PGCommand extends ListenerAdapter {
 		}
 	}
 
-	@Contract(pure = true)
 	private void pgAddOrEdit(@NonNull final SlashCommandInteractionEvent event, @NonNull final UUID uuid, @NonNull final String command) {
 		if (!databaseAdapter.hasPgUser(uuid) && command.equals("pg edit")) event.reply(R.string("this_user_entry_does_not_exist")).queue();
 		else if (databaseAdapter.hasPgUser(uuid) && command.equals("pg add")) event.reply(R.string("this_user_entry_already_exists")).queue();
@@ -157,7 +154,6 @@ public final class PGCommand extends ListenerAdapter {
 		}
 	}
 
-	@Contract(pure = true)
 	private void pgList(@NonNull final SlashCommandInteractionEvent event, final int page) {
 		List<PGUserModel> entriesList = databaseAdapter.getPgUserList(page);
 		if (entriesList != null && !entriesList.isEmpty()) {
