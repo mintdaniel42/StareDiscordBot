@@ -44,7 +44,7 @@ public final class ShowPGUserCommand extends ListenerAdapter {
         if (uuid != null && (pgUserModel = databaseAdapter.getPgUser(uuid)) != null) {
             event.deferReply()
                     .queue(interactionHook -> interactionHook.editOriginalEmbeds(UserEmbed.of(databaseAdapter, pgUserModel))
-                    .setComponents(ActionRow.of(Button.primary(String.format("group:%s", ""), R.string("show_group")))).queue());
+                    .setComponents(ActionRow.of(Button.primary(String.format("group:%s", uuid), R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid)))).queue());
         } else {
             event.reply(R.string("this_username_or_entry_does_not_exist")).queue();
         }
