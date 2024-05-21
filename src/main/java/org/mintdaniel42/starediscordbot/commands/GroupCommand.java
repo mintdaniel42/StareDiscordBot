@@ -30,6 +30,7 @@ public final class GroupCommand extends ListenerAdapter {
 					case "group create" -> groupCreate(event);
 					case "group user add" -> groupUserAdd(event);
 					case "group user show" -> groupUserShow(event);
+					case "group user remove" -> groupUserRemove(event);
 				}
 			} else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
 		}
@@ -113,5 +114,25 @@ public final class GroupCommand extends ListenerAdapter {
 				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.string("this_username_does_not_exist")).queue();
 		} else event.reply(R.string("your_command_was_incomplete")).queue();
+	}
+
+	private void groupUserRemove(@NonNull final SlashCommandInteractionEvent event) {
+		if (DCHelper.hasRole(event.getMember(), Options.getCreateRoleId()) || DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
+			if (event.getOption("username") instanceof OptionMapping usernameMapping) {
+				if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
+					if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
+						if (userModel.getGroup() instanceof GroupModel groupModel) {
+							databaseAdapter.editUser(userModel.toBuilder()
+									.group(null)
+									.build());
+							event.reply(R.string("the_user_s_was_removed_from_the_group_s",
+									MCHelper.getUsername(databaseAdapter, uuid),
+									groupModel.getName())).queue();
+						} else event.reply(R.string("the_user_s_is_not_in_any_group",
+								userModel.getUsername())).queue();
+					} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
+				} else event.reply(R.string("this_username_does_not_exist")).queue();
+			} else event.reply(R.string("your_command_was_incomplete")).queue();
+		} else event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
 	}
 }
