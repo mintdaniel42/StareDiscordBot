@@ -71,8 +71,9 @@ public final class Bot extends ListenerAdapter {
                 Commands.slash("hns", R.string("hide_n_seek_related_commands"))
                         .addSubcommands(
                                 new SubcommandData("show", R.string("show_hide_n_seek_entry"))
-                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
-                                        .addOption(OptionType.BOOLEAN, "more", R.string("more_info")),
+                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
+                                new SubcommandData("showmore", R.string("show_hide_n_seek_entry_more"))
+                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
                                 new SubcommandData("edit", R.string("edit_a_hide_n_seek_entry"))
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                                         .addOption(OptionType.NUMBER, "points", R.string("points"), false, true)
