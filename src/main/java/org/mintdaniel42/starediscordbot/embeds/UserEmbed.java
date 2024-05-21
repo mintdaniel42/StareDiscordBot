@@ -21,6 +21,12 @@ public class UserEmbed {
         builder.setThumbnail(MCHelper.getThumbnail(userModel.getUuid()));
 
         switch (type) {
+            case BASE -> {
+                builder.setTitle(R.string("user_base_info"));
+                builder.addField(R.string("group_name"), userModel.getGroup() != null ? userModel.getGroup().getName() : "❌", true);
+                builder.addField(R.string("discord_tag"), userModel.getDiscord() == 0 ? "❌" : "<@%s>".formatted(userModel.getDiscord()), true);
+                builder.addField(R.string("note"), userModel.getNote(), false);
+            }
             case HNS -> {
                 builder.setTitle(R.string("hide_n_seek_player_database"));
                 builder.addField(R.string("rating"), userModel.getHnsUser().getRating(), true);
@@ -78,6 +84,7 @@ public class UserEmbed {
     }
 
     public enum Type {
+        BASE,
         HNS,
         HNS_MORE,
         HNS_ALL,
