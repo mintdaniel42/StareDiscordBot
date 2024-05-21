@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.mintdaniel42.starediscordbot.build.Features;
 import org.mintdaniel42.starediscordbot.db.*;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
@@ -79,7 +80,7 @@ public final class PGCommand extends ListenerAdapter {
 			event.deferReply().queue(interactionHook -> interactionHook
 					.editOriginalEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG))
 					.setComponents(ActionRow.of(
-							Button.primary(String.format("group:%s", uuid), R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid))
+							Button.primary(String.format("group:%s", uuid), R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid) || !Features.dev)
 					)).queue());
 		} else {
 			event.reply(R.string("this_username_or_entry_does_not_exist")).queue();
@@ -168,8 +169,8 @@ public final class PGCommand extends ListenerAdapter {
 		if (entriesList != null && !entriesList.isEmpty()) {
 			event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createPgList(databaseAdapter, entriesList, page))
 					.setComponents(ActionRow.of(
-							Button.primary(String.format("previous:pg:%s", page), R.string("previous_page")).withDisabled(page < 1),
-							Button.primary(String.format("next:pg:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getPgPages())
+							Button.primary(String.format("previous:pg:%s", page), R.string("previous_page")).withDisabled(page < 1 || !Features.dev),
+							Button.primary(String.format("next:pg:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getPgPages() || !Features.dev)
 					))
 					.queue());
 		} else event.reply(R.string("no_entries_available")).queue();

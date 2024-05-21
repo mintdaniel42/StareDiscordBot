@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.mintdaniel42.starediscordbot.build.Features;
 import org.mintdaniel42.starediscordbot.db.*;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
@@ -59,11 +60,11 @@ public final class HNSCommand extends ListenerAdapter {
 							Button.primary(
 									String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
 									R.string(!more ? "more_info" : "basic_info")
-							),
+							).withDisabled(!Features.dev),
 							Button.primary(
 									String.format("group:%s", groupModel != null ? groupModel.getTag() : null),
 									R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid) || groupModel == null)
-							)
+							).withDisabled(!Features.dev)
 					).queue());
 		} else {
 			event.reply(R.string("this_username_or_entry_does_not_exist")).queue();
@@ -80,11 +81,11 @@ public final class HNSCommand extends ListenerAdapter {
 									Button.primary(
 											String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
 											R.string(!more ? "more_info" : "basic_info")
-									),
+									).withDisabled(!Features.dev),
 									Button.primary(
 											String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
 											R.string("show_group")).withDisabled(userModel.getGroup() == null)
-									)
+									).withDisabled(!Features.dev)
 							).queue());
 				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.string("this_username_does_not_exist")).queue();
@@ -193,8 +194,8 @@ public final class HNSCommand extends ListenerAdapter {
 					int page = pageMapping.getAsInt();
 					event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createHnsList(databaseAdapter, entries, page))
 							.setComponents(ActionRow.of(
-									Button.primary(String.format("previous:hns:%s", page), R.string("previous_page")).withDisabled(page < 1),
-									Button.primary(String.format("next:hns:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getHnsPages())
+									Button.primary(String.format("previous:hns:%s", page), R.string("previous_page")).withDisabled(page < 1 || !Features.dev),
+									Button.primary(String.format("next:hns:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getHnsPages() || !Features.dev)
 							))
 							.queue());
 				} else event.reply(R.string("this_page_does_not_exist")).queue();
