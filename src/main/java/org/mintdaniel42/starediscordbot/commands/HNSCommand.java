@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
@@ -27,6 +28,8 @@ public final class HNSCommand extends ListenerAdapter {
 
 	@Override
 	public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
+		if (!event.getFullCommandName().startsWith("hns")) return;
+
 		// check maintenance
 		if (Options.isInMaintenance()) {
 			event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
@@ -70,10 +73,39 @@ public final class HNSCommand extends ListenerAdapter {
 		}
 	}
 
+	@Override
+	public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
+		String[] buttonParts = event.getComponentId().split(":");
+		if (!(buttonParts[0].equals("hns") || buttonParts[0].equals("detailedhns")) || buttonParts.length != 2) return;
+
+		boolean more = buttonParts[0].equals("detailedhns");
+		UUID uuid = UUID.fromString(buttonParts[1]);
+
+		UserModel userModel;
+
+		if ((userModel = databaseAdapter.getUser(uuid)) != null && userModel.getHnsUser() != null) {
+			GroupModel groupModel = userModel.getGroup();
+			event.deferReply().queue(interactionHook -> interactionHook
+					.editOriginalEmbeds(UserEmbed.of(userModel, more ? UserEmbed.Type.HNS_MORE : UserEmbed.Type.HNS))
+					.setComponents(ActionRow.of(
+							Button.primary(
+									String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
+									R.string(!more ? "more_info" : "basic_info")
+							),
+							Button.primary(
+									String.format("group:%s", groupModel != null ? groupModel.getTag() : null),
+									R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid)
+							)
+					)).queue());
+		} else {
+			event.reply(R.string("this_username_or_entry_does_not_exist")).queue();
+		}
+	}
+
 	private void hnsShow(@NonNull final SlashCommandInteractionEvent event, @NonNull final UUID uuid) {
 		UserModel userModel;
 
-		if ((userModel = databaseAdapter.getUser(uuid)) != null) {
+		if ((userModel = databaseAdapter.getUser(uuid)) != null && userModel.getHnsUser() != null) {
 			OptionMapping moreMapping = event.getOption("more");
 			boolean more = moreMapping != null && moreMapping.getAsBoolean();
 			GroupModel groupModel = userModel.getGroup();
@@ -132,6 +164,8 @@ public final class HNSCommand extends ListenerAdapter {
 					case "top10" -> hnsBuilder.top10(optionMapping.getAsString());
 					case "streak" -> hnsBuilder.streak(optionMapping.getAsInt());
 					case "highest_rank" -> hnsBuilder.highestRank(optionMapping.getAsString());
+					case "discord" -> userBuilder.discord(optionMapping.getAsLong());
+					case "note" -> userBuilder.note(optionMapping.getAsString());
 				}
 			}
 
@@ -163,7 +197,7 @@ public final class HNSCommand extends ListenerAdapter {
 						}
 					}
 				} else {
-					if (databaseAdapter.editHnsUser(userModel.getHnsUser()) == 0) event.reply(R.string("the_entry_could_not_be_updated")).queue();
+					if (databaseAdapter.editHnsUser(userModel.getHnsUser()) == 0 || databaseAdapter.editUser(userModel) == 0) event.reply(R.string("the_entry_could_not_be_updated")).queue();
 					else {
 						event.reply(R.string("the_entry_was_successfully_updated")).setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS)).queue();
 					}

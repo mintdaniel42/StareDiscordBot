@@ -10,10 +10,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
-import org.mintdaniel42.starediscordbot.db.PGUserModel;
-import org.mintdaniel42.starediscordbot.db.RequestModel;
-import org.mintdaniel42.starediscordbot.db.UserModel;
+import org.mintdaniel42.starediscordbot.db.*;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
@@ -30,6 +27,8 @@ public final class PGCommand extends ListenerAdapter {
 
 	@Override
 	public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
+		if (!event.getFullCommandName().startsWith("pg")) return;
+
 		// check maintenance
 		if (Options.isInMaintenance()) {
 			event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
@@ -76,7 +75,7 @@ public final class PGCommand extends ListenerAdapter {
 	private void pgShow(@NonNull final SlashCommandInteractionEvent event, @NonNull final UUID uuid) {
 		UserModel userModel;
 
-		if ((userModel = databaseAdapter.getUser(uuid)) != null) {
+		if ((userModel = databaseAdapter.getUser(uuid)) != null && userModel.getPgUser() != null) {
 			event.deferReply().queue(interactionHook -> interactionHook
 					.editOriginalEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG))
 					.setComponents(ActionRow.of(
@@ -122,6 +121,8 @@ public final class PGCommand extends ListenerAdapter {
 					case "luck" -> pgBuilder.luck(optionMapping.getAsDouble());
 					case "quota" -> pgBuilder.quota(optionMapping.getAsDouble());
 					case "winrate" -> pgBuilder.winrate(optionMapping.getAsDouble());
+					case "discord" -> userBuilder.discord(optionMapping.getAsLong());
+					case "note" -> userBuilder.note(optionMapping.getAsString());
 				}
 			}
 
@@ -153,7 +154,7 @@ public final class PGCommand extends ListenerAdapter {
 						}
 					}
 				} else {
-					if (databaseAdapter.editPgUser(userModel.getPgUser()) == 0) event.reply(R.string("the_entry_could_not_be_updated")).queue();
+					if (databaseAdapter.editPgUser(userModel.getPgUser()) == 0 || databaseAdapter.editUser(userModel) == 0) event.reply(R.string("the_entry_could_not_be_updated")).queue();
 					else {
 						event.reply(R.string("the_entry_was_successfully_updated")).setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG)).queue();
 					}
