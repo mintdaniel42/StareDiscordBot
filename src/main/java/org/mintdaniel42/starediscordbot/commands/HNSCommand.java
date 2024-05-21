@@ -94,9 +94,9 @@ public final class HNSCommand extends ListenerAdapter {
 							),
 							Button.primary(
 									String.format("group:%s", groupModel != null ? groupModel.getTag() : null),
-									R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid)
+									R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid) || groupModel == null)
 							)
-					)).queue());
+					).queue());
 		} else {
 			event.reply(R.string("this_username_or_entry_does_not_exist")).queue();
 		}
