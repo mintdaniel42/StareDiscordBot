@@ -4,8 +4,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -36,11 +34,11 @@ public final class Bot extends ListenerAdapter {
                         new ListButtons(databaseAdapter),
 
                         new MaintenanceCommand(),
+                        new HelpCommand(),
 
                         new HNSCommand(databaseAdapter),
                         new PGCommand(databaseAdapter),
                         new GroupCommand(databaseAdapter),
-
                         new ApproveChangeCommand(databaseAdapter),
 
                         this
@@ -67,6 +65,8 @@ public final class Bot extends ListenerAdapter {
         CommandListUpdateAction commandListUpdateAction = event.getGuild().updateCommands().addCommands(
                 Commands.slash("maintenance", R.string("control_maintenance"))
                         .addOption(OptionType.BOOLEAN, "active", R.string("if_maintenance_should_be_enabled"), true),
+
+                Commands.slash("help", R.string("list_all_commands")),
 
                 Commands.slash("hns", R.string("hide_n_seek_related_commands"))
                         .addSubcommands(
@@ -173,16 +173,6 @@ public final class Bot extends ListenerAdapter {
         }
 
         commandListUpdateAction.queue();
-    }
-
-    @Override
-    public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
-        if (!event.isAcknowledged()) event.reply(R.string("it_looks_like_you_found_an_unfinished_command")).queue();
-    }
-
-    @Override
-    public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
-        if (!event.isAcknowledged()) event.reply(R.string("this_button_is_not_yet_ready_to_be_pressed")).queue();
     }
 
     public static void main(@NonNull final String[] args) throws Exception {
