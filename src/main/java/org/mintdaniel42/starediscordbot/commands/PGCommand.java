@@ -92,33 +92,41 @@ public final class PGCommand extends ListenerAdapter {
 		else if (databaseAdapter.hasPgUser(uuid) && command.equals("pg add")) event.reply(R.string("this_user_entry_already_exists")).queue();
 		else {
 			// get builder
-			PGUserModel.PGUserModelBuilder builder;
-			if (command.equals("pg add")) builder = PGUserModel.builder();
+			PGUserModel.PGUserModelBuilder pgBuilder;
+			UserModel.UserModelBuilder userBuilder;
+			if (command.equals("pg add")) {
+				pgBuilder = PGUserModel.builder();
+				userBuilder = UserModel.builder();
+			}
 			else {
 				PGUserModel pgUserModel = databaseAdapter.getPgUser(uuid);
-				if (pgUserModel == null) {
+				UserModel userModel = databaseAdapter.getUser(uuid);
+				if (pgUserModel == null || userModel == null) {
 					event.reply(R.string("this_user_entry_does_not_exist")).queue();
 					return;
 				}
-				else builder = pgUserModel.toBuilder();
+				else {
+					pgBuilder = pgUserModel.toBuilder();
+					userBuilder = userModel.toBuilder();
+				}
 			}
 
 			// set attributes
 			for (OptionMapping optionMapping : event.getOptions()) {
 				switch (optionMapping.getName()) {
-					case "rating" -> builder.rating(optionMapping.getAsString());
-					case "points" -> builder.points(Math.round(optionMapping.getAsDouble()));
-					case "joined" -> builder.joined(optionMapping.getAsString());
-					case "luck" -> builder.luck(optionMapping.getAsDouble());
-					case "quota" -> builder.quota(optionMapping.getAsDouble());
-					case "winrate" -> builder.winrate(optionMapping.getAsDouble());
+					case "rating" -> pgBuilder.rating(optionMapping.getAsString());
+					case "points" -> pgBuilder.points(Math.round(optionMapping.getAsDouble()));
+					case "joined" -> pgBuilder.joined(optionMapping.getAsString());
+					case "luck" -> pgBuilder.luck(optionMapping.getAsDouble());
+					case "quota" -> pgBuilder.quota(optionMapping.getAsDouble());
+					case "winrate" -> pgBuilder.winrate(optionMapping.getAsDouble());
 				}
 			}
 
 			// update the model
-			UserModel userModel = databaseAdapter.getUser(uuid);
-			if (userModel == null) userModel = UserModel.builder().pgUser(builder.build()).build();
-			else userModel = userModel.toBuilder().pgUser(builder.build()).build();
+			UserModel userModel = userBuilder.build();
+			if (userModel == null) userModel = UserModel.builder().pgUser(pgBuilder.build()).build();
+			else userModel = userModel.toBuilder().pgUser(pgBuilder.build()).build();
 
 			if (command.equals("pg add")) {
 				if (!databaseAdapter.addUser(userModel)) event.reply(R.string("the_entry_could_not_be_created")).queue();

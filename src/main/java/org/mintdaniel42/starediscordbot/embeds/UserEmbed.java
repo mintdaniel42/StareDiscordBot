@@ -21,7 +21,7 @@ public class UserEmbed {
         builder.setThumbnail(MCHelper.getThumbnail(userModel.getUuid()));
 
         switch (type) {
-            case HNS -> {
+            case HNS, HNS_NONNULL -> {
                 builder.setTitle(R.string("hide_n_seek_player_database"));
                 builder.addField(R.string("rating"), userModel.getHnsUser().getRating(), true);
                 builder.addField(R.string("points"), formatNumber(userModel.getHnsUser().getPoints()), true);
@@ -65,6 +65,7 @@ public class UserEmbed {
     public enum Type {
         HNS,
         HNS_MORE,
+        HNS_NONNULL,
         PG
     }
 }

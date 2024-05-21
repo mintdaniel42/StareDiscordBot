@@ -10,10 +10,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
-import org.mintdaniel42.starediscordbot.db.HNSUserModel;
-import org.mintdaniel42.starediscordbot.db.RequestModel;
-import org.mintdaniel42.starediscordbot.db.UserModel;
+import org.mintdaniel42.starediscordbot.db.*;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
@@ -79,6 +76,7 @@ public final class HNSCommand extends ListenerAdapter {
 		if ((userModel = databaseAdapter.getUser(uuid)) != null) {
 			OptionMapping moreMapping = event.getOption("more");
 			boolean more = moreMapping != null && moreMapping.getAsBoolean();
+			GroupModel groupModel = userModel.getGroup();
 			event.deferReply().queue(interactionHook -> interactionHook
 					.editOriginalEmbeds(UserEmbed.of(userModel, more ? UserEmbed.Type.HNS_MORE : UserEmbed.Type.HNS))
 					.setComponents(ActionRow.of(
@@ -87,7 +85,7 @@ public final class HNSCommand extends ListenerAdapter {
 									R.string(more ? "more_info" : "basic_info")
 							),
 							Button.primary(
-									String.format("group:%s", userModel.getGroup().getTag()),
+									String.format("group:%s", groupModel != null ? groupModel.getTag() : null),
 									R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid)
 							)
 					)).queue());
@@ -101,36 +99,44 @@ public final class HNSCommand extends ListenerAdapter {
 		else if (databaseAdapter.hasHnsUser(uuid) && command.equals("hns add")) event.reply(R.string("this_user_entry_already_exists")).queue();
 		else {
 			// get builder
-			HNSUserModel.HNSUserModelBuilder builder;
-			if (command.equals("hns add")) builder = HNSUserModel.builder();
+			HNSUserModel.HNSUserModelBuilder hnsBuilder;
+			UserModel.UserModelBuilder userBuilder;
+			if (command.equals("hns add")) {
+				hnsBuilder = HNSUserModel.builder();
+				userBuilder = UserModel.builder();
+			}
 			else {
 				HNSUserModel hnsUserModel = databaseAdapter.getHnsUser(uuid);
-				if (hnsUserModel == null) {
+				UserModel userModel = databaseAdapter.getUser(uuid);
+				if (hnsUserModel == null || userModel == null) {
 					event.reply(R.string("this_user_entry_does_not_exist")).queue();
 					return;
 				}
-				else builder = hnsUserModel.toBuilder();
+				else {
+					hnsBuilder = hnsUserModel.toBuilder();
+					userBuilder = userModel.toBuilder();
+				}
 			}
 
 			// set attributes
 			for (OptionMapping optionMapping : event.getOptions()) {
 				switch (optionMapping.getName()) {
-					case "rating" -> builder.rating(optionMapping.getAsString());
-					case "points" -> builder.points(Math.round(optionMapping.getAsDouble()));
-					case "joined" -> builder.joined(optionMapping.getAsString());
-					case "secondary" -> builder.secondary(optionMapping.getAsBoolean());
-					case "banned" -> builder.banned(optionMapping.getAsBoolean());
-					case "cheating" -> builder.cheating(optionMapping.getAsBoolean());
-					case "top10" -> builder.top10(optionMapping.getAsString());
-					case "streak" -> builder.streak(optionMapping.getAsInt());
-					case "highest_rank" -> builder.highestRank(optionMapping.getAsString());
+					case "rating" -> hnsBuilder.rating(optionMapping.getAsString());
+					case "points" -> hnsBuilder.points(Math.round(optionMapping.getAsDouble()));
+					case "joined" -> hnsBuilder.joined(optionMapping.getAsString());
+					case "secondary" -> hnsBuilder.secondary(optionMapping.getAsBoolean());
+					case "banned" -> hnsBuilder.banned(optionMapping.getAsBoolean());
+					case "cheating" -> hnsBuilder.cheating(optionMapping.getAsBoolean());
+					case "top10" -> hnsBuilder.top10(optionMapping.getAsString());
+					case "streak" -> hnsBuilder.streak(optionMapping.getAsInt());
+					case "highest_rank" -> hnsBuilder.highestRank(optionMapping.getAsString());
 				}
 			}
 
 			// update the model
-			UserModel userModel = databaseAdapter.getUser(uuid);
-			if (userModel == null) userModel = UserModel.builder().hnsUser(builder.build()).build();
-			else userModel = userModel.toBuilder().hnsUser(builder.build()).build();
+			UserModel userModel = userBuilder.build();
+			if (userModel == null) userModel = UserModel.builder().hnsUser(hnsBuilder.build()).build();
+			else userModel = userModel.toBuilder().hnsUser(hnsBuilder.build()).build();
 
 			if (command.equals("hns add")) {
 				if (!databaseAdapter.addUser(userModel)) event.reply(R.string("the_entry_could_not_be_created")).queue();
@@ -152,7 +158,7 @@ public final class HNSCommand extends ListenerAdapter {
 												member.getAsMention(),
 												timestamp))
 										.addActionRow(Button.primary(String.format("approve:%s", timestamp), R.string("approve_this_change")))
-										.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS)).queue();
+										.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS_NONNULL)).queue();
 							}
 						}
 					}

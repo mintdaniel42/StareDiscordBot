@@ -15,8 +15,8 @@ public class UserModel {
 	String username;
 	@DatabaseField(id = true) UUID uuid;
 	@DatabaseField(foreign = true, foreignAutoRefresh = true, foreignAutoCreate = true) GroupModel group;
-	@DatabaseField(foreign = true, foreignAutoRefresh = true, foreignAutoCreate = true) HNSUserModel hnsUser;
-	@DatabaseField(foreign = true, foreignAutoRefresh = true, foreignAutoCreate = true) PGUserModel pgUser;
+	HNSUserModel hnsUser;
+	PGUserModel pgUser;
 	@DatabaseField long discord;
 	@DatabaseField @Builder.Default String note = "❌";
 

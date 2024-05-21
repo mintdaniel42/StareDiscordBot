@@ -12,10 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.utils.Options;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Slf4j
 public final class DatabaseAdapter implements AutoCloseable {
@@ -98,14 +96,31 @@ public final class DatabaseAdapter implements AutoCloseable {
                     }
                     case GROUPS_ADDED -> {
                         try {
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN top10 VARCHAR");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests RENAME COLUMN \"group\" TO group_id");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN top10 VARCHAR DEFAULT ❌");
                             requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN streak INTEGER");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN highestRank VARCHAR");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN note VARCHAR");
-                            hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN top10 VARCHAR");
-                            hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN streak INTEGER");
-                            hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN highestRank VARCHAR");
-                            hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN note VARCHAR");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN highestRank VARCHAR DEFAULT ❌");
+                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN note VARCHAR DEFAULT ❌");
+                            if (!hnsUserModelV2) {
+                                hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN top10 VARCHAR DEFAULT ❌");
+                                hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN streak INTEGER");
+                                hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN highestRank VARCHAR DEFAULT ❌");
+                            }
+
+                            List<UUID> uuids = Stream.of(hnsUserModelDao.queryForAll(), pgUserModelDao.queryForAll())
+                                    .flatMap(Collection::stream)
+                                    .map(object -> object instanceof HNSUserModel hnsUserModel ? hnsUserModel.getUuid() : ((PGUserModel) object).getUuid())
+                                    .distinct()
+                                    .toList();
+
+                            for (UUID uuid : uuids) {
+                                UserModel.UserModelBuilder builder = UserModel.builder();
+                                builder.uuid(uuid);
+                                if (hnsUserModelDao.idExists(uuid)) builder.hnsUser(hnsUserModelDao.queryForId(uuid));
+                                if (pgUserModelDao.idExists(uuid)) builder.pgUser(pgUserModelDao.queryForId(uuid));
+                                userModelDao.create(builder.build());
+                            }
+
                             metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.HNS_V2));
                         } catch (SQLException e) {
                             log.error("Couldn't perform hns_v2 migration: ", e);
@@ -224,21 +239,16 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
-    public @Nullable GroupModel getGroupOf(@NonNull UUID uuid) {
+    public @Nullable UserModel getUser(@NonNull UUID uuid) {
         try {
-            return groupModelDao.queryForId(userModelDao.queryBuilder()
+            return userModelDao.queryBuilder()
                     .where()
                     .eq("uuid", uuid)
                     .queryForFirst()
-                    .getGroup());
-        } catch (SQLException ignored) {
-            return null;
-        }
-    }
-
-    public @Nullable UserModel getUser(@NonNull UUID uuid) {
-        try {
-            return userModelDao.queryBuilder().where().eq("uuid", uuid).queryForFirst();
+                    .toBuilder()
+                    .hnsUser(getHnsUser(uuid))
+                    .pgUser(getPgUser(uuid))
+                    .build();
         } catch (SQLException ignored) {
             return null;
         }
@@ -354,9 +364,12 @@ public final class DatabaseAdapter implements AutoCloseable {
      * @param userModel the {@link UserModel} to be added
      * @return {@code true} if it was added, else {@code false}
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean addUser(@NonNull UserModel userModel) {
         try {
-            return userModelDao.createIfNotExists(userModel).equals(userModel);
+            return userModelDao.createIfNotExists(userModel).equals(userModel) &&
+                    addHnsUser(userModel.getHnsUser()) &&
+                    addPgUser(userModel.getPgUser());
         } catch (SQLException ignored) {
             return false;
         }
@@ -386,11 +399,12 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean hasGroupFor(@NonNull UUID uuid) {
         try {
             return userModelDao.idExists(uuid) && userModelDao.queryBuilder()
                     .where()
-                    .isNotNull("group")
+                    .isNotNull("group_id")
                     .countOf() != 0;
         } catch (SQLException ignored) {
             return false;
