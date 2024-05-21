@@ -95,8 +95,10 @@ public final class PGCommand extends ListenerAdapter {
 			PGUserModel.PGUserModelBuilder pgBuilder;
 			UserModel.UserModelBuilder userBuilder;
 			if (command.equals("pg add")) {
-				pgBuilder = PGUserModel.builder();
-				userBuilder = UserModel.builder();
+				pgBuilder = PGUserModel.builder().uuid(uuid);
+				UserModel userModel = databaseAdapter.getUser(uuid);
+				if (userModel == null) userBuilder = UserModel.builder().uuid(uuid);
+				else userBuilder = userModel.toBuilder();
 			}
 			else {
 				PGUserModel pgUserModel = databaseAdapter.getPgUser(uuid);
@@ -124,12 +126,10 @@ public final class PGCommand extends ListenerAdapter {
 			}
 
 			// update the model
-			UserModel userModel = userBuilder.build();
-			if (userModel == null) userModel = UserModel.builder().pgUser(pgBuilder.build()).build();
-			else userModel = userModel.toBuilder().pgUser(pgBuilder.build()).build();
+			UserModel userModel = userBuilder.pgUser(pgBuilder.build()).build();
 
 			if (command.equals("pg add")) {
-				if (!databaseAdapter.addUser(userModel)) event.reply(R.string("the_entry_could_not_be_created")).queue();
+				if (!databaseAdapter.addUser(userModel) && !databaseAdapter.addPgUser(pgBuilder.build())) event.reply(R.string("the_entry_could_not_be_created")).queue();
 				else event.reply(R.string("the_entry_was_successfully_created")).setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG)).queue();
 			} else {
 				if (DCHelper.lacksRole(event.getMember(), Options.getEditRoleId()) && DCHelper.lacksRole(event.getMember(), Options.getCreateRoleId())) {

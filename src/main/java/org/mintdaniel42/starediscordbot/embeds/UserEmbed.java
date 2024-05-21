@@ -21,7 +21,7 @@ public class UserEmbed {
         builder.setThumbnail(MCHelper.getThumbnail(userModel.getUuid()));
 
         switch (type) {
-            case HNS, HNS_NONNULL -> {
+            case HNS -> {
                 builder.setTitle(R.string("hide_n_seek_player_database"));
                 builder.addField(R.string("rating"), userModel.getHnsUser().getRating(), true);
                 builder.addField(R.string("points"), formatNumber(userModel.getHnsUser().getPoints()), true);
@@ -38,6 +38,21 @@ public class UserEmbed {
                 builder.addField(R.string("secondary"), userModel.getHnsUser().isSecondary() ? "✅" : "❌", true);
                 builder.addField(R.string("discord_tag"), userModel.getDiscord() == 0 ? "❌" : "<@%s>".formatted(userModel.getDiscord()), true);
                 builder.addField(R.string("group_name"), userModel.getGroup() != null ? userModel.getGroup().getName() : "❌", true);
+            }
+            case HNS_ALL -> {
+                builder.setTitle(R.string("hide_n_seek_player_database"));
+                builder.addField(R.string("rating"), userModel.getHnsUser().getRating(), false);
+                builder.addField(R.string("points"), formatNumber(userModel.getHnsUser().getPoints()), false);
+                builder.addField(R.string("joined"), userModel.getHnsUser().getJoined(), false);
+                builder.addField(R.string("note"), userModel.getNote(), false);
+                builder.addField(R.string("banned"), userModel.getHnsUser().isBanned() ? "✅" : "❌", false);
+                builder.addField(R.string("cheating"), userModel.getHnsUser().isCheating() ? "✅" : "❌", false);
+                builder.addField(R.string("top10"), userModel.getHnsUser().getTop10(), false);
+                builder.addField(R.string("streak"), formatNumber(userModel.getHnsUser().getStreak()), false);
+                builder.addField(R.string("highest_rank"), userModel.getHnsUser().getHighestRank(), false);
+                builder.addField(R.string("secondary"), userModel.getHnsUser().isSecondary() ? "✅" : "❌", false);
+                builder.addField(R.string("discord_tag"), userModel.getDiscord() == 0 ? "❌" : "<@%s>".formatted(userModel.getDiscord()), false);
+                builder.addField(R.string("group_name"), userModel.getGroup() != null ? userModel.getGroup().getName() : "❌", false);
             }
             case PG -> {
                 builder.setTitle(R.string("partygames_player_database"));
@@ -65,7 +80,7 @@ public class UserEmbed {
     public enum Type {
         HNS,
         HNS_MORE,
-        HNS_NONNULL,
+        HNS_ALL,
         PG
     }
 }

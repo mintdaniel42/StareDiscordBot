@@ -82,7 +82,7 @@ public final class HNSCommand extends ListenerAdapter {
 					.setComponents(ActionRow.of(
 							Button.primary(
 									String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
-									R.string(more ? "more_info" : "basic_info")
+									R.string(!more ? "more_info" : "basic_info")
 							),
 							Button.primary(
 									String.format("group:%s", groupModel != null ? groupModel.getTag() : null),
@@ -102,8 +102,10 @@ public final class HNSCommand extends ListenerAdapter {
 			HNSUserModel.HNSUserModelBuilder hnsBuilder;
 			UserModel.UserModelBuilder userBuilder;
 			if (command.equals("hns add")) {
-				hnsBuilder = HNSUserModel.builder();
-				userBuilder = UserModel.builder();
+				hnsBuilder = HNSUserModel.builder().uuid(uuid);
+				UserModel userModel = databaseAdapter.getUser(uuid);
+				if (userModel == null) userBuilder = UserModel.builder().uuid(uuid);
+				else userBuilder = userModel.toBuilder();
 			}
 			else {
 				HNSUserModel hnsUserModel = databaseAdapter.getHnsUser(uuid);
@@ -134,13 +136,11 @@ public final class HNSCommand extends ListenerAdapter {
 			}
 
 			// update the model
-			UserModel userModel = userBuilder.build();
-			if (userModel == null) userModel = UserModel.builder().hnsUser(hnsBuilder.build()).build();
-			else userModel = userModel.toBuilder().hnsUser(hnsBuilder.build()).build();
+			UserModel userModel = userBuilder.hnsUser(hnsBuilder.build()).build();
 
 			if (command.equals("hns add")) {
-				if (!databaseAdapter.addUser(userModel)) event.reply(R.string("the_entry_could_not_be_created")).queue();
-				else event.reply(R.string("the_entry_was_successfully_created")).setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS)).queue();
+				if (!databaseAdapter.addUser(userModel) && !databaseAdapter.addHnsUser(hnsBuilder.build())) event.reply(R.string("the_entry_could_not_be_created")).queue();
+				else event.reply(R.string("the_entry_was_successfully_created")).setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS_ALL)).queue();
 			} else {
 				if (DCHelper.lacksRole(event.getMember(), Options.getEditRoleId()) && DCHelper.lacksRole(event.getMember(), Options.getCreateRoleId())) {
 					long timestamp = System.currentTimeMillis();
@@ -158,7 +158,7 @@ public final class HNSCommand extends ListenerAdapter {
 												member.getAsMention(),
 												timestamp))
 										.addActionRow(Button.primary(String.format("approve:%s", timestamp), R.string("approve_this_change")))
-										.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS_NONNULL)).queue();
+										.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS_ALL)).queue();
 							}
 						}
 					}

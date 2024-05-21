@@ -241,10 +241,11 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     public @Nullable UserModel getUser(@NonNull UUID uuid) {
         try {
-            return userModelDao.queryBuilder()
+            UserModel userModel = userModelDao.queryBuilder()
                     .where()
                     .eq("uuid", uuid)
-                    .queryForFirst()
+                    .queryForFirst();
+            return userModel == null ? null : userModel
                     .toBuilder()
                     .hnsUser(getHnsUser(uuid))
                     .pgUser(getPgUser(uuid))
@@ -367,9 +368,9 @@ public final class DatabaseAdapter implements AutoCloseable {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean addUser(@NonNull UserModel userModel) {
         try {
-            return userModelDao.createIfNotExists(userModel).equals(userModel) &&
-                    addHnsUser(userModel.getHnsUser()) &&
-                    addPgUser(userModel.getPgUser());
+            if (userModel.getPgUser() != null) addPgUser(userModel.getPgUser());
+            if (userModel.getHnsUser() != null) addHnsUser(userModel.getHnsUser());
+            return userModelDao.createIfNotExists(userModel).equals(userModel);
         } catch (SQLException ignored) {
             return false;
         }
