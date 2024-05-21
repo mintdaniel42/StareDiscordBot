@@ -82,8 +82,14 @@ public final class HNSCommand extends ListenerAdapter {
 			event.deferReply().queue(interactionHook -> interactionHook
 					.editOriginalEmbeds(UserEmbed.of(userModel, more ? UserEmbed.Type.HNS_MORE : UserEmbed.Type.HNS))
 					.setComponents(ActionRow.of(
-							Button.primary(String.format(more ? "hns:%s" : "detailedhns:%s", uuid), R.string(more ? "more_info" : "basic_info")),
-							Button.primary(String.format("group:%s", uuid), R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid))
+							Button.primary(
+									String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
+									R.string(more ? "more_info" : "basic_info")
+							),
+							Button.primary(
+									String.format("group:%s", userModel.getGroup().getTag()),
+									R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid)
+							)
 					)).queue());
 		} else {
 			event.reply(R.string("this_username_or_entry_does_not_exist")).queue();

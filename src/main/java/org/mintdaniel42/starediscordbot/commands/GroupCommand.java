@@ -12,8 +12,6 @@ import org.mintdaniel42.starediscordbot.embeds.GroupEmbed;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
-import java.util.UUID;
-
 @RequiredArgsConstructor
 public final class GroupCommand extends ListenerAdapter {
 	@NonNull final DatabaseAdapter databaseAdapter;
@@ -42,7 +40,7 @@ public final class GroupCommand extends ListenerAdapter {
 			return;
 		}
 
-		GroupModel groupModel = databaseAdapter.getGroupOf(UUID.fromString(buttonParts[1]));
+		GroupModel groupModel = databaseAdapter.getGroup(buttonParts[1]);
 		if (groupModel == null) {
 			event.reply(R.string("this_group_does_not_exist")).queue();
 		} else {
