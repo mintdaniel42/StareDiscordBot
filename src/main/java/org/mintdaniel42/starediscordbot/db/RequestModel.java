@@ -81,7 +81,6 @@ public class RequestModel {
         return RequestModel.builder()
                 .timestamp(timestamp)
                 .uuid(userModel.getUuid())
-                .group(userModel.getGroup())
                 .discord(userModel.getDiscord())
                 .note(userModel.getNote())
                 .database(Database.USER)

@@ -23,7 +23,6 @@ public class UserModel {
 	public static @NonNull UserModel from(@NonNull final RequestModel requestModel) {
 		return UserModel.builder()
 				.uuid(requestModel.getUuid())
-				.group(requestModel.getGroup())
 				.discord(requestModel.getDiscord())
 				.note(requestModel.getNote())
 				.build();
