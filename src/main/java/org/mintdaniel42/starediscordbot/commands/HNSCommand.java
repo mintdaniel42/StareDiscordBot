@@ -136,47 +136,19 @@ public final class HNSCommand extends ListenerAdapter {
 	private void hnsEdit(@NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("username") instanceof OptionMapping usernameMapping && event.getOptions().size() >= 2) {
 			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
-				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel &&
-						databaseAdapter.getHnsUser(uuid) instanceof HNSUserModel hnsUserModel) {
-					HNSUserModel.HNSUserModelBuilder hnsBuilder = hnsUserModel.toBuilder();
-					UserModel.UserModelBuilder userBuilder = userModel.toBuilder();
+				if (databaseAdapter.getHnsUser(uuid) instanceof HNSUserModel hnsUserModel && 
+						databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
+					HNSUserModel.HNSUserModelBuilder hnsBuilder = getHnsBuilder(event, hnsUserModel);
 
-					// set attributes
-					for (OptionMapping optionMapping : event.getOptions()) {
-						switch (optionMapping.getName()) {
-							case "rating" -> hnsBuilder.rating(optionMapping.getAsString());
-							case "points" -> hnsBuilder.points(Math.round(optionMapping.getAsDouble()));
-							case "joined" -> hnsBuilder.joined(optionMapping.getAsString());
-							case "secondary" -> hnsBuilder.secondary(optionMapping.getAsBoolean());
-							case "banned" -> hnsBuilder.banned(optionMapping.getAsBoolean());
-							case "cheating" -> hnsBuilder.cheating(optionMapping.getAsBoolean());
-							case "top10" -> {
-								if (Features.dev) hnsBuilder.top10(optionMapping.getAsString());
-							}
-							case "streak" -> {
-								if (Features.dev) hnsBuilder.streak(optionMapping.getAsInt());
-							}
-							case "highest_rank" -> {
-								if (Features.dev)  hnsBuilder.highestRank(optionMapping.getAsString());
-							}
-							case "discord" -> {
-								if (Features.dev)  userBuilder.discord(optionMapping.getAsLong());
-							}
-							case "note" -> {
-								if (Features.dev) userBuilder.note(optionMapping.getAsString());
-							}
-						}
-					}
-
-					// update the model
-					userModel = userBuilder.hnsUser(hnsBuilder.build()).build();
+					hnsUserModel = hnsBuilder.build();
+					userModel = userModel.toBuilder().hnsUser(hnsUserModel).build();
 
 					if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
 						long timestamp = System.currentTimeMillis();
 						if (event.getGuild() instanceof Guild guild) {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof TextChannel requestChannel) {
 								if (event.getMember() instanceof Member member) {
-									if (databaseAdapter.addRequest(RequestModel.from(timestamp, userModel.getHnsUser()))) {
+									if (databaseAdapter.addRequest(RequestModel.from(timestamp, hnsUserModel))) {
 										requestChannel.sendMessage(R.string("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
 														member.getAsMention(),
 														timestamp))
@@ -187,7 +159,7 @@ public final class HNSCommand extends ListenerAdapter {
 								} event.reply(R.string("an_impossible_error_occurred")).queue();
 							} event.reply(R.string("an_impossible_error_occurred")).queue();
 						} event.reply(R.string("an_impossible_error_occurred")).queue();
-					} else if (databaseAdapter.editHnsUser(userModel.getHnsUser()) == 0 || databaseAdapter.editUser(userModel) == 0) {
+					} else if (databaseAdapter.editHnsUser(hnsUserModel) == 0) {
 						event.reply(R.string("the_entry_could_not_be_updated")).queue();
 					} else event.reply(R.string("the_entry_was_successfully_updated"))
 									.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS))
@@ -195,6 +167,25 @@ public final class HNSCommand extends ListenerAdapter {
 				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.string("this_username_does_not_exist")).queue();
 		} else event.reply(R.string("your_command_was_incomplete")).queue();
+	}
+
+	private static HNSUserModel.HNSUserModelBuilder getHnsBuilder(@NonNull SlashCommandInteractionEvent event, HNSUserModel hnsUserModel) {
+		HNSUserModel.HNSUserModelBuilder hnsBuilder = hnsUserModel.toBuilder();
+
+		for (OptionMapping optionMapping : event.getOptions()) {
+			switch (optionMapping.getName()) {
+				case "rating" -> hnsBuilder.rating(optionMapping.getAsString());
+				case "points" -> hnsBuilder.points(Math.round(optionMapping.getAsDouble()));
+				case "joined" -> hnsBuilder.joined(optionMapping.getAsString());
+				case "secondary" -> hnsBuilder.secondary(optionMapping.getAsBoolean());
+				case "banned" -> hnsBuilder.banned(optionMapping.getAsBoolean());
+				case "cheating" -> hnsBuilder.cheating(optionMapping.getAsBoolean());
+				case "top10" -> hnsBuilder.top10(optionMapping.getAsString());
+				case "streak" -> hnsBuilder.streak(optionMapping.getAsInt());
+				case "highest_rank" -> hnsBuilder.highestRank(optionMapping.getAsString());
+			}
+		}
+		return hnsBuilder;
 	}
 
 	private void hnsList(@NonNull final SlashCommandInteractionEvent event) {
