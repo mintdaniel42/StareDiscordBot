@@ -9,6 +9,8 @@ import net.dv8tion.jda.api.interactions.commands.Command;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+import java.util.List;
+
 public class HelpCommand extends ListenerAdapter {
 	@Override
 	public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
@@ -20,8 +22,8 @@ public class HelpCommand extends ListenerAdapter {
 							embedBuilder.setColor(Options.getColorNormal());
 							for (Command command : commands) {
 								embedBuilder.addField("/" + command.getFullCommandName(), command.getDescription(), false);
-								for (Command.Subcommand subcommand : command.getSubcommands()) {
-									embedBuilder.addField("--- /" + subcommand.getFullCommandName(), subcommand.getDescription(), false);
+								for (Command.Subcommand subcommand : findSubcommands(command)) {
+									embedBuilder.addField("/" + subcommand.getFullCommandName(), subcommand.getDescription(), false);
 								}
 							}
 							event.replyEmbeds(embedBuilder.build()).queue();
@@ -29,5 +31,13 @@ public class HelpCommand extends ListenerAdapter {
 				);
 			} else event.reply(R.string("an_impossible_error_occurred")).queue();
 		}
+	}
+
+	private @NonNull List<Command.Subcommand> findSubcommands(@NonNull final Command command) {
+		List<Command.Subcommand> subcommands = command.getSubcommands();
+		for (Command.SubcommandGroup subcommandGroup : command.getSubcommandGroups()) {
+			subcommands.addAll(subcommandGroup.getSubcommands());
+		}
+		return subcommands;
 	}
 }
