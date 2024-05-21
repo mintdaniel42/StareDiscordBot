@@ -9,6 +9,7 @@ import com.j256.ormlite.table.TableUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
+import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
 
 import java.sql.SQLException;
@@ -247,6 +248,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                     .queryForFirst();
             return userModel == null ? null : userModel
                     .toBuilder()
+                    .username(MCHelper.getUsername(this, uuid))
                     .hnsUser(getHnsUser(uuid))
                     .pgUser(getPgUser(uuid))
                     .build();
