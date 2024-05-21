@@ -17,7 +17,6 @@ import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.mintdaniel42.starediscordbot.build.Features;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
-import org.mintdaniel42.starediscordbot.commands.group.CreateGroupCommand;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.GroupModel;
 import org.mintdaniel42.starediscordbot.utils.Options;
@@ -41,8 +40,6 @@ public final class Bot extends ListenerAdapter {
                         new HNSCommand(databaseAdapter),
                         new PGCommand(databaseAdapter),
                         new GroupCommand(databaseAdapter),
-
-                        new CreateGroupCommand(databaseAdapter),
 
                         new ApproveChangeCommand(databaseAdapter),
 
@@ -88,8 +85,7 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.INTEGER, "streak", R.string("streak"))
                                         .addOption(OptionType.STRING, "highest_rank", R.string("highest_rank"))
                                         .addOption(OptionType.STRING, "note", R.string("note"))
-                                        .addOption(OptionType.USER, "discord", R.string("discord_tag"))
-                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), false, true),
+                                        .addOption(OptionType.USER, "discord", R.string("discord_tag")),
                                 new SubcommandData("add", R.string("add_a_new_hide_n_seek_entry"))
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                                         .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
@@ -99,8 +95,7 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
                                         .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating"))
                                         .addOption(OptionType.STRING, "note", R.string("note"))
-                                        .addOption(OptionType.USER, "discord", R.string("discord_tag"))
-                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), false, true),
+                                        .addOption(OptionType.USER, "discord", R.string("discord_tag")),
                                 new SubcommandData("list", R.string("list_hide_n_seek_entries"))
                                         .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
                         ),
@@ -118,8 +113,7 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.NUMBER, "quota", R.string("quota"))
                                         .addOption(OptionType.NUMBER, "winrate", R.string("winrate"))
                                         .addOption(OptionType.STRING, "note", R.string("note"))
-                                        .addOption(OptionType.USER, "discord", R.string("discord_tag"))
-                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), false, true),
+                                        .addOption(OptionType.USER, "discord", R.string("discord_tag")),
                                 new SubcommandData("add", R.string("add_a_new_partygames_entry"))
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                                         .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
@@ -129,8 +123,7 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.NUMBER, "quota", R.string("quota"))
                                         .addOption(OptionType.NUMBER, "winrate", R.string("winrate"))
                                         .addOption(OptionType.STRING, "note", R.string("note"))
-                                        .addOption(OptionType.USER, "discord", R.string("discord_tag"))
-                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), false, true),
+                                        .addOption(OptionType.USER, "discord", R.string("discord_tag")),
                                 new SubcommandData("list", R.string("list_partygames_entries"))
                                         .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
                         ),
