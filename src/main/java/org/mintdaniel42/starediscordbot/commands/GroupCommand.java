@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.GroupModel;
+import org.mintdaniel42.starediscordbot.db.UserModel;
 import org.mintdaniel42.starediscordbot.embeds.GroupEmbed;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
@@ -33,6 +34,7 @@ public final class GroupCommand extends ListenerAdapter {
 		switch (event.getFullCommandName()) {
 			case "group show" -> groupShow(event);
 			case "group create" -> groupCreateOrEdit(event);
+			case "group user add" -> groupUserAdd(event);
 		}
 	}
 
@@ -110,5 +112,23 @@ public final class GroupCommand extends ListenerAdapter {
 				event.reply(R.string("the_group_was_successfully_created")).setEmbeds(GroupEmbed.of(databaseAdapter, groupModel)).queue();
 			}
 		}
+	}
+
+	private void groupUserAdd(@NonNull final SlashCommandInteractionEvent event) {
+		if (event.getOption("tag") instanceof  OptionMapping tagMapping &&
+				event.getOption("username") instanceof OptionMapping usernameMapping) {
+			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
+				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
+					if (databaseAdapter.getGroup(tagMapping.getAsString()) instanceof GroupModel groupModel) {
+						databaseAdapter.editUser(userModel.toBuilder()
+								.group(groupModel)
+								.build());
+						event.reply(R.string("the_user_s_was_added_to_the_group_s",
+								MCHelper.getUsername(databaseAdapter, uuid),
+								groupModel.getName())).queue();
+					} else event.reply(R.string("this_group_does_not_exist")).queue();
+				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
+			} else event.reply(R.string("this_username_does_not_exist")).queue();
+		} else event.reply(R.string("your_command_was_incomplete")).queue();
 	}
 }
