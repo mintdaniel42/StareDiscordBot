@@ -93,44 +93,44 @@ public final class HNSCommand extends ListenerAdapter {
 	}
 
 	private void hnsAdd(@NonNull final SlashCommandInteractionEvent event) {
-		if (event.getOption("username") instanceof OptionMapping usernameMapping && event.getOptions().size() >= 2) {
-			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
-				if (!databaseAdapter.hasHnsUser(uuid)) {
-					// get builder
-					HNSUserModel.HNSUserModelBuilder hnsBuilder;
-					UserModel.UserModelBuilder userBuilder;
-					hnsBuilder = HNSUserModel.builder().uuid(uuid);
-					UserModel userModel = databaseAdapter.getUser(uuid);
-					userBuilder = userModel == null ? UserModel.builder().uuid(uuid) : userModel.toBuilder();
+		if (DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
+			if (event.getOption("username") instanceof OptionMapping usernameMapping && event.getOptions().size() >= 2) {
+				if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
+					if (!databaseAdapter.hasHnsUser(uuid)) {
+						// get builder
+						HNSUserModel.HNSUserModelBuilder hnsBuilder;
+						UserModel.UserModelBuilder userBuilder;
+						hnsBuilder = HNSUserModel.builder().uuid(uuid);
+						UserModel userModel = databaseAdapter.getUser(uuid);
+						userBuilder = userModel == null ? UserModel.builder().uuid(uuid) : userModel.toBuilder();
 
-					// set attributes
-					for (OptionMapping optionMapping : event.getOptions()) {
-						switch (optionMapping.getName()) {
-							case "rating" -> hnsBuilder.rating(optionMapping.getAsString());
-							case "points" -> hnsBuilder.points(Math.round(optionMapping.getAsDouble()));
-							case "joined" -> hnsBuilder.joined(optionMapping.getAsString());
-							case "secondary" -> hnsBuilder.secondary(optionMapping.getAsBoolean());
-							case "banned" -> hnsBuilder.banned(optionMapping.getAsBoolean());
-							case "cheating" -> hnsBuilder.cheating(optionMapping.getAsBoolean());
-							case "top10" -> hnsBuilder.top10(optionMapping.getAsString());
-							case "streak" -> hnsBuilder.streak(optionMapping.getAsInt());
-							case "highest_rank" -> hnsBuilder.highestRank(optionMapping.getAsString());
-							case "discord" -> userBuilder.discord(optionMapping.getAsLong());
-							case "note" -> userBuilder.note(optionMapping.getAsString());
+						// set attributes
+						for (OptionMapping optionMapping : event.getOptions()) {
+							switch (optionMapping.getName()) {
+								case "rating" -> hnsBuilder.rating(optionMapping.getAsString());
+								case "points" -> hnsBuilder.points(Math.round(optionMapping.getAsDouble()));
+								case "joined" -> hnsBuilder.joined(optionMapping.getAsString());
+								case "secondary" -> hnsBuilder.secondary(optionMapping.getAsBoolean());
+								case "banned" -> hnsBuilder.banned(optionMapping.getAsBoolean());
+								case "cheating" -> hnsBuilder.cheating(optionMapping.getAsBoolean());
+								case "top10" -> hnsBuilder.top10(optionMapping.getAsString());
+								case "streak" -> hnsBuilder.streak(optionMapping.getAsInt());
+								case "highest_rank" -> hnsBuilder.highestRank(optionMapping.getAsString());
+							}
 						}
-					}
 
-					// update the model
-					userBuilder.hnsUser(hnsBuilder.build()).build();
+						// update the model
+						userBuilder.hnsUser(hnsBuilder.build()).build();
 
-					if (!databaseAdapter.addUser(userBuilder.build()) && !databaseAdapter.addHnsUser(hnsBuilder.build())) {
-						event.reply(R.string("the_entry_could_not_be_created")).queue();
-					} else event.reply(R.string("the_entry_was_successfully_created"))
-							.setEmbeds(UserEmbed.of(userBuilder.build(), UserEmbed.Type.HNS_ALL))
-							.queue();
-				} else event.reply(R.string("this_user_entry_already_exists")).queue();
-			} else event.reply(R.string("this_username_does_not_exist")).queue();
-		} else event.reply(R.string("your_command_was_incomplete")).queue();
+						if (!databaseAdapter.addUser(userBuilder.build()) && !databaseAdapter.addHnsUser(hnsBuilder.build())) {
+							event.reply(R.string("the_entry_could_not_be_created")).queue();
+						} else event.reply(R.string("the_entry_was_successfully_created"))
+								.setEmbeds(UserEmbed.of(userBuilder.build(), UserEmbed.Type.HNS_ALL))
+								.queue();
+					} else event.reply(R.string("this_user_entry_already_exists")).queue();
+				} else event.reply(R.string("this_username_does_not_exist")).queue();
+			} else event.reply(R.string("your_command_was_incomplete")).queue();
+		} else event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
 	}
 
 	private void hnsEdit(@NonNull final SlashCommandInteractionEvent event) {
