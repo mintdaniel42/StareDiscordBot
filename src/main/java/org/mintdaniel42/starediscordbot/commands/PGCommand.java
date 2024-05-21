@@ -122,8 +122,12 @@ public final class PGCommand extends ListenerAdapter {
 					case "luck" -> pgBuilder.luck(optionMapping.getAsDouble());
 					case "quota" -> pgBuilder.quota(optionMapping.getAsDouble());
 					case "winrate" -> pgBuilder.winrate(optionMapping.getAsDouble());
-					case "discord" -> userBuilder.discord(optionMapping.getAsLong());
-					case "note" -> userBuilder.note(optionMapping.getAsString());
+					case "discord" -> {
+						if (Features.dev)  userBuilder.discord(optionMapping.getAsLong());
+					}
+					case "note" -> {
+						if (Features.dev) userBuilder.note(optionMapping.getAsString());
+					}
 				}
 			}
 

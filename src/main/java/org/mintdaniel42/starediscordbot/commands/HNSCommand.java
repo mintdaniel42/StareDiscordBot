@@ -150,11 +150,21 @@ public final class HNSCommand extends ListenerAdapter {
 							case "secondary" -> hnsBuilder.secondary(optionMapping.getAsBoolean());
 							case "banned" -> hnsBuilder.banned(optionMapping.getAsBoolean());
 							case "cheating" -> hnsBuilder.cheating(optionMapping.getAsBoolean());
-							case "top10" -> hnsBuilder.top10(optionMapping.getAsString());
-							case "streak" -> hnsBuilder.streak(optionMapping.getAsInt());
-							case "highest_rank" -> hnsBuilder.highestRank(optionMapping.getAsString());
-							case "discord" -> userBuilder.discord(optionMapping.getAsLong());
-							case "note" -> userBuilder.note(optionMapping.getAsString());
+							case "top10" -> {
+								if (Features.dev) hnsBuilder.top10(optionMapping.getAsString());
+							}
+							case "streak" -> {
+								if (Features.dev) hnsBuilder.streak(optionMapping.getAsInt());
+							}
+							case "highest_rank" -> {
+								if (Features.dev)  hnsBuilder.highestRank(optionMapping.getAsString());
+							}
+							case "discord" -> {
+								if (Features.dev)  userBuilder.discord(optionMapping.getAsLong());
+							}
+							case "note" -> {
+								if (Features.dev) userBuilder.note(optionMapping.getAsString());
+							}
 						}
 					}
 
