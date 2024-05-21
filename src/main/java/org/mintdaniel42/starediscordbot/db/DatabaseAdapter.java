@@ -435,6 +435,22 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    public boolean deleteUser(@NonNull UUID uuid) {
+        try {
+            byte sum = 0;
+            if (!hnsUserModelDao.idExists(uuid)) sum++;
+            else sum += (byte) hnsUserModelDao.deleteById(uuid);
+            if (!pgUserModelDao.idExists(uuid)) sum++;
+            else sum += (byte) pgUserModelDao.deleteById(uuid);
+            if (!usernameModelDao.idExists(uuid)) sum++;
+            else sum += (byte) usernameModelDao.deleteById(uuid);
+            sum += (byte) userModelDao.deleteById(uuid);
+            return sum == 4;
+        } catch (SQLException ignored) {
+            return false;
+        }
+    }
+
     /**
      * Attempts to merge the request of the provided id into the database
      * @param id id of the request
