@@ -12,7 +12,6 @@ import org.mintdaniel42.starediscordbot.db.RequestModel;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.LongStream;
@@ -29,46 +28,47 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 				if (usernameMapping != null) event.replyChoiceStrings(DCHelper.autoCompleteUsername(databaseAdapter, usernameMapping.getAsString())).queue();
 				else event.replyChoices().queue();
 			} case "points" -> {
-				OptionMapping pointsMapping = event.getOption("points");
-				if (pointsMapping != null && !pointsMapping.getAsString().isBlank()) event.replyChoices(DCHelper.autocompleteDouble(pointsMapping.getAsString())).queue();
-				else event.replyChoices().queue();
+				if (event.getOption("points") instanceof OptionMapping pointsMapping &&
+						!pointsMapping.getAsString().isBlank()) {
+					event.replyChoices(DCHelper.autocompleteDouble(pointsMapping.getAsString())).queue();
+				} else event.replyChoices().queue();
 			} case "id" -> {
-				long now = Instant.now().toEpochMilli();
-				OptionMapping idMapping = event.getOption("id");
-				String id = idMapping != null ? idMapping.getAsString() : "";
-				event.replyChoiceLongs(Objects.requireNonNull(databaseAdapter.getPendingRequests())
-								.stream()
-								.map(RequestModel::getTimestamp)
-								.filter(timestamp -> timestamp > now - Options.getMaxRequestAge())
-								.filter(timestamp -> String.valueOf(timestamp).startsWith(id))
-								.limit(25)
-								.toList())
-						.queue();
+				long now = System.currentTimeMillis();
+				if (event.getOption("id") instanceof OptionMapping idMapping && !idMapping.getAsString().isBlank()) {
+					String id = idMapping.getAsString();
+					event.replyChoiceLongs(Objects.requireNonNull(databaseAdapter.getPendingRequests())
+									.stream()
+									.map(RequestModel::getTimestamp)
+									.filter(timestamp -> timestamp > now - Options.getMaxRequestAge())
+									.filter(timestamp -> String.valueOf(timestamp).startsWith(id))
+									.limit(25)
+									.toList())
+							.queue();
+				} else event.replyChoices().queue();
 			} case String option when option.equals("page") && event.getFullCommandName().equals("hns list") -> {
-				OptionMapping pageMapping = event.getOption(option);
-				String page = pageMapping != null ? pageMapping.getAsString() : "";
-				event.replyChoiceLongs(LongStream.range(0, Math.min(databaseAdapter.getHnsPages(), 25))
-						.map(operand -> operand + 1)
-						.boxed()
-						.filter(operand -> String.valueOf(operand).startsWith(page))
-						.toList()).queue();
+				if (event.getOption("page") instanceof OptionMapping pageMapping && !pageMapping.getAsString().isBlank()) {
+					event.replyChoiceLongs(LongStream.range(0, Math.min(databaseAdapter.getHnsPages(), 25))
+							.map(operand -> operand + 1)
+							.boxed()
+							.filter(operand -> String.valueOf(operand).startsWith(pageMapping.getAsString()))
+							.toList()).queue();
+				} else event.replyChoices().queue();
 			} case String option when option.equals("page") && event.getFullCommandName().equals("pg list") -> {
-				OptionMapping pageMapping = event.getOption(option);
-				String page = pageMapping != null ? pageMapping.getAsString() : "";
-				event.replyChoiceLongs(LongStream.range(0, Math.min(databaseAdapter.getPgPages(), 25))
-						.map(operand -> operand + 1)
-						.boxed()
-						.filter(operand -> String.valueOf(operand).startsWith(page))
-						.toList()).queue();
+				if (event.getOption("page") instanceof OptionMapping pageMapping && !pageMapping.getAsString().isBlank()) {
+					event.replyChoiceLongs(LongStream.range(0, Math.min(databaseAdapter.getPgPages(), 25))
+							.map(operand -> operand + 1)
+							.boxed()
+							.filter(operand -> String.valueOf(operand).startsWith(pageMapping.getAsString()))
+							.toList()).queue();
+				} else event.replyChoices().queue();
 			} case "tag" -> {
-				OptionMapping tagMapping = event.getOption("tag");
-				if (tagMapping != null) {
+				if (event.getOption("tag") instanceof OptionMapping tagMapping) {
 					List<GroupModel> groupModels = databaseAdapter.getGroups(tagMapping.getAsString().toLowerCase(Options.getLocale()));
 					if (groupModels != null) {
 						event.replyChoices(groupModels.stream()
-								.limit(25)
-								.map(groupModel -> new Command.Choice(groupModel.getName(), groupModel.getTag()))
-								.toList())
+										.limit(25)
+										.map(groupModel -> new Command.Choice(groupModel.getName(), groupModel.getTag()))
+										.toList())
 								.queue();
 					} else event.replyChoices().queue();
 				} else event.replyChoices().queue();
