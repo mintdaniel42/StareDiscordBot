@@ -52,7 +52,7 @@ public class UserCommand extends ListenerAdapter {
 														member.getAsMention(),
 														timestamp))
 												.addActionRow(Button.primary(String.format("approve:%s", timestamp), R.string("approve_this_change")))
-												.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS_ALL)).queue();
+												.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.BASE)).queue();
 										event.reply(R.string("the_entry_change_was_successfully_requested")).queue();
 									} else event.reply(R.string("the_entry_could_not_be_updated")).queue();
 								}
@@ -61,7 +61,7 @@ public class UserCommand extends ListenerAdapter {
 					} else if (!databaseAdapter.edit(userModel)) {
 						event.reply(R.string("the_entry_could_not_be_updated")).queue();
 					} else event.reply(R.string("the_entry_was_successfully_updated"))
-							.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS))
+							.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.BASE))
 							.queue();
 				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.string("this_username_does_not_exist")).queue();

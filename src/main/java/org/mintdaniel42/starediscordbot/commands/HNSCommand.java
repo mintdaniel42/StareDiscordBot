@@ -138,7 +138,7 @@ public final class HNSCommand extends ListenerAdapter {
 					} else if (!databaseAdapter.edit(hnsUserModel)) {
 						event.reply(R.string("the_entry_could_not_be_updated")).queue();
 					} else event.reply(R.string("the_entry_was_successfully_updated"))
-									.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS))
+									.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS_ALL))
 									.queue();
 				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.string("this_username_does_not_exist")).queue();
