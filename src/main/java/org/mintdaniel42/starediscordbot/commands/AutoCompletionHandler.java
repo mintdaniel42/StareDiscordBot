@@ -39,7 +39,6 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 					event.replyChoiceLongs(Objects.requireNonNull(databaseAdapter.getPendingRequests())
 									.stream()
 									.map(RequestModel::getTimestamp)
-									.filter(timestamp -> timestamp > now - Options.getMaxRequestAge())
 									.filter(timestamp -> String.valueOf(timestamp).startsWith(id))
 									.limit(25)
 									.toList())
