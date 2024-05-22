@@ -36,11 +36,18 @@ tasks.jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it)}
     }
+
+    exclude("org/mintdaniel42/starediscordbot/build/**")
 }
 
 buildConfig {
     packageName("${project.group}.build")
-    forClass(className = "Features") {
+    forClass(className = "BuildConfig") {
         buildConfigField(boolean, "dev", System.getenv("DEV") == "1")
+        buildConfigField(long, "cleaningInterval", 300 * 1_000) // 300 seconds
+        buildConfigField(long, "maxRequestAge", 2 * 1_000 * 86400) // 2 days
+        buildConfigField(long, "maxUsernameAge", 5 * 1_000 * 86400) // 5 days
+        buildConfigField(byte, "entriesPerPage", 10)
+        buildConfigField("java.util.Locale", "locale", "Locale.GERMANY")
     }
 }

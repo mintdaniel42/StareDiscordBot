@@ -6,11 +6,11 @@ import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInterac
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.GroupModel;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
-import org.mintdaniel42.starediscordbot.utils.Options;
 
 import java.util.List;
 import java.util.Objects;
@@ -62,7 +62,7 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 				} else event.replyChoices().queue();
 			} case "tag" -> {
 				if (event.getOption("tag") instanceof OptionMapping tagMapping) {
-					List<GroupModel> groupModels = databaseAdapter.getGroups(tagMapping.getAsString().toLowerCase(Options.getLocale()));
+					List<GroupModel> groupModels = databaseAdapter.getGroups(tagMapping.getAsString().toLowerCase(BuildConfig.locale));
 					if (groupModels != null) {
 						event.replyChoices(groupModels.stream()
 										.limit(25)

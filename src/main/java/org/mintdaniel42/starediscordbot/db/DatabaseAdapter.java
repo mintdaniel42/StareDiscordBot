@@ -8,6 +8,7 @@ import com.j256.ormlite.table.TableUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
+import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
 
@@ -141,7 +142,7 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     private void cleanDatabase() {
         // reschedule
-        float next = Options.getCleanInterval() - System.currentTimeMillis() % Options.getCleanInterval();
+        float next = BuildConfig.cleaningInterval - System.currentTimeMillis() % BuildConfig.cleaningInterval;
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
@@ -153,11 +154,11 @@ public final class DatabaseAdapter implements AutoCloseable {
         // perform cleaning
         try {
             var requestDeleteBuilder = requestModelDao.deleteBuilder();
-            requestDeleteBuilder.where().le("timestamp", System.currentTimeMillis() - Options.getMaxRequestAge());
+            requestDeleteBuilder.where().le("timestamp", System.currentTimeMillis() - BuildConfig.maxRequestAge);
             System.out.println(requestDeleteBuilder.delete());
 
             var usernameDeleteBuilder = usernameModelDao.deleteBuilder();
-            usernameDeleteBuilder.where().le("lastupdated", System.currentTimeMillis() - Options.getMaxUsernameAge());
+            usernameDeleteBuilder.where().le("lastupdated", System.currentTimeMillis() - BuildConfig.maxUsernameAge);
             System.out.println(usernameDeleteBuilder.delete());
 
         } catch (SQLException e) {
@@ -169,8 +170,8 @@ public final class DatabaseAdapter implements AutoCloseable {
         try {
             return hnsUserModelDao.queryBuilder()
                     .orderByNullsLast("points", false)
-                    .offset((long) Options.getEntriesPerPage() * page)
-                    .limit((long) Options.getEntriesPerPage())
+                    .offset((long) BuildConfig.entriesPerPage * page)
+                    .limit((long) BuildConfig.entriesPerPage)
                     .query()
                     .stream()
                     .toList();
@@ -183,8 +184,8 @@ public final class DatabaseAdapter implements AutoCloseable {
         try {
             return pgUserModelDao.queryBuilder()
                     .orderByNullsLast("points", false)
-                    .offset((long) Options.getEntriesPerPage() * page)
-                    .limit((long) Options.getEntriesPerPage())
+                    .offset((long) BuildConfig.entriesPerPage * page)
+                    .limit((long) BuildConfig.entriesPerPage)
                     .query()
                     .stream()
                     .toList();
@@ -249,8 +250,8 @@ public final class DatabaseAdapter implements AutoCloseable {
     public @Nullable List<UserModel> getGroupMembers(@NonNull final GroupModel groupModel, final int page) {
         try {
             return userModelDao.queryBuilder()
-                    .limit((long) Options.getEntriesPerPage())
-                    .offset((long) page * Options.getEntriesPerPage())
+                    .limit((long) BuildConfig.entriesPerPage)
+                    .offset((long) page * BuildConfig.entriesPerPage)
                     .where()
                     .eq("group_id", groupModel.getTag())
                     .query()
@@ -301,7 +302,7 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     public long getHnsPages() {
         try {
-            return (long) Math.ceil((double) hnsUserModelDao.queryBuilder().countOf() / Options.getEntriesPerPage());
+            return (long) Math.ceil((double) hnsUserModelDao.queryBuilder().countOf() / BuildConfig.entriesPerPage);
         } catch (SQLException ignored) {
             return 0;
         }
@@ -309,7 +310,7 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     public long getPgPages() {
         try {
-            return (long) Math.ceil((double) pgUserModelDao.queryBuilder().countOf() / Options.getEntriesPerPage());
+            return (long) Math.ceil((double) pgUserModelDao.queryBuilder().countOf() / BuildConfig.entriesPerPage);
         } catch (SQLException ignored) {
             return 0;
         }

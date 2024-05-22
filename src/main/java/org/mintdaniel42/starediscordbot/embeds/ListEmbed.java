@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.Contract;
+import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.HNSUserModel;
 import org.mintdaniel42.starediscordbot.db.PGUserModel;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @UtilityClass
 public class ListEmbed {
-    private final byte entriesPerPage = Options.getEntriesPerPage();
+    private final byte entriesPerPage = BuildConfig.entriesPerPage;
 
     @Contract(value = "_, _, _ -> new")
     public @NonNull MessageEmbed createHnsList(@NonNull DatabaseAdapter databaseAdapter, @NonNull List<HNSUserModel> hnsUserModels, int page) {
