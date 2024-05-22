@@ -245,6 +245,26 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    public @Nullable List<UserModel> getGroupMembers(@NonNull final GroupModel groupModel, final int page) {
+        try {
+            return userModelDao.queryBuilder()
+                    .limit((long) entriesPerPage)
+                    .offset((long) page * entriesPerPage)
+                    .where()
+                    .eq("group_id", groupModel.getTag())
+                    .query()
+                    .stream()
+                    .map(userModel -> userModel.toBuilder()
+                            .username(MCHelper.getUsername(this, userModel.getUuid()))
+                            .hnsUser(getHnsUser(userModel.getUuid()))
+                            .pgUser(getPgUser(userModel.getUuid()))
+                            .build())
+                    .toList();
+        } catch (SQLException ignored) {
+            return null;
+        }
+    }
+
     public @Nullable UserModel getUser(@NonNull UUID uuid) {
         try {
             UserModel userModel = userModelDao.queryBuilder()
