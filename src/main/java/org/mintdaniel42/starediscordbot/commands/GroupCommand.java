@@ -112,7 +112,7 @@ public final class GroupCommand extends ListenerAdapter {
 							}
 						}
 					}
-				} else if (databaseAdapter.edit(groupModel) == 0) {
+				} else if (!databaseAdapter.edit(groupModel)) {
 					event.reply(R.string("the_entry_could_not_be_updated")).queue();
 				} else event.reply(R.string("the_entry_was_successfully_updated"))
 						.setEmbeds(GroupEmbed.of(databaseAdapter, groupModel))
@@ -148,10 +148,10 @@ public final class GroupCommand extends ListenerAdapter {
 					event.getOption("username") instanceof OptionMapping usernameMapping) {
 				if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
 					if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
-						if (databaseAdapter.getGroup(tagMapping.getAsString()) instanceof GroupModel groupModel) {
-							databaseAdapter.edit(userModel.toBuilder()
-									.group(groupModel)
-									.build());
+						if (databaseAdapter.getGroup(tagMapping.getAsString()) instanceof GroupModel groupModel &&
+								databaseAdapter.edit(userModel.toBuilder()
+										.group(groupModel)
+										.build())) {
 							event.reply(R.string("the_user_s_was_added_to_the_group_s",
 									MCHelper.getUsername(databaseAdapter, uuid),
 									groupModel.getName())).queue();
@@ -182,10 +182,10 @@ public final class GroupCommand extends ListenerAdapter {
 				if (databaseAdapter.hasGroup(tagMapping.getAsString())) {
 					if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
 						if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
-							if (userModel.getGroup() instanceof GroupModel groupModel) {
-								databaseAdapter.edit(userModel.toBuilder()
+							if (userModel.getGroup() instanceof GroupModel groupModel &&
+									databaseAdapter.edit(userModel.toBuilder()
 										.group(null)
-										.build());
+										.build())) {
 								event.reply(R.string("the_user_s_was_removed_from_the_group_s",
 										MCHelper.getUsername(databaseAdapter, uuid),
 										groupModel.getName())).queue();

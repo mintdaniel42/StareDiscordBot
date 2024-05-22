@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import org.mintdaniel42.starediscordbot.build.Features;
 import org.mintdaniel42.starediscordbot.db.*;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
@@ -136,7 +135,7 @@ public final class HNSCommand extends ListenerAdapter {
 								}
 							}
 						}
-					} else if (databaseAdapter.edit(hnsUserModel) == 0) {
+					} else if (!databaseAdapter.edit(hnsUserModel)) {
 						event.reply(R.string("the_entry_could_not_be_updated")).queue();
 					} else event.reply(R.string("the_entry_was_successfully_updated"))
 									.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS))

@@ -20,9 +20,13 @@ public class HelpCommand extends ListenerAdapter {
 						commands -> {
 							EmbedBuilder embedBuilder = new EmbedBuilder();
 							embedBuilder.setColor(Options.getColorNormal());
+							int c = 1;
 							for (Command command : commands) {
+								c++;
 								embedBuilder.addField("/" + command.getFullCommandName(), command.getDescription(), false);
 								for (Command.Subcommand subcommand : findSubcommands(command)) {
+									c++;
+									if (c >= 25) break; // TODO: paging
 									embedBuilder.addField("/" + subcommand.getFullCommandName(), subcommand.getDescription(), false);
 								}
 							}
