@@ -10,8 +10,10 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import org.mintdaniel42.starediscordbot.build.Features;
-import org.mintdaniel42.starediscordbot.db.*;
+import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.db.PGUserModel;
+import org.mintdaniel42.starediscordbot.db.RequestModel;
+import org.mintdaniel42.starediscordbot.db.UserModel;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
@@ -50,7 +52,7 @@ public final class PGCommand extends ListenerAdapter {
 											Button.primary(
 													String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
 													R.string("show_group")).withDisabled(userModel.getGroup() == null)
-									).withDisabled(!Features.dev)
+									)
 							).queue());
 				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.string("this_username_does_not_exist")).queue();
@@ -134,8 +136,8 @@ public final class PGCommand extends ListenerAdapter {
 				if (databaseAdapter.getPgPages() < page && page >= 0) {
 					event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createPgList(databaseAdapter, entries, page))
 							.setComponents(ActionRow.of(
-									Button.primary(String.format("previous:pg:%s", page), R.string("previous_page")).withDisabled(page < 1 || !Features.dev),
-									Button.primary(String.format("next:pg:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getPgPages() || !Features.dev)
+									Button.primary(String.format("previous:pg:%s", page), R.string("previous_page")).withDisabled(page < 1),
+									Button.primary(String.format("next:pg:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getPgPages())
 							))
 							.queue());
 				} else event.reply(R.string("this_page_does_not_exist")).queue();
