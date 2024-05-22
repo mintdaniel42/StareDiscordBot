@@ -8,14 +8,18 @@ import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+#if dev
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
+#endif
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
+#if dev
 import org.mintdaniel42.starediscordbot.db.GroupModel;
+#endif
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -62,13 +66,12 @@ public final class Bot extends ListenerAdapter {
         if (event.getGuild().getIdLong() != Options.getGuildId()) return;
 
         // setup commands
-        CommandListUpdateAction commandListUpdateAction = event.getGuild().updateCommands().addCommands(
+        CommandListUpdateAction commandListUpdateAction = event.getGuild().updateCommands()
+                .addCommands(
                 Commands.slash("maintenance", R.string("control_maintenance"))
-                        .addOption(OptionType.BOOLEAN, "active", R.string("if_maintenance_should_be_enabled"), true),
-
-                Commands.slash("help", R.string("list_all_commands")),
-
-                Commands.slash("hns", R.string("hide_n_seek_related_commands"))
+                        .addOption(OptionType.BOOLEAN, "active", R.string("if_maintenance_should_be_enabled"), true)
+                )
+                .addCommands(Commands.slash("hns", R.string("hide_n_seek_related_commands"))
                         .addSubcommands(
                                 new SubcommandData("show", R.string("show_hide_n_seek_entry"))
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
@@ -95,9 +98,8 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating")),
                                 new SubcommandData("list", R.string("list_hide_n_seek_entries"))
                                         .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
-                        ),
-
-                Commands.slash("pg", R.string("partygames_related_commands"))
+                        ))
+                .addCommands(Commands.slash("pg", R.string("partygames_related_commands"))
                         .addSubcommands(
                                 new SubcommandData("show", R.string("show_partygames_entry"))
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
@@ -119,9 +121,12 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.NUMBER, "winrate", R.string("winrate")),
                                 new SubcommandData("list", R.string("list_partygames_entries"))
                                         .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
-                        ),
-
-                Commands.slash("group", R.string("group_related_commands"))
+                        ))
+                .addCommands(Commands.slash("approve", R.string("approve_a_change"))
+                        .addOption(OptionType.INTEGER, "id", R.string("change_id"), true, true))
+                #if dev
+                .addCommands(Commands.slash("help", R.string("list_all_commands")))
+                .addCommands(Commands.slash("group", R.string("group_related_commands"))
                         .addSubcommandGroups(new SubcommandGroupData("user", R.string("user_related_group_commands"))
                                 .addSubcommands(
                                         new SubcommandData("add", R.string("add_user_to_group"))
@@ -155,9 +160,8 @@ public final class Bot extends ListenerAdapter {
                                 new SubcommandData("delete", R.string("delete_group"))
                                         .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
                                         .addOption(OptionType.BOOLEAN, "confirm", R.string("confirm_deletion"), true)
-                        ),
-
-                Commands.slash("user", R.string("user_related_commands"))
+                        ))
+                .addCommands(Commands.slash("user", R.string("user_related_commands"))
                         .addSubcommands(
                                 new SubcommandData("edit", R.string("edit_a_user_entry"))
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
@@ -165,11 +169,9 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.USER, "discord", R.string("discord_tag")),
                                 new SubcommandData("delete", R.string("delete_a_user_entry"))
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
-                        ),
-
-                Commands.slash("approve", R.string("approve_a_change"))
-                        .addOption(OptionType.INTEGER, "id", R.string("change_id"), true, true)
-        );
+                        ));
+                #else ;
+                #endif
 
         commandListUpdateAction.queue();
     }
