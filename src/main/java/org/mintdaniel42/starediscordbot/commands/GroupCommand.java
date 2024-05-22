@@ -2,12 +2,18 @@ package org.mintdaniel42.starediscordbot.commands;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.GroupModel;
+import org.mintdaniel42.starediscordbot.db.RequestModel;
 import org.mintdaniel42.starediscordbot.db.UserModel;
 import org.mintdaniel42.starediscordbot.embeds.GroupEmbed;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
@@ -28,6 +34,7 @@ public final class GroupCommand extends ListenerAdapter {
 				switch (event.getFullCommandName()) {
 					case "group show" -> groupShow(event);
 					case "group create" -> groupCreate(event);
+					case "group edit" -> groupEdit(event);
 					case "group user add" -> groupUserAdd(event);
 					case "group user show" -> groupUserShow(event);
 					case "group user remove" -> groupUserRemove(event);
@@ -81,6 +88,58 @@ public final class GroupCommand extends ListenerAdapter {
 				} else event.reply(R.string("this_group_already_exists")).queue();
 			} else event.reply(R.string("your_command_was_incomplete")).queue();
 		} else event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
+	}
+
+	private void groupEdit(@NonNull final SlashCommandInteractionEvent event) {
+		if (event.getOption("tag") instanceof final OptionMapping tagMapping && event.getOptions().size() >= 2) {
+			if (databaseAdapter.getGroup(tagMapping.getAsString()) instanceof GroupModel groupModel) {
+				groupModel = buildGroupModel(event, groupModel);
+				if (groupModel == null) return;
+
+				if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
+					long timestamp = System.currentTimeMillis();
+					if (event.getGuild() instanceof final Guild guild) {
+						if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof final TextChannel requestChannel) {
+							if (event.getMember() instanceof final Member member) {
+								if (databaseAdapter.addRequest(RequestModel.from(timestamp, groupModel))) {
+									requestChannel.sendMessage(R.string("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
+													member.getAsMention(),
+													timestamp))
+											.addActionRow(Button.primary(String.format("approve:%s", timestamp), R.string("approve_this_change")))
+											.addEmbeds(GroupEmbed.of(databaseAdapter, groupModel)).queue();
+									event.reply(R.string("the_entry_change_was_successfully_requested")).queue();
+								} else event.reply(R.string("the_entry_could_not_be_updated")).queue();
+							}
+						}
+					}
+				} else if (databaseAdapter.edit(groupModel) == 0) {
+					event.reply(R.string("the_entry_could_not_be_updated")).queue();
+				} else event.reply(R.string("the_entry_was_successfully_updated"))
+						.setEmbeds(GroupEmbed.of(databaseAdapter, groupModel))
+						.queue();
+			} else event.reply(R.string("this_group_does_not_exist")).queue();
+		} else event.reply(R.string("your_command_was_incomplete")).queue();
+	}
+
+	private @Nullable GroupModel buildGroupModel(@NonNull final SlashCommandInteractionEvent event, @NonNull final GroupModel groupModel) {
+		var groupBuilder = groupModel.toBuilder();
+
+		for (OptionMapping optionMapping : event.getOptions()) {
+			switch (optionMapping.getName()) {
+				case "name" -> groupBuilder.name(optionMapping.getAsString());
+				case "leader" -> {
+					if (MCHelper.getUuid(databaseAdapter, optionMapping.getAsString()) instanceof final UUID uuid) {
+						groupBuilder.leader(uuid);
+					} else {
+						event.reply(R.string("this_username_does_not_exist")).queue();
+						return null;
+					}
+				}
+				case "relation" -> groupBuilder.relation(GroupModel.Relation.valueOf(optionMapping.getAsString()));
+			}
+		}
+
+		return groupBuilder.build();
 	}
 
 	private void groupUserAdd(@NonNull final SlashCommandInteractionEvent event) {
