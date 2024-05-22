@@ -16,11 +16,6 @@ import java.util.regex.Pattern;
 
 @UtilityClass
 public class DCHelper {
-    @Contract(pure = true, value = "null, _ -> true")
-    public boolean lacksRole(@Nullable final Member member, final long roleId) {
-        return !hasRole(member, roleId);
-    }
-
     @Contract(pure = true, value = "null, _ -> false")
     public boolean hasRole(@Nullable final Member member, final long roleId) {
         return member != null && member.getRoles()
