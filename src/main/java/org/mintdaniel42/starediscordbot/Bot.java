@@ -85,9 +85,7 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating"))
                                         .addOption(OptionType.STRING, "top10", R.string("top10"))
                                         .addOption(OptionType.INTEGER, "streak", R.string("streak"))
-                                        .addOption(OptionType.STRING, "highest_rank", R.string("highest_rank"))
-                                        .addOption(OptionType.STRING, "note", R.string("note"))
-                                        .addOption(OptionType.USER, "discord", R.string("discord_tag")),
+                                        .addOption(OptionType.STRING, "highest_rank", R.string("highest_rank")),
                                 new SubcommandData("add", R.string("add_a_new_hide_n_seek_entry"))
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                                         .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
@@ -95,9 +93,7 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.STRING, "joined", R.string("joined"))
                                         .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
                                         .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
-                                        .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating"))
-                                        .addOption(OptionType.STRING, "note", R.string("note"))
-                                        .addOption(OptionType.USER, "discord", R.string("discord_tag")),
+                                        .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating")),
                                 new SubcommandData("list", R.string("list_hide_n_seek_entries"))
                                         .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
                         ),
@@ -113,9 +109,7 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.STRING, "joined", R.string("joined"))
                                         .addOption(OptionType.NUMBER, "luck", R.string("luck"))
                                         .addOption(OptionType.NUMBER, "quota", R.string("quota"))
-                                        .addOption(OptionType.NUMBER, "winrate", R.string("winrate"))
-                                        .addOption(OptionType.STRING, "note", R.string("note"))
-                                        .addOption(OptionType.USER, "discord", R.string("discord_tag")),
+                                        .addOption(OptionType.NUMBER, "winrate", R.string("winrate")),
                                 new SubcommandData("add", R.string("add_a_new_partygames_entry"))
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                                         .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
@@ -123,9 +117,7 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.STRING, "joined", R.string("joined"))
                                         .addOption(OptionType.NUMBER, "luck", R.string("luck"))
                                         .addOption(OptionType.NUMBER, "quota", R.string("quota"))
-                                        .addOption(OptionType.NUMBER, "winrate", R.string("winrate"))
-                                        .addOption(OptionType.STRING, "note", R.string("note"))
-                                        .addOption(OptionType.USER, "discord", R.string("discord_tag")),
+                                        .addOption(OptionType.NUMBER, "winrate", R.string("winrate")),
                                 new SubcommandData("list", R.string("list_partygames_entries"))
                                         .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
                         ),
