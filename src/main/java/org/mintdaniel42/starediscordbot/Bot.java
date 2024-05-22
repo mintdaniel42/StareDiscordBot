@@ -136,10 +136,6 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                                         .addOption(OptionType.STRING, "note", R.string("note"))
                                         .addOption(OptionType.USER, "discord", R.string("discord_tag")),
-                                new SubcommandData("add", R.string("add_a_new_user_entry"))
-                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
-                                        .addOption(OptionType.STRING, "note", R.string("note"))
-                                        .addOption(OptionType.USER, "discord", R.string("discord_tag")),
                                 new SubcommandData("delete", R.string("delete_a_user_entry"))
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                         ),
