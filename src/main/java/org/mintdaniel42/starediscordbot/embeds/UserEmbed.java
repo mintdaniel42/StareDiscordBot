@@ -14,16 +14,15 @@ import org.mintdaniel42.starediscordbot.utils.R;
 public class UserEmbed {
     @Contract(pure = true, value = "_, _ -> new")
     public @NonNull MessageEmbed of(@NonNull final UserModel userModel, @NonNull final Type type) {
-        final var builder = new EmbedBuilder();
-
-        builder.setDescription(userModel.getUsername());
-        builder.setColor(Options.getColorNormal());
-        builder.setThumbnail(MCHelper.getThumbnail(userModel.getUuid()));
+        final var builder = new EmbedBuilder()
+                .setDescription(userModel.getUsername())
+                .setColor(Options.getColorNormal())
+                .setThumbnail(MCHelper.getThumbnail(userModel.getUuid()));
 
         return switch (type) {
             case BASE -> buildBaseEmbed(userModel, builder);
 	        case HNS -> buildHnsEmbed(userModel, builder);
-            case HNS_MORE -> buildHnsMorembed(userModel, builder);
+            case HNS_MORE -> buildHnsMoreEmbed(userModel, builder);
             case HNS_ALL -> buildHnsAllEmbed(userModel, builder);
             case PG -> buildPgEmbed(userModel, builder);
         };
@@ -51,7 +50,7 @@ public class UserEmbed {
     }
 
     @Contract(pure = true, value = "_, _ -> new")
-    private @NonNull MessageEmbed buildHnsMorembed(@NonNull final UserModel userModel, @NonNull final EmbedBuilder builder) {
+    private @NonNull MessageEmbed buildHnsMoreEmbed(@NonNull final UserModel userModel, @NonNull final EmbedBuilder builder) {
         return builder.setTitle(R.string("hide_n_seek_player_database_more_information"))
                 .addField(R.string("top10"), userModel.getHnsUser().getTop10(), true)
                 .addField(R.string("streak"), formatNumber(userModel.getHnsUser().getStreak()), true)
