@@ -136,7 +136,7 @@ public final class HNSCommand extends ListenerAdapter {
 								}
 							}
 						}
-					} else if (databaseAdapter.editHnsUser(hnsUserModel) == 0) {
+					} else if (databaseAdapter.edit(hnsUserModel) == 0) {
 						event.reply(R.string("the_entry_could_not_be_updated")).queue();
 					} else event.reply(R.string("the_entry_was_successfully_updated"))
 									.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS))

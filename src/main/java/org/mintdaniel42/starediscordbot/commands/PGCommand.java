@@ -103,7 +103,7 @@ public final class PGCommand extends ListenerAdapter {
 								}
 							}
 						}
-					} else if (databaseAdapter.editPgUser(pgUserModel) == 0) {
+					} else if (databaseAdapter.edit(pgUserModel) == 0) {
 						event.reply(R.string("the_entry_could_not_be_updated")).queue();
 					} else event.reply(R.string("the_entry_was_successfully_updated"))
 							.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG))

@@ -289,33 +289,15 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
-    public int editHnsUser(@NonNull HNSUserModel hnsUserModel) {
+    public <T> int edit(@NonNull T model) {
         try {
-            return hnsUserModelDao.update(hnsUserModel);
-        } catch (SQLException ignored) {
-            return 0;
-        }
-    }
-
-    public int editPgUser(@NonNull PGUserModel pgUserModel) {
-        try {
-            return pgUserModelDao.update(pgUserModel);
-        } catch (SQLException ignored) {
-            return 0;
-        }
-    }
-
-    public int editGroup(@NonNull GroupModel groupModel) {
-        try {
-            return groupModelDao.update(groupModel);
-        } catch (SQLException ignored) {
-            return 0;
-        }
-    }
-
-    public int editUser(@NonNull UserModel userModel) {
-        try {
-            return userModelDao.update(userModel);
+            return switch(model) {
+                case HNSUserModel hnsUserModel -> hnsUserModelDao.update(hnsUserModel);
+                case PGUserModel pgUserModel -> pgUserModelDao.update(pgUserModel);
+                case GroupModel groupModel -> groupModelDao.update(groupModel);
+                case UserModel userModel -> userModelDao.update(userModel);
+                default -> 0;
+            };
         } catch (SQLException ignored) {
             return 0;
         }
@@ -416,14 +398,6 @@ public final class DatabaseAdapter implements AutoCloseable {
                     .idEq(uuid)
                     .isNotNull("group_id")
                     .countOf() != 0;
-        } catch (SQLException ignored) {
-            return false;
-        }
-    }
-
-    public boolean hasUser(@NonNull UUID uuid) {
-        try {
-            return userModelDao.idExists(uuid);
         } catch (SQLException ignored) {
             return false;
         }

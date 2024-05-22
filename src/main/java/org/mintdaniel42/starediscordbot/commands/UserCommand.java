@@ -65,7 +65,7 @@ public class UserCommand extends ListenerAdapter {
 								}
 							}
 						}
-					} else if (databaseAdapter.editHnsUser(userModel.getHnsUser()) == 0 || databaseAdapter.editUser(userModel) == 0) {
+					} else if (databaseAdapter.edit(userModel) == 0) {
 						event.reply(R.string("the_entry_could_not_be_updated")).queue();
 					} else event.reply(R.string("the_entry_was_successfully_updated"))
 							.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS))
