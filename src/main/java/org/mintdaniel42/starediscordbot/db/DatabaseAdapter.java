@@ -110,7 +110,12 @@ public final class DatabaseAdapter implements AutoCloseable {
 
                             List<UUID> uuids = Stream.of(hnsUserModelDao.queryForAll(), pgUserModelDao.queryForAll())
                                     .flatMap(Collection::stream)
-                                    .map(object -> object instanceof HNSUserModel hnsUserModel ? hnsUserModel.getUuid() : ((PGUserModel) object).getUuid())
+                                    .map(object -> {
+                                        if (object instanceof HNSUserModel hnsUserModel) return hnsUserModel.getUuid();
+                                        else if (object instanceof PGUserModel pgUserModel) return pgUserModel.getUuid();
+                                        else return null;
+                                    })
+                                    .filter(Objects::nonNull)
                                     .distinct()
                                     .toList();
 
