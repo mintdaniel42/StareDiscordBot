@@ -1,4 +1,4 @@
-name: github
+name: Build & Upload Docker Image
 
 on:
   push:
