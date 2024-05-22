@@ -6,21 +6,31 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.GroupModel;
+import org.mintdaniel42.starediscordbot.db.UserModel;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+import java.util.List;
+
 @UtilityClass
 public class GroupEmbed {
-	public @NonNull MessageEmbed of(@NonNull final DatabaseAdapter databaseAdapter, @NonNull final GroupModel groupModel) {
-		EmbedBuilder embedBuilder = new EmbedBuilder();
+	public @NonNull MessageEmbed of(@NonNull final DatabaseAdapter databaseAdapter, @NonNull final GroupModel groupModel, final int page) {
+		EmbedBuilder builder = new EmbedBuilder();
 
-		embedBuilder.setTitle(R.string("group_overview"));
-		embedBuilder.setDescription(String.format("%s [%s]", groupModel.getName(), groupModel.getTag()));
-		embedBuilder.setColor(Options.getColorNormal());
-		embedBuilder.addField(R.string("group_leader"), MCHelper.getUsername(databaseAdapter, groupModel.getLeader()), true);
-		embedBuilder.addField(R.string("group_relation"), R.string(groupModel.getRelation().name()), true);
+		builder.setTitle(R.string("group_overview"));
+		builder.setDescription(String.format("%s [%s]", groupModel.getName(), groupModel.getTag()));
+		builder.setColor(Options.getColorNormal());
+		builder.addField(R.string("group_leader"), MCHelper.getUsername(databaseAdapter, groupModel.getLeader()), false);
+		builder.addField(R.string("group_relation"), R.string(groupModel.getRelation().name()), false);
 
-		return embedBuilder.build();
+		if (databaseAdapter.getGroupMembers(groupModel, page) instanceof List<UserModel> users) {
+			users.forEach(user -> builder.addField(
+					user.getUsername(),
+					R.string("banned") + ": " + (user.getHnsUser().isBanned() ? "✅" : "❌"), true)
+			);
+		}
+
+		return builder.build();
 	}
 }
