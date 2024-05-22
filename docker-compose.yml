@@ -4,12 +4,17 @@ services:
   bot:
     container_name: stare-bot
     restart: always
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: mintdaniel42/prncsdiscordbot:latest
     volumes:
       - ./.data:/usr/src/app/.data
     env_file:
       - .env
     tty: true
     stdin_open: true
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 900
