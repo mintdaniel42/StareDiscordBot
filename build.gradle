@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.json)
     implementation(libs.slf4j.api)
     implementation(libs.slf4j.simple)
+    annotationProcessor(libs.manifold.preprocessor)
 }
 
 group = 'org.mintdaniel42.starediscordbot'
@@ -38,6 +39,11 @@ tasks.jar {
     }
 
     exclude("org/mintdaniel42/starediscordbot/build/**")
+}
+
+tasks.compileJava {
+    options.compilerArgs += ['-Xplugin:Manifold']
+    if (System.getenv("DEV") == "1") options.compilerArgs += ['-Adev']
 }
 
 buildConfig {
