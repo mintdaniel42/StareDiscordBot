@@ -5,7 +5,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,18 +21,18 @@ import java.util.UUID;
 public class MCHelper {
     private static final int timeout = 172800;
 
-    public @Nullable UUID getUuid(@NonNull DatabaseAdapter databaseAdapter, @NonNull String username) {
-        UsernameModel usernameModel;
-        if ((usernameModel = databaseAdapter.getUsernameModel(username)) != null && usernameModel.getLastUpdated() >= Instant.now().toEpochMilli() - timeout) return usernameModel.getUuid();
+    public @Nullable UUID getUuid(@NonNull final DatabaseAdapter databaseAdapter, @NonNull final String username) {
+        if (databaseAdapter.getUsernameModel(username) instanceof UsernameModel usernameModel) return usernameModel.getUuid();
         else {
-            final OkHttpClient okHttpClient = new OkHttpClient();
-            final Request request = new Request.Builder().url("https://playerdb.co/api/player/minecraft/" + username).build();
-            try(Response response = okHttpClient.newCall(request).execute()) {
-                JSONObject jsonObject = new JSONObject(response.body().string()).getJSONObject("data").getJSONObject("player");
-                UUID uuid = UUID.fromString(jsonObject.getString("id"));
-                username = jsonObject.getString("username");
-                databaseAdapter.putUsername(new UsernameModel(uuid, username, Instant.now().toEpochMilli()));
-                return uuid;
+            final var okHttpClient = new OkHttpClient();
+            final var request = new Request.Builder().url("https://playerdb.co/api/player/minecraft/" + username).build();
+            try(final var response = okHttpClient.newCall(request).execute()) {
+                if (response.body() instanceof ResponseBody responseBody) {
+                    final var jsonObject = new JSONObject(responseBody.string()).getJSONObject("data").getJSONObject("player");
+                    final var uuid = UUID.fromString(jsonObject.getString("id"));
+                    databaseAdapter.putUsername(new UsernameModel(uuid, jsonObject.getString("username"), Instant.now().toEpochMilli()));
+                    return uuid;
+                } else return null;
             } catch (IOException | JSONException e) {
                 log.error(R.logging("could_not_fetch_uuid"), e);
                 return null;
@@ -41,15 +41,16 @@ public class MCHelper {
     }
 
     public @Nullable String getUsername(@NonNull DatabaseAdapter databaseAdapter, @NonNull UUID uuid) {
-        UsernameModel usernameModel;
-        if ((usernameModel = databaseAdapter.getUsernameModel(uuid)) != null && usernameModel.getLastUpdated() >= Instant.now().toEpochMilli() - timeout) return usernameModel.getUsername();
+        if (databaseAdapter.getUsernameModel(uuid) instanceof UsernameModel usernameModel) return usernameModel.getUsername();
         else {
-            final OkHttpClient okHttpClient = new OkHttpClient();
-            final Request request = new Request.Builder().url("https://playerdb.co/api/player/minecraft/" + uuid).build();
-            try (Response response = okHttpClient.newCall(request).execute()) {
-                String username = new JSONObject(response.body().string()).getJSONObject("data").getJSONObject("player").getString("username");
-                databaseAdapter.putUsername(new UsernameModel(uuid, username, Instant.now().toEpochMilli()));
-                return username;
+            final var okHttpClient = new OkHttpClient();
+            final var request = new Request.Builder().url("https://playerdb.co/api/player/minecraft/" + uuid).build();
+            try (final var response = okHttpClient.newCall(request).execute()) {
+                if (response.body() instanceof ResponseBody responseBody) {
+                    final var username = new JSONObject(responseBody.string()).getJSONObject("data").getJSONObject("player").getString("username");
+                    databaseAdapter.putUsername(new UsernameModel(uuid, username, Instant.now().toEpochMilli()));
+                    return username;
+                } else return null;
             } catch (IOException e) {
                 log.error(R.logging("could_not_fetch_username"), e);
                 return null;
@@ -57,7 +58,7 @@ public class MCHelper {
         }
     }
 
-    public @NonNull String getThumbnail(@NonNull UUID uuid) {
+    public @NonNull String getThumbnail(@NonNull final UUID uuid) {
         return "https://minotar.net/armor/bust/" + uuid;
     }
 }
