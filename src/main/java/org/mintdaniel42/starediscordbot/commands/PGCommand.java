@@ -28,155 +28,118 @@ public final class PGCommand extends ListenerAdapter {
 
 	@Override
 	public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
-		if (!event.getFullCommandName().startsWith("pg")) return;
-
-		// check maintenance
-		if (Options.isInMaintenance()) {
-			event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
-			return;
-		}
-
-		// set command
-		String command = event.getFullCommandName();
-
-		// check if username is given
-		OptionMapping usernameMapping = event.getOption("username");
-		if (usernameMapping == null && !command.equals("pg list")) {
-			event.reply(R.string("your_command_was_incomplete")).queue();
-			return;
-		}
-
-		// check if username exists
-		UUID uuid = null;
-		if (usernameMapping != null && !command.equals("pg list")) {
-			uuid = MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString());
-			if (uuid == null) {
-				event.reply(R.string("this_username_does_not_exist")).queue();
-				return;
-			}
-		}
-
-		// check if the page exists (if provided)
-		OptionMapping pageMapping = event.getOption("page");
-		int page = pageMapping != null ? pageMapping.getAsInt() - 1 : 0;
-		if (page < 0 || page >= databaseAdapter.getPgPages()) {
-			event.reply(R.string("this_page_does_not_exist")).queue();
-			return;
-		}
-
-		// select command
-		switch (command) {
-			case "pg show" -> pgShow(event, uuid);
-			case String name when name.equals("pg edit") || name.equals("pg add") -> pgAddOrEdit(event, uuid, name);
-			case "pg list" -> pgList(event, page);
-			default -> {}
+		if (event.getFullCommandName().startsWith("pg")) {
+			if (!Options.isInMaintenance()) {
+				switch (event.getFullCommandName()) {
+					case "pg show" -> pgShow(event);
+					case "pg add" -> pgAdd(event);
+					case "pg edit" -> pgEdit(event);
+					case "pg list" -> pgList(event);
+				}
+			} else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
 		}
 	}
 
-	private void pgShow(@NonNull final SlashCommandInteractionEvent event, @NonNull final UUID uuid) {
-		UserModel userModel;
-
-		if ((userModel = databaseAdapter.getUser(uuid)) != null && userModel.getPgUser() != null) {
-			event.deferReply().queue(interactionHook -> interactionHook
-					.editOriginalEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG))
-					.setComponents(ActionRow.of(
-							Button.primary(String.format("group:%s", uuid), R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid) || !Features.dev)
-					)).queue());
-		} else {
-			event.reply(R.string("this_username_or_entry_does_not_exist")).queue();
-		}
+	private void pgShow(@NonNull final SlashCommandInteractionEvent event) {
+		if (event.getOption("username") instanceof final OptionMapping usernameMapping) {
+			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof final UUID uuid) {
+				if (databaseAdapter.hasPgUser(uuid) && databaseAdapter.getUser(uuid) instanceof final UserModel userModel) {
+					event.deferReply().queue(interactionHook -> interactionHook
+							.editOriginalEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG))
+							.setComponents(ActionRow.of(
+											Button.primary(
+													String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
+													R.string("show_group")).withDisabled(userModel.getGroup() == null)
+									).withDisabled(!Features.dev)
+							).queue());
+				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
+			} else event.reply(R.string("this_username_does_not_exist")).queue();
+		} else event.reply(R.string("your_command_was_incomplete")).queue();
 	}
 
-	private void pgAddOrEdit(@NonNull final SlashCommandInteractionEvent event, @NonNull final UUID uuid, @NonNull final String command) {
-		if (!databaseAdapter.hasPgUser(uuid) && command.equals("pg edit")) event.reply(R.string("this_user_entry_does_not_exist")).queue();
-		else if (databaseAdapter.hasPgUser(uuid) && command.equals("pg add")) event.reply(R.string("this_user_entry_already_exists")).queue();
-		else {
-			// get builder
-			PGUserModel.PGUserModelBuilder pgBuilder;
-			UserModel.UserModelBuilder userBuilder;
-			if (command.equals("pg add")) {
-				pgBuilder = PGUserModel.builder().uuid(uuid);
-				UserModel userModel = databaseAdapter.getUser(uuid);
-				if (userModel == null) userBuilder = UserModel.builder().uuid(uuid);
-				else userBuilder = userModel.toBuilder();
-			}
-			else {
-				PGUserModel pgUserModel = databaseAdapter.getPgUser(uuid);
-				UserModel userModel = databaseAdapter.getUser(uuid);
-				if (pgUserModel == null || userModel == null) {
-					event.reply(R.string("this_user_entry_does_not_exist")).queue();
-					return;
-				}
-				else {
-					pgBuilder = pgUserModel.toBuilder();
-					userBuilder = userModel.toBuilder();
-				}
-			}
+	private void pgAdd(@NonNull final SlashCommandInteractionEvent event) {
+		if (DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
+			if (event.getOption("username") instanceof final OptionMapping usernameMapping && event.getOptions().size() >= 2) {
+				if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof final UUID uuid) {
+					if (!databaseAdapter.hasPgUser(uuid)) {
+						final var pgModel = buildPgModel(event, PGUserModel.builder().uuid(uuid));
+						final var userModel = databaseAdapter.getUser(uuid);
+						final var userBuilder = userModel == null ? UserModel.builder().uuid(uuid) : userModel.toBuilder();
+						userBuilder.pgUser(pgModel).build();
 
-			// set attributes
-			for (OptionMapping optionMapping : event.getOptions()) {
-				switch (optionMapping.getName()) {
-					case "rating" -> pgBuilder.rating(optionMapping.getAsString());
-					case "points" -> pgBuilder.points(Math.round(optionMapping.getAsDouble()));
-					case "joined" -> pgBuilder.joined(optionMapping.getAsString());
-					case "luck" -> pgBuilder.luck(optionMapping.getAsDouble());
-					case "quota" -> pgBuilder.quota(optionMapping.getAsDouble());
-					case "winrate" -> pgBuilder.winrate(optionMapping.getAsDouble());
-					case "discord" -> {
-						if (Features.dev)  userBuilder.discord(optionMapping.getAsLong());
-					}
-					case "note" -> {
-						if (Features.dev) userBuilder.note(optionMapping.getAsString());
-					}
-				}
-			}
+						if (!databaseAdapter.addUser(userBuilder.build()) && !databaseAdapter.addPgUser(pgModel)) {
+							event.reply(R.string("the_entry_could_not_be_created")).queue();
+						} else event.reply(R.string("the_entry_was_successfully_created"))
+								.setEmbeds(UserEmbed.of(userBuilder.build(), UserEmbed.Type.PG))
+								.queue();
+					} else event.reply(R.string("this_user_entry_already_exists")).queue();
+				} else event.reply(R.string("this_username_does_not_exist")).queue();
+			} else event.reply(R.string("your_command_was_incomplete")).queue();
+		} else event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
+	}
 
-			// update the model
-			UserModel userModel = userBuilder.pgUser(pgBuilder.build()).build();
+	private void pgEdit(@NonNull final SlashCommandInteractionEvent event) {
+		if (event.getOption("username") instanceof final OptionMapping usernameMapping &&
+				event.getOptions().size() >= 2) {
+			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof final UUID uuid) {
+				if (databaseAdapter.getPgUser(uuid) instanceof PGUserModel pgUserModel &&
+						databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
+					pgUserModel = buildPgModel(event, pgUserModel.toBuilder());
+					userModel = userModel.toBuilder().pgUser(pgUserModel).build();
 
-			if (command.equals("pg add")) {
-				if (!databaseAdapter.addUser(userModel) && !databaseAdapter.addPgUser(pgBuilder.build())) event.reply(R.string("the_entry_could_not_be_created")).queue();
-				else event.reply(R.string("the_entry_was_successfully_created")).setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG)).queue();
-			} else {
-				if (DCHelper.lacksRole(event.getMember(), Options.getEditRoleId()) && DCHelper.lacksRole(event.getMember(), Options.getCreateRoleId())) {
-					long timestamp = System.currentTimeMillis();
-					if (!databaseAdapter.addRequest(RequestModel.from(timestamp, userModel.getPgUser()))) {
-						event.reply(R.string("the_entry_could_not_be_updated")).queue();
-					} else {
-						event.reply(R.string("the_entry_change_was_successfully_requested")).queue();
-						Guild guild = event.getGuild();
-						if (guild != null) {
-							TextChannel requestChannel = guild.getTextChannelById(Options.getRequestChannelId());
-							if (requestChannel != null) {
-								Member member = event.getMember();
-								if (member != null) requestChannel.sendMessage(String.format(
-												R.string("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s"),
-												member.getAsMention(),
-												timestamp))
-										.addActionRow(Button.primary(String.format("approve:%s", timestamp), R.string("approve_this_change")))
-										.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG)).queue();
+					if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
+						long timestamp = System.currentTimeMillis();
+						if (event.getGuild() instanceof Guild guild) {
+							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof TextChannel requestChannel) {
+								if (event.getMember() instanceof Member member) {
+									if (databaseAdapter.addRequest(RequestModel.from(timestamp, pgUserModel))) {
+										requestChannel.sendMessage(R.string("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
+														member.getAsMention(),
+														timestamp))
+												.addActionRow(Button.primary(String.format("approve:%s", timestamp), R.string("approve_this_change")))
+												.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG)).queue();
+										event.reply(R.string("the_entry_change_was_successfully_requested")).queue();
+									} else event.reply(R.string("the_entry_could_not_be_updated")).queue();
+								}
 							}
 						}
-					}
-				} else {
-					if (databaseAdapter.editPgUser(userModel.getPgUser()) == 0 || databaseAdapter.editUser(userModel) == 0) event.reply(R.string("the_entry_could_not_be_updated")).queue();
-					else {
-						event.reply(R.string("the_entry_was_successfully_updated")).setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG)).queue();
-					}
-				}
-			}
-		}
+					} else if (databaseAdapter.editPgUser(pgUserModel) == 0) {
+						event.reply(R.string("the_entry_could_not_be_updated")).queue();
+					} else event.reply(R.string("the_entry_was_successfully_updated"))
+							.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG))
+							.queue();
+				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
+			} else event.reply(R.string("this_username_does_not_exist")).queue();
+		} else event.reply(R.string("your_command_was_incomplete")).queue();
 	}
 
-	private void pgList(@NonNull final SlashCommandInteractionEvent event, final int page) {
-		List<PGUserModel> entriesList = databaseAdapter.getPgUserList(page);
-		if (entriesList != null && !entriesList.isEmpty()) {
-			event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createPgList(databaseAdapter, entriesList, page))
-					.setComponents(ActionRow.of(
-							Button.primary(String.format("previous:pg:%s", page), R.string("previous_page")).withDisabled(page < 1 || !Features.dev),
-							Button.primary(String.format("next:pg:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getPgPages() || !Features.dev)
-					))
-					.queue());
-		} else event.reply(R.string("no_entries_available")).queue();
+	private static PGUserModel buildPgModel(@NonNull final SlashCommandInteractionEvent event, @NonNull final PGUserModel.PGUserModelBuilder pgBuilder) {
+		for (OptionMapping optionMapping : event.getOptions()) {
+			switch (optionMapping.getName()) {
+				case "rating" -> pgBuilder.rating(optionMapping.getAsString());
+				case "points" -> pgBuilder.points(Math.round(optionMapping.getAsDouble()));
+				case "joined" -> pgBuilder.joined(optionMapping.getAsString());
+				case "luck" -> pgBuilder.luck(optionMapping.getAsDouble());
+				case "quota" -> pgBuilder.quota(optionMapping.getAsDouble());
+				case "winrate" -> pgBuilder.winrate(optionMapping.getAsDouble());
+			}
+		}
+		return pgBuilder.build();
+	}
+
+	private void pgList(@NonNull final SlashCommandInteractionEvent event) {
+		if (event.getOption("page") instanceof final OptionMapping pageMapping) {
+			if (databaseAdapter.getPgUserList(pageMapping.getAsInt()) instanceof final List<PGUserModel> entries && !entries.isEmpty()) {
+				final var page = pageMapping.getAsInt();
+				if (databaseAdapter.getPgPages() < page && page >= 0) {
+					event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createPgList(databaseAdapter, entries, page))
+							.setComponents(ActionRow.of(
+									Button.primary(String.format("previous:pg:%s", page), R.string("previous_page")).withDisabled(page < 1 || !Features.dev),
+									Button.primary(String.format("next:pg:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getPgPages() || !Features.dev)
+							))
+							.queue());
+				} else event.reply(R.string("this_page_does_not_exist")).queue();
+			} else event.reply(R.string("no_entries_available")).queue();
+		} else event.reply(R.string("your_command_was_incomplete")).queue();
 	}
 }
