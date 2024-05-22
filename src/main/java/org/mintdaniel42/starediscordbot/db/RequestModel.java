@@ -13,9 +13,9 @@ import java.util.UUID;
 @NoArgsConstructor(force = true)
 public class RequestModel {
     @DatabaseField(id = true) long timestamp;
-    @NonNull @DatabaseField UUID uuid;
-    @NonNull @DatabaseField String rating;
-    @NonNull @DatabaseField String joined;
+    @DatabaseField UUID uuid;
+    @DatabaseField String rating;
+    @DatabaseField String joined;
     @DatabaseField long points;
     @DatabaseField double luck;
     @DatabaseField double quota;
