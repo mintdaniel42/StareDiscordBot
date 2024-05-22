@@ -40,14 +40,7 @@ public class UserCommand extends ListenerAdapter {
 		if (event.getOption("username") instanceof OptionMapping usernameMapping && event.getOptions().size() >= 2) {
 			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
 				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
-					UserModel.UserModelBuilder userBuilder = userModel.toBuilder();
-
-					for (OptionMapping optionMapping : event.getOptions()) {
-						switch (optionMapping.getName()) {
-							case "discord" -> userBuilder.discord(optionMapping.getAsLong());
-							case "note" -> userBuilder.note(optionMapping.getAsString());
-						}
-					}
+					userModel = buildUserModel(event, userModel.toBuilder());
 
 					if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
 						long timestamp = System.currentTimeMillis();
@@ -73,6 +66,17 @@ public class UserCommand extends ListenerAdapter {
 				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.string("this_username_does_not_exist")).queue();
 		} else event.reply(R.string("your_command_was_incomplete")).queue();
+	}
+
+	private @NonNull UserModel buildUserModel(@NonNull final SlashCommandInteractionEvent event, UserModel.UserModelBuilder userBuilder) {
+		for (OptionMapping optionMapping : event.getOptions()) {
+			switch (optionMapping.getName()) {
+				case "discord" -> userBuilder.discord(optionMapping.getAsLong());
+				case "note" -> userBuilder.note(optionMapping.getAsString());
+			}
+		}
+
+		return userBuilder.build();
 	}
 
 	private void userDelete(@NonNull final SlashCommandInteractionEvent event) {

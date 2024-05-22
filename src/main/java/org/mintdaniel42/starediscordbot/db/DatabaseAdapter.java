@@ -396,6 +396,7 @@ public final class DatabaseAdapter implements AutoCloseable {
             return userModelDao.idExists(uuid) && userModelDao.queryBuilder()
                     .where()
                     .idEq(uuid)
+                    .and()
                     .isNotNull("group_id")
                     .countOf() != 0;
         } catch (SQLException ignored) {
