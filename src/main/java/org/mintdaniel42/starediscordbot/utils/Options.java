@@ -20,8 +20,9 @@ public class Options {
 
     @Getter private final long requestChannelId = Long.parseLong(System.getenv("REQUEST_CHANNEL_ID"));
 
-    @Getter private final long cleanInterval = 300_000; // in millis
-    @Getter private final long maxRequestAge = 172_800_000; // in millis
+    @Getter private final long cleanInterval = 300 * 1_000; // in millis
+    @Getter private final long maxRequestAge = 2 * 1_000 * 86400; // in millis
+    @Getter private final long maxUsernameAge = 5 * 1_000 * 86400; // in millis
 
     @Getter private final Locale locale = Locale.GERMANY;
 
