@@ -1,6 +1,5 @@
 package org.mintdaniel42.starediscordbot.buttons;
 
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -12,7 +11,6 @@ import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
-@Getter
 @RequiredArgsConstructor
 public final class ListButtons extends ListenerAdapter {
     @NonNull private final DatabaseAdapter databaseAdapter;
