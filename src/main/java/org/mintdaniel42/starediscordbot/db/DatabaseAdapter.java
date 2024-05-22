@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
-import org.mintdaniel42.starediscordbot.utils.Options;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -155,11 +154,9 @@ public final class DatabaseAdapter implements AutoCloseable {
         try {
             var requestDeleteBuilder = requestModelDao.deleteBuilder();
             requestDeleteBuilder.where().le("timestamp", System.currentTimeMillis() - BuildConfig.maxRequestAge);
-            System.out.println(requestDeleteBuilder.delete());
 
             var usernameDeleteBuilder = usernameModelDao.deleteBuilder();
             usernameDeleteBuilder.where().le("lastupdated", System.currentTimeMillis() - BuildConfig.maxUsernameAge);
-            System.out.println(usernameDeleteBuilder.delete());
 
         } catch (SQLException e) {
             log.error("Could not clean database: ", e);
