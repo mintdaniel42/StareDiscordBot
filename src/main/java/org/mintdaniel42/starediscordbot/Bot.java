@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
-import org.mintdaniel42.starediscordbot.build.Features;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
@@ -122,6 +121,42 @@ public final class Bot extends ListenerAdapter {
                                         .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
                         ),
 
+                Commands.slash("group", R.string("group_related_commands"))
+                        .addSubcommandGroups(new SubcommandGroupData("user", R.string("user_related_group_commands"))
+                                .addSubcommands(
+                                        new SubcommandData("add", R.string("add_user_to_group"))
+                                                .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
+                                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
+                                        new SubcommandData("remove", R.string("remove_user_from_group"))
+                                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
+                                        new SubcommandData("show", R.string("show_group_of_user"))
+                                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
+                                )
+                        )
+                        .addSubcommands(
+                                new SubcommandData("show", R.string("show_group"))
+                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true),
+                                new SubcommandData("create", R.string("create_group"))
+                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), true)
+                                        .addOption(OptionType.STRING, "name", R.string("group_name"), true)
+                                        .addOption(OptionType.STRING, "leader", R.string("group_leader"), true, true)
+                                        .addOptions(new OptionData(OptionType.STRING, "relation", R.string("group_relation"), true)
+                                                .addChoice(R.string("enemy"), GroupModel.Relation.enemy.name())
+                                                .addChoice(R.string("neutral"), GroupModel.Relation.neutral.name())
+                                                .addChoice(R.string("ally"), GroupModel.Relation.ally.name())),
+                                new SubcommandData("edit", R.string("edit_group"))
+                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
+                                        .addOption(OptionType.STRING, "name", R.string("group_name"))
+                                        .addOption(OptionType.STRING, "leader", R.string("group_leader"), false, true)
+                                        .addOptions(new OptionData(OptionType.STRING, "relation", R.string("group_relation"))
+                                                .addChoice(R.string("enemy"), GroupModel.Relation.enemy.name())
+                                                .addChoice(R.string("neutral"), GroupModel.Relation.neutral.name())
+                                                .addChoice(R.string("ally"), GroupModel.Relation.ally.name())),
+                                new SubcommandData("delete", R.string("delete_group"))
+                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
+                                        .addOption(OptionType.BOOLEAN, "confirm", R.string("confirm_deletion"), true)
+                        ),
+
                 Commands.slash("user", R.string("user_related_commands"))
                         .addSubcommands(
                                 new SubcommandData("edit", R.string("edit_a_user_entry"))
@@ -135,45 +170,6 @@ public final class Bot extends ListenerAdapter {
                 Commands.slash("approve", R.string("approve_a_change"))
                         .addOption(OptionType.INTEGER, "id", R.string("change_id"), true, true)
         );
-
-        if (Features.dev) {
-            commandListUpdateAction.addCommands(
-    Commands.slash("group", R.string("group_related_commands"))
-                    .addSubcommandGroups(new SubcommandGroupData("user", R.string("user_related_group_commands"))
-                            .addSubcommands(
-                                    new SubcommandData("add", R.string("add_user_to_group"))
-                                            .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
-                                            .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
-                                    new SubcommandData("remove", R.string("remove_user_from_group"))
-                                            .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
-                                    new SubcommandData("show", R.string("show_group_of_user"))
-                                            .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
-                            )
-                    )
-                    .addSubcommands(
-                            new SubcommandData("show", R.string("show_group"))
-                                    .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true),
-                            new SubcommandData("create", R.string("create_group"))
-                                    .addOption(OptionType.STRING, "tag", R.string("group_tag"), true)
-                                    .addOption(OptionType.STRING, "name", R.string("group_name"), true)
-                                    .addOption(OptionType.STRING, "leader", R.string("group_leader"), true, true)
-                                    .addOptions(new OptionData(OptionType.STRING, "relation", R.string("group_relation"), true)
-                                            .addChoice(R.string("enemy"), GroupModel.Relation.enemy.name())
-                                            .addChoice(R.string("neutral"), GroupModel.Relation.neutral.name())
-                                            .addChoice(R.string("ally"), GroupModel.Relation.ally.name())),
-                            new SubcommandData("edit", R.string("edit_group"))
-                                    .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
-                                    .addOption(OptionType.STRING, "name", R.string("group_name"))
-                                    .addOption(OptionType.STRING, "leader", R.string("group_leader"), false, true)
-                                    .addOptions(new OptionData(OptionType.STRING, "relation", R.string("group_relation"))
-                                            .addChoice(R.string("enemy"), GroupModel.Relation.enemy.name())
-                                            .addChoice(R.string("neutral"), GroupModel.Relation.neutral.name())
-                                            .addChoice(R.string("ally"), GroupModel.Relation.ally.name())),
-                            new SubcommandData("delete", R.string("delete_group"))
-                                    .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
-                                    .addOption(OptionType.BOOLEAN, "confirm", R.string("confirm_deletion"), true)
-                    )).queue();
-        }
 
         commandListUpdateAction.queue();
     }
