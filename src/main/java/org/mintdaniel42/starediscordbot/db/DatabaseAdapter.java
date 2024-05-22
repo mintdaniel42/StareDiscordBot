@@ -333,6 +333,9 @@ public final class DatabaseAdapter implements AutoCloseable {
      */
     public boolean addHnsUser(@NonNull HNSUserModel hnsUserModel) {
         try {
+            if (!userModelDao.idExists(hnsUserModel.getUuid())) userModelDao.create(UserModel.builder()
+                    .uuid(hnsUserModel.getUuid())
+                    .build());
             return hnsUserModelDao.createIfNotExists(hnsUserModel).equals(hnsUserModel);
         } catch (SQLException ignored) {
             return false;
@@ -345,6 +348,9 @@ public final class DatabaseAdapter implements AutoCloseable {
      */
     public boolean addPgUser(@NonNull PGUserModel pgUserModel) {
         try {
+            if (!userModelDao.idExists(pgUserModel.getUuid())) userModelDao.create(UserModel.builder()
+                    .uuid(pgUserModel.getUuid())
+                    .build());
             return pgUserModelDao.createIfNotExists(pgUserModel).equals(pgUserModel);
         } catch (SQLException ignored) {
             return false;
@@ -407,6 +413,7 @@ public final class DatabaseAdapter implements AutoCloseable {
         try {
             return userModelDao.idExists(uuid) && userModelDao.queryBuilder()
                     .where()
+                    .idEq(uuid)
                     .isNotNull("group_id")
                     .countOf() != 0;
         } catch (SQLException ignored) {
