@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
+import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -71,7 +72,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                         try {
                             requestModelDao.executeRawNoArgs("DROP TABLE requests");
                         } catch(SQLException e) {
-                            log.error("Couldn't perform new_requests migration: ", e);
+                            log.error(R.logging("could_not_perform_s_migration", "new_requests"), e);
                             throw new RuntimeException(e);
                         }
                         TableUtils.createTableIfNotExists(connectionSource, RequestModel.class);
@@ -89,7 +90,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                             requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN discord BIGINT");
                             metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.GROUPS_ADDED));
                         } catch (SQLException e) {
-                            log.error("Couldn't perform groups_added migration: ", e);
+                            log.error(R.logging("could_not_perform_s_migration", "groups_added"), e);
                             throw new RuntimeException(e);
                         }
                     }
@@ -127,14 +128,14 @@ public final class DatabaseAdapter implements AutoCloseable {
 
                             metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.HNS_V2));
                         } catch (SQLException e) {
-                            log.error("Couldn't perform hns_v2 migration: ", e);
+                            log.error(R.logging("could_not_perform_s_migration", "hns_v2"), e);
                             throw new RuntimeException(e);
                         }
                     }
                 }
             }
 	    } catch (SQLException e) {
-		    log.error("Couldn't prepare database: ", e);
+		    log.error(R.logging("could_not_prepare_database"), e);
             throw new RuntimeException(e);
 	    }
     }
@@ -148,18 +149,20 @@ public final class DatabaseAdapter implements AutoCloseable {
                 cleanDatabase();
             }
         }, Math.round(next));
-	    log.info("Schedule next database cleaning in {} seconds", next / 1000);
+	    log.info(R.logging("schedule_next_database_cleaning_in_s_seconds", next / 1000));
 
         // perform cleaning
         try {
             var requestDeleteBuilder = requestModelDao.deleteBuilder();
             requestDeleteBuilder.where().le("timestamp", System.currentTimeMillis() - BuildConfig.maxRequestAge);
+            requestDeleteBuilder.delete();
 
             var usernameDeleteBuilder = usernameModelDao.deleteBuilder();
             usernameDeleteBuilder.where().le("lastupdated", System.currentTimeMillis() - BuildConfig.maxUsernameAge);
+            usernameDeleteBuilder.delete();
 
         } catch (SQLException e) {
-            log.error("Could not clean database: ", e);
+            log.error(R.logging("could_not_clean_database"), e);
         }
     }
 
@@ -480,7 +483,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                 }
             }
         } catch (SQLException e) {
-            log.error("Request could not be merged: ", e);
+            log.error(R.logging("could_not_merge_request"), e);
             return false;
         }
     }
