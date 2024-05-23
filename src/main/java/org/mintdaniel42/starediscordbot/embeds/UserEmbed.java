@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.Contract;
+import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.db.UserModel;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
@@ -19,11 +20,16 @@ public class UserEmbed {
                 .setColor(Options.getColorNormal())
                 .setThumbnail(MCHelper.getThumbnail(userModel.getUuid()));
 
-        return switch (type) {
+        if (BuildConfig.dev) return switch (type) {
             case BASE -> buildBaseEmbed(userModel, builder);
 	        case HNS -> buildHnsEmbed(userModel, builder);
             case HNS_MORE -> buildHnsMoreEmbed(userModel, builder);
             case HNS_ALL -> buildHnsAllEmbed(userModel, builder);
+            case PG -> buildPgEmbed(userModel, builder);
+        };
+        else return switch (type) {
+            case BASE -> buildBaseEmbed(userModel, builder);
+            case HNS, HNS_MORE, HNS_ALL -> buildHnsEmbed(userModel, builder);
             case PG -> buildPgEmbed(userModel, builder);
         };
     }

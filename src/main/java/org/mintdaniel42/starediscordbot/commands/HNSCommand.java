@@ -2,6 +2,7 @@ package org.mintdaniel42.starediscordbot.commands;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -11,7 +12,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.db.*;
+import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
@@ -22,6 +25,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 public final class HNSCommand extends ListenerAdapter {
 	@NonNull final DatabaseAdapter databaseAdapter;
@@ -30,12 +34,17 @@ public final class HNSCommand extends ListenerAdapter {
 	public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
 		if (event.getFullCommandName().startsWith("hns")) {
 			if (!Options.isInMaintenance()) {
-				switch (event.getFullCommandName()) {
-					case "hns show" -> hnsShow(event, false);
-					case "hns showmore" -> hnsShow(event, true);
-					case "hns add" -> hnsAdd(event);
-					case "hns edit" -> hnsEdit(event);
-					case "hns list" -> hnsList(event);
+				try {
+					switch (event.getFullCommandName()) {
+						case "hns show" -> hnsShow(event, false);
+						case "hns showmore" -> hnsShow(event, true);
+						case "hns add" -> hnsAdd(event);
+						case "hns edit" -> hnsEdit(event);
+						case "hns list" -> hnsList(event);
+					}
+				} catch (Exception e) {
+					log.error(R.logging("the_command_s_caused_an_error"), e);
+					event.replyEmbeds(ErrorEmbed.of(event.getInteraction(), e)).queue();
 				}
 			} else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
 		}
@@ -59,11 +68,11 @@ public final class HNSCommand extends ListenerAdapter {
 							Button.primary(
 									String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
 									R.string(!more ? "more_info" : "basic_info")
-							),
+							).withDisabled(!BuildConfig.dev),
 							Button.primary(
 									String.format("group:%s", groupModel != null ? groupModel.getTag() : null),
 									R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid))
-							)
+							).withDisabled(!BuildConfig.dev)
 					).queue());
 		} else event.reply(R.string("this_username_or_entry_does_not_exist")).queue();
 	}
@@ -78,11 +87,11 @@ public final class HNSCommand extends ListenerAdapter {
 									Button.primary(
 											String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
 											R.string(!more ? "more_info" : "basic_info")
-									),
+									).withDisabled(!BuildConfig.dev),
 									Button.primary(
 											String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
 											R.string("show_group")).withDisabled(userModel.getGroup() == null)
-									)
+									).withDisabled(!BuildConfig.dev)
 							).queue());
 				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.string("this_username_does_not_exist")).queue();

@@ -110,7 +110,7 @@ public final class Bot extends ListenerAdapter {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addHnsCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        commandListUpdateAction.addCommands(Commands.slash("hns", R.string("hide_n_seek_related_commands"))
+        if (BuildConfig.dev) commandListUpdateAction.addCommands(Commands.slash("hns", R.string("hide_n_seek_related_commands"))
                 .addSubcommands(
                         new SubcommandData("show", R.string("show_hide_n_seek_entry"))
                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
@@ -127,6 +127,32 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.STRING, "top10", R.string("top10"))
                                 .addOption(OptionType.INTEGER, "streak", R.string("streak"))
                                 .addOption(OptionType.STRING, "highest_rank", R.string("highest_rank")),
+                        new SubcommandData("add", R.string("add_a_new_hide_n_seek_entry"))
+                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
+                                .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
+                                .addOption(OptionType.STRING, "rating", R.string("rating"))
+                                .addOption(OptionType.STRING, "joined", R.string("joined"))
+                                .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
+                                .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
+                                .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating"))
+                                .addOption(OptionType.STRING, "top10", R.string("top10"))
+                                .addOption(OptionType.INTEGER, "streak", R.string("streak"))
+                                .addOption(OptionType.STRING, "highest_rank", R.string("highest_rank")),
+                        new SubcommandData("list", R.string("list_hide_n_seek_entries"))
+                                .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
+                ));
+        else commandListUpdateAction.addCommands(Commands.slash("hns", R.string("hide_n_seek_related_commands"))
+                .addSubcommands(
+                        new SubcommandData("show", R.string("show_hide_n_seek_entry"))
+                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
+                        new SubcommandData("edit", R.string("edit_a_hide_n_seek_entry"))
+                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
+                                .addOption(OptionType.NUMBER, "points", R.string("points"), false, true)
+                                .addOption(OptionType.STRING, "rating", R.string("rating"))
+                                .addOption(OptionType.STRING, "joined", R.string("joined"))
+                                .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
+                                .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
+                                .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating")),
                         new SubcommandData("add", R.string("add_a_new_hide_n_seek_entry"))
                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                                 .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
