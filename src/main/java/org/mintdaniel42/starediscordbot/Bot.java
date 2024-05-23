@@ -134,7 +134,10 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.STRING, "joined", R.string("joined"))
                                 .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
                                 .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
-                                .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating")),
+                                .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating"))
+                                .addOption(OptionType.STRING, "top10", R.string("top10"))
+                                .addOption(OptionType.INTEGER, "streak", R.string("streak"))
+                                .addOption(OptionType.STRING, "highest_rank", R.string("highest_rank")),
                         new SubcommandData("list", R.string("list_hide_n_seek_entries"))
                                 .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
                 ));
