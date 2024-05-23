@@ -139,18 +139,19 @@ public final class PGCommand extends ListenerAdapter {
 	}
 
 	private void pgList(@NonNull final SlashCommandInteractionEvent event) {
+		final int page;
 		if (event.getOption("page") instanceof final OptionMapping pageMapping) {
-			if (databaseAdapter.getPgUserList(pageMapping.getAsInt()) instanceof final List<PGUserModel> entries && !entries.isEmpty()) {
-				final var page = pageMapping.getAsInt();
-				if (databaseAdapter.getPgPages() < page && page >= 0) {
-					event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createPgList(databaseAdapter, entries, page))
-							.setComponents(ActionRow.of(
-									Button.primary(String.format("previous:pg:%s", page), R.string("previous_page")).withDisabled(page < 1),
-									Button.primary(String.format("next:pg:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getPgPages())
-							))
-							.queue());
-				} else event.reply(R.string("this_page_does_not_exist")).queue();
-			} else event.reply(R.string("no_entries_available")).queue();
-		} else event.reply(R.string("your_command_was_incomplete")).queue();
+			page = pageMapping.getAsInt();
+		} else page = 0;
+		if (databaseAdapter.getPgUserList(page) instanceof final List<PGUserModel> entries && !entries.isEmpty()) {
+			if (databaseAdapter.getPgPages() > page && page >= 0) {
+				event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createPgList(databaseAdapter, entries, page))
+						.setComponents(ActionRow.of(
+								Button.primary(String.format("previous:pg:%s", page), R.string("previous_page")).withDisabled(page < 1),
+								Button.primary(String.format("next:pg:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getPgPages())
+						))
+						.queue());
+			} else event.reply(R.string("this_page_does_not_exist")).queue();
+		} else event.reply(R.string("no_entries_available")).queue();
 	}
 }
