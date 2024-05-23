@@ -1,21 +1,9 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath(libs.jcp)
-    }
-}
-
 plugins {
     id('java')
     id('application')
     alias(libs.plugins.lombok)
     alias(libs.plugins.buildConfig)
 }
-
-apply plugin: "com.igormaznitsa.jcp"
 
 repositories {
     mavenCentral()
@@ -50,19 +38,6 @@ tasks.jar {
     }
 
     exclude("org/mintdaniel42/starediscordbot/build/**")
-}
-
-preprocess {
-    dependsOn generateBuildConfig
-    sources = sourceSets.main.java.srcDirs
-    unknownVarAsFalse = true
-    keepComments = 'remove_jcp_only'
-    vars = ['dev': System.getenv("DEV") == "1"]
-}
-
-tasks.compileJava {
-    dependsOn preprocess
-    source = preprocess.target
 }
 
 buildConfig {

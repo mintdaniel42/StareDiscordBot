@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
+import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
@@ -67,10 +68,10 @@ public final class Bot extends ListenerAdapter {
         addBasicCommands(commandListUpdateAction);
         addHnsCommands(commandListUpdateAction);
         addPgCommands(commandListUpdateAction);
-        //#if dev
-        addUserCommands(commandListUpdateAction);
-        addGroupCommands(commandListUpdateAction);
-        //#endif
+        if (BuildConfig.dev) {
+            addUserCommands(commandListUpdateAction);
+            addGroupCommands(commandListUpdateAction);
+        }
 
         commandListUpdateAction.queue();
 
@@ -143,9 +144,8 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.INTEGER, "page", R.string("page"), false, true))).queue();
     }
 
-    //#if dev
     private void addUserCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        commandListUpdateAction.addCommands(Commands.slash("user", R.string("user_related_commands"))
+        if (BuildConfig.dev) commandListUpdateAction.addCommands(Commands.slash("user", R.string("user_related_commands"))
                 .addSubcommands(
                         new SubcommandData("edit", R.string("edit_a_user_entry"))
                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
@@ -157,7 +157,7 @@ public final class Bot extends ListenerAdapter {
     }
 
     private void addGroupCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        commandListUpdateAction.addCommands(Commands.slash("group", R.string("group_related_commands"))
+        if (BuildConfig.dev) commandListUpdateAction.addCommands(Commands.slash("group", R.string("group_related_commands"))
                 .addSubcommandGroups(new SubcommandGroupData("user", R.string("user_related_group_commands"))
                         .addSubcommands(
                                 new SubcommandData("add", R.string("add_user_to_group"))
@@ -193,7 +193,6 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.BOOLEAN, "confirm", R.string("confirm_deletion"), true)
                 )).queue();
     }
-    //#endif
 
     public static void main(@NonNull final String[] args) throws Exception {
         new Bot(new DatabaseAdapter(Options.getJdbcUrl()));
