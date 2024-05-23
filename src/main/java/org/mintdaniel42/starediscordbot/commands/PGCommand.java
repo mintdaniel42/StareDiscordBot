@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.PGUserModel;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
@@ -59,7 +60,7 @@ public final class PGCommand extends ListenerAdapter {
 							.setComponents(ActionRow.of(
 											Button.primary(
 													String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
-													R.string("show_group")).withDisabled(userModel.getGroup() == null)
+													R.string("show_group")).withDisabled(userModel.getGroup() == null).withDisabled(!BuildConfig.dev)
 									)
 							).queue());
 				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();

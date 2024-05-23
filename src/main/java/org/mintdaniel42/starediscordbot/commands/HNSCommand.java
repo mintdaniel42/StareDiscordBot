@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.db.*;
 import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
@@ -67,11 +68,11 @@ public final class HNSCommand extends ListenerAdapter {
 							Button.primary(
 									String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
 									R.string(!more ? "more_info" : "basic_info")
-							),
+							).withDisabled(!BuildConfig.dev),
 							Button.primary(
 									String.format("group:%s", groupModel != null ? groupModel.getTag() : null),
 									R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid))
-							)
+							).withDisabled(!BuildConfig.dev)
 					).queue());
 		} else event.reply(R.string("this_username_or_entry_does_not_exist")).queue();
 	}
@@ -86,11 +87,11 @@ public final class HNSCommand extends ListenerAdapter {
 									Button.primary(
 											String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
 											R.string(!more ? "more_info" : "basic_info")
-									),
+									).withDisabled(!BuildConfig.dev),
 									Button.primary(
 											String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
 											R.string("show_group")).withDisabled(userModel.getGroup() == null)
-									)
+									).withDisabled(!BuildConfig.dev)
 							).queue());
 				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.string("this_username_does_not_exist")).queue();
