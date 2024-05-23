@@ -6,7 +6,7 @@ json = "20240303"
 slf4j = "2.0.13"
 lombok = "8.6"
 buildConfig = "5.3.5"
-manifold-preprocessor = "2024.1.16"
+jcp = "7.1.1"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
@@ -15,7 +15,7 @@ jdbc-sqlite = { module = "org.xerial:sqlite-jdbc", version.ref = "jdbc-sqlite" }
 json = { module = "org.json:json", version.ref = "json" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
-manifold-preprocessor = { module = "systems.manifold:manifold-preprocessor", version.ref = "manifold-preprocessor"}
+jcp = { module = "com.igormaznitsa:jcp", version.ref = "jcp"}
 
 [plugins]
 lombok = { id = "io.freefair.lombok", version.ref = "lombok"}

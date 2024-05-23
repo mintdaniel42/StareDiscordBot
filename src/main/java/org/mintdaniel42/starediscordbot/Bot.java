@@ -8,18 +8,18 @@ import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-#if dev
+//#if dev
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
-#endif
+//#endif
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
-#if dev
+//#if dev
 import org.mintdaniel42.starediscordbot.db.GroupModel;
-#endif
+//#endif
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -124,7 +124,7 @@ public final class Bot extends ListenerAdapter {
                         ))
                 .addCommands(Commands.slash("approve", R.string("approve_a_change"))
                         .addOption(OptionType.INTEGER, "id", R.string("change_id"), true, true))
-                #if dev
+                //#if dev
                 .addCommands(Commands.slash("help", R.string("list_all_commands")))
                 .addCommands(Commands.slash("group", R.string("group_related_commands"))
                         .addSubcommandGroups(new SubcommandGroupData("user", R.string("user_related_group_commands"))
@@ -170,8 +170,9 @@ public final class Bot extends ListenerAdapter {
                                 new SubcommandData("delete", R.string("delete_a_user_entry"))
                                         .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                         ));
-                #else ;
-                #endif
+                //#else
+                ;
+                //#endif
 
         commandListUpdateAction.queue();
     }
