@@ -3,7 +3,10 @@ package org.mintdaniel42.starediscordbot;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -74,9 +77,27 @@ public final class Bot extends ListenerAdapter {
         }
 
         commandListUpdateAction.queue();
-
     }
 
+    @Override
+    public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
+        if (BuildConfig.dev && event.getMember() instanceof Member member) {
+            log.info(R.logging("command_s_invoked_by_user_s",
+                    event.getFullCommandName(),
+                    member.getEffectiveName()));
+        }
+    }
+
+    @Override
+    public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
+        if (BuildConfig.dev && event.getMember() instanceof Member member) {
+            log.info(R.logging("button_s_pressed_by_user_s",
+                    event.getComponentId(),
+                    member.getEffectiveName()));
+        }
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addBasicCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
         commandListUpdateAction.addCommands(
                 Commands.slash("maintenance", R.string("control_maintenance"))
@@ -84,9 +105,10 @@ public final class Bot extends ListenerAdapter {
                 Commands.slash("approve", R.string("approve_a_change"))
                                 .addOption(OptionType.INTEGER, "id", R.string("change_id"), true, true),
                 Commands.slash("help", R.string("list_all_commands"))
-        ).queue();
+        );
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addHnsCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
         commandListUpdateAction.addCommands(Commands.slash("hns", R.string("hide_n_seek_related_commands"))
                 .addSubcommands(
@@ -115,9 +137,10 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating")),
                         new SubcommandData("list", R.string("list_hide_n_seek_entries"))
                                 .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
-                )).queue();
+                ));
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addPgCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
         commandListUpdateAction.addCommands(
         Commands.slash("pg", R.string("partygames_related_commands"))
@@ -141,9 +164,10 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.NUMBER, "quota", R.string("quota"))
                                 .addOption(OptionType.NUMBER, "winrate", R.string("winrate")),
                         new SubcommandData("list", R.string("list_partygames_entries"))
-                                .addOption(OptionType.INTEGER, "page", R.string("page"), false, true))).queue();
+                                .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)));
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addUserCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
         if (BuildConfig.dev) commandListUpdateAction.addCommands(Commands.slash("user", R.string("user_related_commands"))
                 .addSubcommands(
@@ -153,9 +177,10 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.USER, "discord", R.string("discord_tag")),
                         new SubcommandData("delete", R.string("delete_a_user_entry"))
                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
-                )).queue();
+                ));
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addGroupCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
         if (BuildConfig.dev) commandListUpdateAction.addCommands(Commands.slash("group", R.string("group_related_commands"))
                 .addSubcommandGroups(new SubcommandGroupData("user", R.string("user_related_group_commands"))
@@ -191,10 +216,11 @@ public final class Bot extends ListenerAdapter {
                         new SubcommandData("delete", R.string("delete_group"))
                                 .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
                                 .addOption(OptionType.BOOLEAN, "confirm", R.string("confirm_deletion"), true)
-                )).queue();
+                ));
     }
 
     public static void main(@NonNull final String[] args) throws Exception {
+        if (BuildConfig.dev) log.info(R.logging("running_in_dev_mode"));
         new Bot(new DatabaseAdapter(Options.getJdbcUrl()));
     }
 }
