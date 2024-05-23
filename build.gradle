@@ -53,12 +53,10 @@ tasks.jar {
 }
 
 preprocess {
+    dependsOn generateBuildConfig
     sources = sourceSets.main.java.srcDirs
-    excludeExtensions = ['txt', 'xml']
-    fileExtensions = ['java']
     unknownVarAsFalse = true
     keepComments = 'remove_jcp_only'
-    dontOverwriteSameContent = true
     vars = ['dev': System.getenv("DEV") == "1"]
 }
 
