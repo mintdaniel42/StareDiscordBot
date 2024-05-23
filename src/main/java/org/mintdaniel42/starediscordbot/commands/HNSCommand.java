@@ -172,18 +172,19 @@ public final class HNSCommand extends ListenerAdapter {
 	}
 
 	private void hnsList(@NonNull final SlashCommandInteractionEvent event) {
+		final int page;
 		if (event.getOption("page") instanceof final OptionMapping pageMapping) {
-			if (databaseAdapter.getHnsUserList(pageMapping.getAsInt()) instanceof final List<HNSUserModel> entries && !entries.isEmpty()) {
-				final var page = pageMapping.getAsInt();
-				if (databaseAdapter.getHnsPages() < page && page >= 0) {
-					event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createHnsList(databaseAdapter, entries, page))
-							.setComponents(ActionRow.of(
-									Button.primary(String.format("previous:hns:%s", page), R.string("previous_page")).withDisabled(page < 1),
-									Button.primary(String.format("next:hns:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getHnsPages())
-							))
-							.queue());
-				} else event.reply(R.string("this_page_does_not_exist")).queue();
-			} else event.reply(R.string("no_entries_available")).queue();
-		} else event.reply(R.string("your_command_was_incomplete")).queue();
+			page = pageMapping.getAsInt();
+		} else page = 0;
+		if (databaseAdapter.getHnsUserList(page) instanceof final List<HNSUserModel> entries && !entries.isEmpty()) {
+			if (databaseAdapter.getHnsPages() > page && page >= 0) {
+				event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createHnsList(databaseAdapter, entries, page))
+						.setComponents(ActionRow.of(
+								Button.primary(String.format("previous:hns:%s", page), R.string("previous_page")).withDisabled(page < 1),
+								Button.primary(String.format("next:hns:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getHnsPages())
+						))
+						.queue());
+			} else event.reply(R.string("this_page_does_not_exist")).queue();
+		} else event.reply(R.string("no_entries_available")).queue();
 	}
 }
