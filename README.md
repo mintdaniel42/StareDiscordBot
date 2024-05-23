@@ -53,6 +53,5 @@ docker-compose up -d
 And you're all set! The bot should now be running and active in your Discord server.
 
 Feel free to fork this project and make your own improvements. Pull requests are always welcome!
-License
 
-See the [LICENSE FILE](LICENSE.md) for details.
+See the [LICENSE file](LICENSE.md) for details.
