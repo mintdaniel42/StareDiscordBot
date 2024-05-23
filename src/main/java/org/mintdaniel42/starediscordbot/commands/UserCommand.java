@@ -2,6 +2,7 @@ package org.mintdaniel42.starediscordbot.commands;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -12,6 +13,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
 import org.mintdaniel42.starediscordbot.db.UserModel;
+import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
@@ -20,6 +22,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 public class UserCommand extends ListenerAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
@@ -28,9 +31,14 @@ public class UserCommand extends ListenerAdapter {
 	public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
 		if (event.getFullCommandName().startsWith("user")) {
 			if (!Options.isInMaintenance()) {
-				switch (event.getFullCommandName()) {
-					case "user edit" -> userEdit(event);
-					case "user delete" -> userDelete(event);
+				try {
+					switch (event.getFullCommandName()) {
+						case "user edit" -> userEdit(event);
+						case "user delete" -> userDelete(event);
+					}
+				} catch (Exception e) {
+					log.error(R.logging("the_command_s_caused_an_error"), e);
+					event.replyEmbeds(ErrorEmbed.of(event.getInteraction(), e)).queue();
 				}
 			} else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
 		}
