@@ -19,8 +19,6 @@ import java.util.UUID;
 @UtilityClass
 @Slf4j
 public class MCHelper {
-    private static final int timeout = 172800;
-
     public @Nullable UUID getUuid(@NonNull final DatabaseAdapter databaseAdapter, @NonNull final String username) {
         if (databaseAdapter.getUsernameModel(username) instanceof UsernameModel usernameModel) return usernameModel.getUuid();
         else {
