@@ -56,6 +56,19 @@ public class MCHelper {
         }
     }
 
+    public @Nullable String getUsername(@NonNull UUID uuid) {
+        final var okHttpClient = new OkHttpClient();
+        final var request = new Request.Builder().url("https://playerdb.co/api/player/minecraft/" + uuid).build();
+        try (final var response = okHttpClient.newCall(request).execute()) {
+            if (response.body() instanceof ResponseBody responseBody) {
+	            return new JSONObject(responseBody.string()).getJSONObject("data").getJSONObject("player").getString("username");
+            } else return null;
+        } catch (IOException e) {
+            log.error(R.logging("could_not_fetch_username"), e);
+            return null;
+        }
+    }
+
     public @NonNull String getThumbnail(@NonNull final UUID uuid) {
         return "https://minotar.net/armor/bust/" + uuid;
     }
