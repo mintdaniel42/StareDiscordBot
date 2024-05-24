@@ -13,7 +13,11 @@ on:
       - .github/workflows/docker.yml
 
 jobs:
+  check:
+    uses: ./.github/workflows/check.yml
   docker:
+    needs:
+      - check
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
