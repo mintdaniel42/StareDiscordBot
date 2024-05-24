@@ -54,7 +54,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                     case META -> {
                         try {
                             hnsUserModelDao.executeRawNoArgs("ALTER TABLE entries RENAME TO hns_entries");
-                        } catch (SQLException _) {
+                        } catch (SQLException ignored) {
                             TableUtils.createTableIfNotExists(connectionSource, HNSUserModel.class);
                             hnsUserModelV2 = true;
                         }
@@ -202,7 +202,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                     .query()
                     .stream()
                     .toList();
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return null;
         }
     }
@@ -216,7 +216,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                     .query()
                     .stream()
                     .toList();
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return null;
         }
     }
@@ -224,7 +224,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public @Nullable List<RequestModel> getPendingRequests() {
         try {
             return requestModelDao.queryForAll();
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return null;
         }
     }
@@ -232,7 +232,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public @Nullable List<UsernameModel> getUsernames(@NonNull String having) {
         try {
             return usernameModelDao.queryBuilder().where().like("username", "%" + having + "%").query();
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return null;
         }
     }
@@ -245,7 +245,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                     .or()
                     .like("tag", "%%%s%%".formatted(having))
                     .query();
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return null;
         }
     }
@@ -253,7 +253,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public @Nullable HNSUserModel getHnsUser(@NonNull UUID uuid) {
         try {
             return hnsUserModelDao.queryBuilder().where().eq("uuid", uuid).queryForFirst();
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return null;
         }
     }
@@ -261,7 +261,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public @Nullable PGUserModel getPgUser(@NonNull UUID uuid) {
         try {
             return pgUserModelDao.queryBuilder().where().eq("uuid", uuid).queryForFirst();
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return null;
         }
     }
@@ -269,7 +269,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public @Nullable GroupModel getGroup(@NonNull String tag) {
         try {
             return groupModelDao.queryBuilder().where().eq("tag", tag).queryForFirst();
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return null;
         }
     }
@@ -289,7 +289,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                             .pgUser(getPgUser(userModel.getUuid()))
                             .build())
                     .toList();
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return null;
         }
     }
@@ -306,7 +306,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                     .hnsUser(getHnsUser(uuid))
                     .pgUser(getPgUser(uuid))
                     .build();
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return null;
         }
     }
@@ -314,7 +314,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public @Nullable UsernameModel getUsernameModel(@NonNull UUID uuid) {
         try {
             return usernameModelDao.queryForId(uuid);
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return null;
         }
     }
@@ -322,7 +322,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public @Nullable UsernameModel getUsernameModel(@NonNull String username) {
         try {
             return usernameModelDao.queryBuilder().where().eq("username", username).queryForFirst();
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return null;
         }
     }
@@ -330,7 +330,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public long getHnsPages() {
         try {
             return (long) Math.ceil((double) hnsUserModelDao.queryBuilder().countOf() / BuildConfig.entriesPerPage);
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return 0;
         }
     }
@@ -338,7 +338,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public long getPgPages() {
         try {
             return (long) Math.ceil((double) pgUserModelDao.queryBuilder().countOf() / BuildConfig.entriesPerPage);
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return 0;
         }
     }
@@ -349,7 +349,7 @@ public final class DatabaseAdapter implements AutoCloseable {
 		            .where()
 		            .eq("group_id", tag)
 		            .countOf() / BuildConfig.entriesPerPage);
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return 0;
         }
     }
@@ -357,7 +357,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public void putUsername(@NonNull UsernameModel usernameModel) {
         try {
             usernameModelDao.createOrUpdate(usernameModel).getNumLinesChanged();
-        } catch (SQLException _) {}
+        } catch (SQLException ignored) {}
     }
 
     /**
@@ -370,7 +370,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                     .uuid(hnsUserModel.getUuid())
                     .build());
             return hnsUserModelDao.createIfNotExists(hnsUserModel).equals(hnsUserModel);
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return false;
         }
     }
@@ -385,7 +385,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                     .uuid(pgUserModel.getUuid())
                     .build());
             return pgUserModelDao.createIfNotExists(pgUserModel).equals(pgUserModel);
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return false;
         }
     }
@@ -397,7 +397,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public boolean addGroup(@NonNull GroupModel groupModel) {
         try {
             return groupModelDao.createIfNotExists(groupModel).equals(groupModel);
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return false;
         }
     }
@@ -412,7 +412,7 @@ public final class DatabaseAdapter implements AutoCloseable {
             if (userModel.getPgUser() != null) addPgUser(userModel.getPgUser());
             if (userModel.getHnsUser() != null) addHnsUser(userModel.getHnsUser());
             return userModelDao.createIfNotExists(userModel).equals(userModel);
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return false;
         }
     }
@@ -420,7 +420,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public boolean hasHnsUser(@NonNull UUID uuid) {
         try {
             return hnsUserModelDao.idExists(uuid);
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return false;
         }
     }
@@ -428,7 +428,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public boolean hasPgUser(@NonNull UUID uuid) {
         try {
             return pgUserModelDao.idExists(uuid);
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return false;
         }
     }
@@ -436,7 +436,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public boolean hasGroup(@NonNull String tag) {
         try {
             return groupModelDao.idExists(tag);
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return false;
         }
     }
@@ -450,7 +450,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                     .and()
                     .isNotNull("group_id")
                     .countOf() != 0;
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return false;
         }
     }
@@ -463,7 +463,7 @@ public final class DatabaseAdapter implements AutoCloseable {
     public boolean addRequest(@NonNull RequestModel requestModel) {
         try {
             return requestModelDao.createIfNotExists(requestModel).equals(requestModel);
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return false;
         }
     }
@@ -477,7 +477,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                 case UserModel userModel -> userModelDao.update(userModel) != 0;
                 default -> false;
             };
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return false;
         }
     }
@@ -493,7 +493,7 @@ public final class DatabaseAdapter implements AutoCloseable {
             else sum += (byte) usernameModelDao.deleteById(uuid);
             sum += (byte) userModelDao.deleteById(uuid);
             return sum == 4;
-        } catch (SQLException _) {
+        } catch (SQLException ignored) {
             return false;
         }
     }
