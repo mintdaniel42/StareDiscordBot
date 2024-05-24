@@ -2,14 +2,12 @@ package org.mintdaniel42.starediscordbot.db;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Value;
+import lombok.*;
 
 import java.util.UUID;
 
 @Value
+@Builder
 @DatabaseTable(tableName = "usernames")
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
