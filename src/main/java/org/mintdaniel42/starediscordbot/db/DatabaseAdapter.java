@@ -156,7 +156,7 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
 
         // automatically fetch usernames after cleaning the database from old ones
-        if (BuildConfig.dev && BuildConfig.autoFetch) {
+        if (BuildConfig.autoFetch) {
             log.info(R.logging("autofetching_usernames"));
             var fetched = 0;
             try {
