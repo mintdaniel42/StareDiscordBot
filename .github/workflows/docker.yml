@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - 'master'
+    paths:
+      - Dockerfile
+      - 'src/**'
+      - '**.gradle'
+      - 'gradle/**'
+      - lombok.config
+      - .github/workflows/docker.yml
 
 jobs:
   docker:
