@@ -178,7 +178,7 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.NUMBER, "points", R.string("points"), false, true)
                                 .addOption(OptionType.STRING, "rating", R.string("rating"))
                                 .addOption(OptionType.STRING, "joined", R.string("joined"))
-                                .addOption(OptionType.NUMBER, "luck", R.string("luck"))
+                                .addOption(OptionType.NUMBER, "luck", R.string("luck"), false, true)
                                 .addOption(OptionType.NUMBER, "quota", R.string("quota"))
                                 .addOption(OptionType.NUMBER, "winrate", R.string("winrate")),
                         new SubcommandData("add", R.string("add_a_new_partygames_entry"))
@@ -186,7 +186,7 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
                                 .addOption(OptionType.STRING, "rating", R.string("rating"))
                                 .addOption(OptionType.STRING, "joined", R.string("joined"))
-                                .addOption(OptionType.NUMBER, "luck", R.string("luck"))
+                                .addOption(OptionType.NUMBER, "luck", R.string("luck"), false, true)
                                 .addOption(OptionType.NUMBER, "quota", R.string("quota"))
                                 .addOption(OptionType.NUMBER, "winrate", R.string("winrate")),
                         new SubcommandData("list", R.string("list_partygames_entries"))
