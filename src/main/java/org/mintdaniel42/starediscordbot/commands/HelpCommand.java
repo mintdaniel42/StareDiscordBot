@@ -11,7 +11,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.List;
 
-public class HelpCommand extends ListenerAdapter {
+public final class HelpCommand extends ListenerAdapter {
 	@Override
 	public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
 		if (event.getFullCommandName().equals("help")) {

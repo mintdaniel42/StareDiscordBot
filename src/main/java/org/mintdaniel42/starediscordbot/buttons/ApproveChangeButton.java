@@ -13,7 +13,7 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
-public class ApproveChangeButton extends ListenerAdapter {
+public final class ApproveChangeButton extends ListenerAdapter {
 	@NonNull final DatabaseAdapter databaseAdapter;
 
 	@Override

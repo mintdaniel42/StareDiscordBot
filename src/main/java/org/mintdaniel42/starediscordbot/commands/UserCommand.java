@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
@@ -25,7 +24,7 @@ import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
-public class UserCommand extends ListenerAdapter {
+public final class UserCommand extends ListenerAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override
