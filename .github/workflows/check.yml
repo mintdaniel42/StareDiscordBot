@@ -24,4 +24,4 @@ jobs:
           java-version: 22
           distribution: 'temurin'
       - name: Run Tests
-        run: bash ./gradlew check --stacktrace
+        run: bash ./gradlew build check --stacktrace
