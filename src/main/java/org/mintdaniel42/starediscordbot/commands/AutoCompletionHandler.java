@@ -11,6 +11,7 @@ import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.GroupModel;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
+import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +34,6 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 					event.replyChoices(DCHelper.autocompleteDouble(pointsMapping.getAsString())).queue();
 				} else event.replyChoices().queue();
 			} case "id" -> {
-				long now = System.currentTimeMillis();
 				if (event.getOption("id") instanceof OptionMapping idMapping && !idMapping.getAsString().isBlank()) {
 					String id = idMapping.getAsString();
 					event.replyChoiceLongs(Objects.requireNonNull(databaseAdapter.getPendingRequests())
@@ -71,7 +71,16 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 								.queue();
 					} else event.replyChoices().queue();
 				} else event.replyChoices().queue();
-			} default -> event.replyChoices().queue();
+			} case "luck" -> {
+				if (event.getOption("winrate") instanceof OptionMapping winrateMapping &&
+						event.getOption("quota") instanceof OptionMapping quotaMapping) {
+					event.replyChoice(R.string("calculated_value_for_s_s",
+									R.string("luck"),
+									quotaMapping.getAsDouble() - winrateMapping.getAsDouble()),
+							quotaMapping.getAsDouble() - winrateMapping.getAsDouble()).queue();
+				}
+			}
+			default -> event.replyChoices().queue();
 		}
 	}
 }
