@@ -141,16 +141,6 @@ public final class DatabaseAdapter implements AutoCloseable {
     }
 
     private void cleanDatabase() {
-        // reschedule
-        float next = BuildConfig.cleaningInterval - System.currentTimeMillis() % BuildConfig.cleaningInterval;
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                cleanDatabase();
-            }
-        }, Math.round(next));
-	    log.info(R.logging("schedule_next_database_cleaning_in_s_seconds", next / 1000));
-
         // perform cleaning
         try {
             var requestDeleteBuilder = requestModelDao.deleteBuilder();
@@ -164,6 +154,43 @@ public final class DatabaseAdapter implements AutoCloseable {
         } catch (SQLException e) {
             log.error(R.logging("could_not_clean_database"), e);
         }
+
+        // automatically fetch usernames after cleaning the database from old ones
+        if (BuildConfig.dev && BuildConfig.autoFetch) {
+            log.info(R.logging("autofetching_usernames"));
+            var fetched = 0;
+            try {
+                for (UserModel userModel : userModelDao.queryForAll()) {
+                    try {
+                        if (usernameModelDao.idExists(userModel.getUuid())) continue;
+                        if (MCHelper.getUsername(userModel.getUuid()) instanceof String username) {
+                            usernameModelDao.create(UsernameModel.builder()
+                                    .uuid(userModel.getUuid())
+                                    .username(username)
+                                    .lastUpdated(System.currentTimeMillis())
+                                    .build());
+                            fetched++;
+                        }
+                    } catch (SQLException e) {
+                        log.error(R.logging("could_not_autofetch_usernames"), e);
+                    }
+                }
+            } catch (SQLException e) {
+                log.error(R.logging("could_not_autofetch_usernames"), e);
+            } finally {
+                log.info(R.logging("autofetched_s_usernames", fetched));
+            }
+        }
+
+        // reschedule
+        float next = BuildConfig.cleaningInterval - System.currentTimeMillis() % BuildConfig.cleaningInterval;
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                cleanDatabase();
+            }
+        }, Math.round(next));
+        log.info(R.logging("schedule_next_database_cleaning_in_s_seconds", next / 1000));
     }
 
     public @Nullable List<HNSUserModel> getHnsUserList(int page) {
