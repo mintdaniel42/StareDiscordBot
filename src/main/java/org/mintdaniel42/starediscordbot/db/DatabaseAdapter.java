@@ -343,8 +343,15 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
-    public long getGroupMemberPages() {
-        return 0; // TODO: make it work
+    public long getGroupMemberPages(@NonNull final String tag) {
+        try {
+            return (long) Math.ceil((double) userModelDao.queryBuilder()
+		            .where()
+		            .eq("group_id", tag)
+		            .countOf() / BuildConfig.entriesPerPage);
+        } catch (SQLException ignored) {
+            return 0;
+        }
     }
 
     public void putUsername(@NonNull UsernameModel usernameModel) {
