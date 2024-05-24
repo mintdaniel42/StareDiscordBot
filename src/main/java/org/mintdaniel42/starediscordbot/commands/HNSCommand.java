@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
+import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.db.*;
 import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
@@ -179,10 +180,7 @@ public final class HNSCommand extends ListenerAdapter {
 		if (databaseAdapter.getHnsUserList(page) instanceof final List<HNSUserModel> entries && !entries.isEmpty()) {
 			if (databaseAdapter.getHnsPages() > page && page >= 0) {
 				event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createHnsList(databaseAdapter, entries, page))
-						.setComponents(ActionRow.of(
-								Button.primary(String.format("previous:hns:%s", page), R.string("previous_page")).withDisabled(page < 1),
-								Button.primary(String.format("next:hns:%s", page), R.string("next_page")).withDisabled(page + 1 >= databaseAdapter.getHnsPages())
-						))
+						.setComponents(ListButtons.create(ListButtons.Type.hns, page, databaseAdapter.getHnsPages()))
 						.queue());
 			} else event.reply(R.string("this_page_does_not_exist")).queue();
 		} else event.reply(R.string("no_entries_available")).queue();
