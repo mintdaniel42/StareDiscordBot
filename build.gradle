@@ -24,8 +24,9 @@ version = '1.0-SNAPSHOT'
 application.mainClass = "${project.group}.Bot"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(22)
+    }
 }
 
 tasks.jar {
