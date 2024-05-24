@@ -40,8 +40,6 @@ To update the bot to the latest version, use this command in your command line o
 curl https://raw.githubusercontent.com/mintdaniel42/StareDiscordBot/master/updater.sh | bash
 ```
 
-Set up your environment variables: Create a .env file in the project root and add your environment variables as shown above.
-
 ## Run the bot
 
 (this should not be necessary if you used the previous command)
