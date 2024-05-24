@@ -498,6 +498,14 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    public boolean deleteRequest(final long id) {
+        try {
+            return requestModelDao.deleteById(id) == 1;
+        } catch (SQLException _) {
+            return false;
+        }
+    }
+
     /**
      * Attempts to merge the request of the provided id into the database
      * @param id id of the request
