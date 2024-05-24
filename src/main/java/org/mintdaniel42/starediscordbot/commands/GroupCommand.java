@@ -71,7 +71,7 @@ public final class GroupCommand extends ListenerAdapter {
 		if (event.getOption("tag") instanceof OptionMapping tagMapping) {
 			if (databaseAdapter.getGroup(tagMapping.getAsString()) instanceof GroupModel groupModel) {
 				event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
-						.setComponents(ListButtons.create(ListButtons.Type.group, 0, databaseAdapter.getGroupMemberPages())))
+						.setComponents(ListButtons.create(ListButtons.Type.group, 0, databaseAdapter.getGroupMemberPages()))
 						.queue());
 			} else event.reply(R.string("this_group_does_not_exist")).queue();
 		} else event.reply(R.string("your_command_was_incomplete")).queue();
