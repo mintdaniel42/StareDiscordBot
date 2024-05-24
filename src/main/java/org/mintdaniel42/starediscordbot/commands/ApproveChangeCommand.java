@@ -4,7 +4,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
@@ -34,20 +33,6 @@ public final class ApproveChangeCommand extends ListenerAdapter {
                     log.error(R.logging("the_command_s_caused_an_error"), e);
                     event.replyEmbeds(ErrorEmbed.of(event.getInteraction(), e)).queue();
                 }
-            } else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
-        }
-    }
-
-    @Override
-    public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
-        String[] buttonParts = event.getComponentId().split(":");
-        if (buttonParts[0].equals("approve") && buttonParts.length == 2) {
-            if (!Options.isInMaintenance()) {
-                if (DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) || DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
-                    if (databaseAdapter.mergeRequest(Long.parseLong(buttonParts[1]))) {
-                        event.reply(R.string("request_was_successfully_merged")).queue();
-                    } else event.reply(R.string("request_could_not_be_merged")).queue();
-                } else event.reply(R.string("you_do_not_have_the_permission_to_use_this_button")).queue();
             } else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
         }
     }

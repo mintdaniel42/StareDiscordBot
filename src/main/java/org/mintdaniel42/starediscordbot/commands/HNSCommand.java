@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
+import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.db.*;
 import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
@@ -138,7 +139,7 @@ public final class HNSCommand extends ListenerAdapter {
 										requestChannel.sendMessage(R.string("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
 														member.getAsMention(),
 														timestamp))
-												.addActionRow(Button.primary(String.format("approve:%s", timestamp), R.string("approve_this_change")))
+												.setComponents(ApproveChangeButton.create(timestamp))
 												.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS_ALL)).queue();
 										event.reply(R.string("the_entry_change_was_successfully_requested")).queue();
 									} else event.reply(R.string("the_entry_could_not_be_updated")).queue();
