@@ -1,6 +1,8 @@
 name: Check
 
 on:
+  workflow_call:
+
   push:
     branches:
       - "master"
