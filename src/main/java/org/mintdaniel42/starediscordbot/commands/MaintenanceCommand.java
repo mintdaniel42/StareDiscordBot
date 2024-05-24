@@ -1,7 +1,9 @@
 package org.mintdaniel42.starediscordbot.commands;
 
 import lombok.NonNull;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -19,6 +21,12 @@ public final class MaintenanceCommand extends ListenerAdapter {
                         Options.setInMaintenance(activeMapping.getAsBoolean());
                         event.reply(R.string("maintenance_is_now_set_to_s",
                                 activeMapping.getAsBoolean())).queue();
+                        if (activeMapping.getAsBoolean()) {
+                            event.getJDA()
+                                    .getPresence()
+                                    .setPresence(OnlineStatus.DO_NOT_DISTURB,
+                                            Activity.customStatus(R.string("under_maintenance")));
+                        } else event.getJDA().getPresence().setPresence(null, null);
                     } else event.reply(R.string("maintenance_is_now_set_to_s",
                             Options.isInMaintenance())).queue();
                 } else event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();

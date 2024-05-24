@@ -50,7 +50,7 @@ public final class ListButtons extends ListenerAdapter {
                 Button.primary(
                         "next:%s:%s".formatted(type.name(), page),
                         R.string("next_page")
-                ).withDisabled(page >= maxPages)
+                ).withDisabled(page >= maxPages - 1)
         );
     }
 
