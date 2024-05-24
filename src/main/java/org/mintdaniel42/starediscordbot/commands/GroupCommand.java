@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.Nullable;
+import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.GroupModel;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
@@ -58,7 +59,9 @@ public final class GroupCommand extends ListenerAdapter {
 
 		if (!Options.isInMaintenance()) {
 			if (databaseAdapter.getGroup(buttonParts[1]) instanceof GroupModel groupModel) {
-				event.replyEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0)).queue();
+				event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
+						.setComponents(ListButtons.create(ListButtons.Type.group, 0, databaseAdapter.getGroupMemberPages()))
+						.queue());
 			}
 			else event.reply(R.string("this_group_does_not_exist")).queue();
 		} else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
@@ -67,7 +70,9 @@ public final class GroupCommand extends ListenerAdapter {
 	private void groupShow(@NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("tag") instanceof OptionMapping tagMapping) {
 			if (databaseAdapter.getGroup(tagMapping.getAsString()) instanceof GroupModel groupModel) {
-				event.replyEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0)).queue();
+				event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
+						.setComponents(ListButtons.create(ListButtons.Type.group, 0, databaseAdapter.getGroupMemberPages())))
+						.queue());
 			} else event.reply(R.string("this_group_does_not_exist")).queue();
 		} else event.reply(R.string("your_command_was_incomplete")).queue();
 	}

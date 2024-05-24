@@ -343,6 +343,10 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    public long getGroupMemberPages() {
+        return 0; // TODO: make it work
+    }
+
     public void putUsername(@NonNull UsernameModel usernameModel) {
         try {
             usernameModelDao.createOrUpdate(usernameModel).getNumLinesChanged();
