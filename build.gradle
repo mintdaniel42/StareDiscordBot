@@ -50,5 +50,6 @@ buildConfig {
         buildConfigField(byte, "entriesPerPage", 10)
 
         buildConfigField(boolean, "dev", System.getenv("DEV") == "1")
+        buildConfigField(boolean, "autoFetch", true)
     }
 }
