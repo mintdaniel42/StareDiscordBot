@@ -47,7 +47,7 @@ tasks.preprocess {
 
     keepComments = 'remove_jcp_only'
     unknownVarAsFalse = true
-    vars = ["dev": System.getenv("DEV") == "1"]
+    setVars(["dev": System.getenv("DEV") == "1"])
 }
 
 tasks.preprocess.outputs.upToDateWhen {
@@ -80,7 +80,6 @@ buildConfig {
 
         buildConfigField(byte, "entriesPerPage", 10)
 
-        buildConfigField(boolean, "dev", System.getenv("DEV") == "1")
         buildConfigField(boolean, "autoFetch", true)
     }
 }
