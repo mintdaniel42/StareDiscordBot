@@ -60,7 +60,7 @@ public final class UserCommand extends ListenerAdapter {
 														member.getAsMention(),
 														timestamp))
 												.setComponents(ApproveChangeButton.create(timestamp))
-												.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.BASE)).queue();
+												.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.BASE, true)).queue();
 										event.reply(R.string("the_entry_change_was_successfully_requested")).queue();
 									} else event.reply(R.string("the_entry_could_not_be_updated")).queue();
 								}
