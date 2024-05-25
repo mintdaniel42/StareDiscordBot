@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
@@ -47,7 +46,7 @@ public final class GroupCommand extends ListenerAdapter {
 					}
 				} else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
 			} catch (Exception e) {
-				log.error(R.logging("the_command_s_caused_an_error"), e);
+				log.error(R.logging("the_command_s_caused_an_error", event.getFullCommandName()), e);
 				event.replyEmbeds(ErrorEmbed.of(event.getInteraction(), e)).queue();
 			}
 		}

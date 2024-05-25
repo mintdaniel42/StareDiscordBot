@@ -30,7 +30,7 @@ public final class ApproveChangeCommand extends ListenerAdapter {
                         } else event.reply(R.string("your_command_was_incomplete")).queue();
                     } else event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
                 } catch (Exception e) {
-                    log.error(R.logging("the_command_s_caused_an_error"), e);
+                    log.error(R.logging("the_command_s_caused_an_error", event.getFullCommandName()), e);
                     event.replyEmbeds(ErrorEmbed.of(event.getInteraction(), e)).queue();
                 }
             } else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();

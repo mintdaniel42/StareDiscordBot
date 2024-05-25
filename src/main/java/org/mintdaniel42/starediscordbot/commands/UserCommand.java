@@ -37,7 +37,7 @@ public final class UserCommand extends ListenerAdapter {
 						case "user delete" -> userDelete(event);
 					}
 				} catch (Exception e) {
-					log.error(R.logging("the_command_s_caused_an_error"), e);
+					log.error(R.logging("the_command_s_caused_an_error", event.getFullCommandName()), e);
 					event.replyEmbeds(ErrorEmbed.of(event.getInteraction(), e)).queue();
 				}
 			} else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
