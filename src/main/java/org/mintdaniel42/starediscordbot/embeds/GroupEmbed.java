@@ -14,10 +14,14 @@ import org.mintdaniel42.starediscordbot.utils.R;
 @UtilityClass
 public class GroupEmbed {
 	public @NonNull MessageEmbed of(@NonNull final DatabaseAdapter databaseAdapter, @NonNull final GroupModel groupModel, final int page) {
+		return of(databaseAdapter, groupModel, page, false);
+	}
+
+	public @NonNull MessageEmbed of(@NonNull final DatabaseAdapter databaseAdapter, @NonNull final GroupModel groupModel, final int page, final boolean isRequest) {
 		EmbedBuilder builder = new EmbedBuilder()
 				.setTitle(R.string("group_overview"))
 				.setDescription(String.format("%s [%s]", groupModel.getName(), groupModel.getTag()))
-				.setColor(Options.getColorNormal())
+				.setColor(isRequest ? Options.getColorRequest() : Options.getColorNormal())
 				.addField(R.string("group_leader"), MCHelper.getUsername(databaseAdapter, groupModel.getLeader()), false)
 				.addField(R.string("group_relation"), R.string(groupModel.getRelation().name()), false);
 

@@ -14,9 +14,14 @@ import org.mintdaniel42.starediscordbot.utils.R;
 public class UserEmbed {
     @Contract(pure = true, value = "_, _ -> new")
     public @NonNull MessageEmbed of(@NonNull final UserModel userModel, @NonNull final Type type) {
+        return of(userModel, type, false);
+    }
+
+    @Contract(pure = true, value = "_, _, _ -> new")
+    public @NonNull MessageEmbed of(@NonNull final UserModel userModel, @NonNull final Type type, final boolean isRequest) {
         final var builder = new EmbedBuilder()
                 .setDescription(userModel.getUsername())
-                .setColor(Options.getColorNormal())
+                .setColor(isRequest ? Options.getColorRequest() : Options.getColorNormal())
                 .setThumbnail(MCHelper.getThumbnail(userModel.getUuid()));
 
         return switch (type) {
