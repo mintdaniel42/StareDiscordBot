@@ -3,12 +3,14 @@ package org.mintdaniel42.starediscordbot;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -108,10 +110,13 @@ public final class Bot extends ListenerAdapter {
     private void addBasicCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
         commandListUpdateAction.addCommands(
                 Commands.slash("maintenance", R.string("control_maintenance"))
-                        .addOption(OptionType.BOOLEAN, "active", R.string("if_maintenance_should_be_enabled"), true),
+                        .addOption(OptionType.BOOLEAN, "active", R.string("if_maintenance_should_be_enabled"), true)
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
                 Commands.slash("approve", R.string("approve_a_change"))
-                        .addOption(OptionType.INTEGER, "id", R.string("change_id"), true, true),
-                Commands.slash("help", R.string("list_all_commands"))
+                        .addOption(OptionType.INTEGER, "id", R.string("change_id"), true, true)
+                //#if dev
+                , Commands.slash("help", R.string("list_all_commands"))
+                //#endif
         );
     }
 
