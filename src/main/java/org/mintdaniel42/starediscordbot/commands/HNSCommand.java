@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.db.*;
@@ -66,16 +65,19 @@ public final class HNSCommand extends ListenerAdapter {
 			GroupModel groupModel = userModel.getGroup();
 			event.deferReply().queue(interactionHook -> interactionHook
 					.editOriginalEmbeds(UserEmbed.of(userModel, more ? UserEmbed.Type.HNS_MORE : UserEmbed.Type.HNS))
+					//#if dev
 					.setComponents(ActionRow.of(
-							Button.primary(
-									String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
-									R.string(!more ? "more_info" : "basic_info")
-							).withDisabled(!BuildConfig.dev),
-							Button.primary(
-									String.format("group:%s", groupModel != null ? groupModel.getTag() : null),
-									R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid))
-							).withDisabled(!BuildConfig.dev)
-					).queue());
+									Button.primary(
+											String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
+											R.string(!more ? "more_info" : "basic_info")
+									),
+									Button.primary(
+											String.format("group:%s", groupModel != null ? groupModel.getTag() : null),
+											R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid))
+							)
+					)
+					//#endif
+					.queue());
 		} else event.reply(R.string("this_username_or_entry_does_not_exist")).queue();
 	}
 
@@ -85,16 +87,19 @@ public final class HNSCommand extends ListenerAdapter {
 				if (databaseAdapter.hasHnsUser(uuid) && databaseAdapter.getUser(uuid) instanceof final UserModel userModel) {
 					event.deferReply().queue(interactionHook -> interactionHook
 							.editOriginalEmbeds(UserEmbed.of(userModel, more ? UserEmbed.Type.HNS_MORE : UserEmbed.Type.HNS))
+							//#if dev
 							.setComponents(ActionRow.of(
-									Button.primary(
-											String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
-											R.string(!more ? "more_info" : "basic_info")
-									).withDisabled(!BuildConfig.dev),
-									Button.primary(
-											String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
-											R.string("show_group")).withDisabled(userModel.getGroup() == null)
-									).withDisabled(!BuildConfig.dev)
-							).queue());
+											Button.primary(
+													String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
+													R.string(!more ? "more_info" : "basic_info")
+											),
+											Button.primary(
+													String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
+													R.string("show_group")).withDisabled(userModel.getGroup() == null)
+									)
+							)
+							//#endif
+							.queue());
 				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.string("this_username_does_not_exist")).queue();
 		} else event.reply(R.string("your_command_was_incomplete")).queue();
@@ -149,8 +154,8 @@ public final class HNSCommand extends ListenerAdapter {
 					} else if (!databaseAdapter.edit(hnsUserModel)) {
 						event.reply(R.string("the_entry_could_not_be_updated")).queue();
 					} else event.reply(R.string("the_entry_was_successfully_updated"))
-									.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS_ALL))
-									.queue();
+							.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS_ALL))
+							.queue();
 				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.string("this_username_does_not_exist")).queue();
 		} else event.reply(R.string("your_command_was_incomplete")).queue();

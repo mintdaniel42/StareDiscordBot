@@ -5,7 +5,6 @@ import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.Contract;
-import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.db.UserModel;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
@@ -20,16 +19,15 @@ public class UserEmbed {
                 .setColor(Options.getColorNormal())
                 .setThumbnail(MCHelper.getThumbnail(userModel.getUuid()));
 
-        if (BuildConfig.dev) return switch (type) {
+        return switch (type) {
             case BASE -> buildBaseEmbed(userModel, builder);
+            //#if dev
 	        case HNS -> buildHnsEmbed(userModel, builder);
             case HNS_MORE -> buildHnsMoreEmbed(userModel, builder);
             case HNS_ALL -> buildHnsAllEmbed(userModel, builder);
-            case PG -> buildPgEmbed(userModel, builder);
-        };
-        else return switch (type) {
-            case BASE -> buildBaseEmbed(userModel, builder);
-            case HNS, HNS_MORE, HNS_ALL -> buildHnsEmbed(userModel, builder);
+            //#else
+            //$$ case HNS, HNS_MORE, HNS_ALL -> buildHnsEmbed(userModel, builder);
+            //#endif
             case PG -> buildPgEmbed(userModel, builder);
         };
     }
@@ -55,6 +53,7 @@ public class UserEmbed {
                 .build();
     }
 
+    //#if dev
     @Contract(pure = true, value = "_, _ -> new")
     private @NonNull MessageEmbed buildHnsMoreEmbed(@NonNull final UserModel userModel, @NonNull final EmbedBuilder builder) {
         return builder.setTitle(R.string("hide_n_seek_player_database_more_information"))
@@ -81,6 +80,7 @@ public class UserEmbed {
                 .addField(R.string("secondary"), userModel.getHnsUser().isSecondary() ? "✅" : "❌", true)
                 .build();
     }
+    //#endif
 
     @Contract(pure = true, value = "_, _ -> new")
     private @NonNull MessageEmbed buildPgEmbed(@NonNull final UserModel userModel, @NonNull final EmbedBuilder builder) {

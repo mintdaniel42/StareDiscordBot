@@ -15,7 +15,6 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
-import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
@@ -28,7 +27,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 public final class Bot extends ListenerAdapter {
     @NonNull private final DatabaseAdapter databaseAdapter;
 
-	public Bot(@NonNull final DatabaseAdapter databaseAdapter) {
+    public Bot(@NonNull final DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
 
         JDABuilder.createLight(Options.getToken())
@@ -41,10 +40,14 @@ public final class Bot extends ListenerAdapter {
                         new MaintenanceCommand(),
                         new HelpCommand(),
 
+                        //#if dev
                         new UserCommand(databaseAdapter),
+                        //#endif
                         new HNSCommand(databaseAdapter),
                         new PGCommand(databaseAdapter),
+                        //#if dev
                         new GroupCommand(databaseAdapter),
+                        //#endif
                         new ApproveChangeCommand(databaseAdapter),
 
                         this
@@ -73,17 +76,18 @@ public final class Bot extends ListenerAdapter {
         addBasicCommands(commandListUpdateAction);
         addHnsCommands(commandListUpdateAction);
         addPgCommands(commandListUpdateAction);
-        if (BuildConfig.dev) {
-            addUserCommands(commandListUpdateAction);
-            addGroupCommands(commandListUpdateAction);
-        }
+        //#if dev
+        addUserCommands(commandListUpdateAction);
+        addGroupCommands(commandListUpdateAction);
+        //#endif
 
         commandListUpdateAction.queue();
     }
 
+    //#if dev
     @Override
     public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
-        if (BuildConfig.dev && event.getMember() instanceof Member member) {
+        if (event.getMember() instanceof Member member) {
             log.info(R.logging("command_s_invoked_by_user_s",
                     event.getFullCommandName(),
                     member.getEffectiveName()));
@@ -92,12 +96,13 @@ public final class Bot extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
-        if (BuildConfig.dev && event.getMember() instanceof Member member) {
+        if (event.getMember() instanceof Member member) {
             log.info(R.logging("button_s_pressed_by_user_s",
                     event.getComponentId(),
                     member.getEffectiveName()));
         }
     }
+    //#endif
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addBasicCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
@@ -105,19 +110,21 @@ public final class Bot extends ListenerAdapter {
                 Commands.slash("maintenance", R.string("control_maintenance"))
                         .addOption(OptionType.BOOLEAN, "active", R.string("if_maintenance_should_be_enabled"), true),
                 Commands.slash("approve", R.string("approve_a_change"))
-                                .addOption(OptionType.INTEGER, "id", R.string("change_id"), true, true),
+                        .addOption(OptionType.INTEGER, "id", R.string("change_id"), true, true),
                 Commands.slash("help", R.string("list_all_commands"))
         );
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addHnsCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        if (BuildConfig.dev) commandListUpdateAction.addCommands(Commands.slash("hns", R.string("hide_n_seek_related_commands"))
+        commandListUpdateAction.addCommands(Commands.slash("hns", R.string("hide_n_seek_related_commands"))
                 .addSubcommands(
                         new SubcommandData("show", R.string("show_hide_n_seek_entry"))
                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
+                        //#if dev
                         new SubcommandData("showmore", R.string("show_hide_n_seek_entry_more"))
                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
+                        //#endif
                         new SubcommandData("edit", R.string("edit_a_hide_n_seek_entry"))
                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                                 .addOption(OptionType.NUMBER, "points", R.string("points"), false, true)
@@ -126,9 +133,13 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
                                 .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
                                 .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating"))
+                                //#if dev
                                 .addOption(OptionType.STRING, "top10", R.string("top10"))
                                 .addOption(OptionType.INTEGER, "streak", R.string("streak"))
                                 .addOption(OptionType.STRING, "highest_rank", R.string("highest_rank")),
+                                //#else
+                                //$$ ,
+                                //#endif
                         new SubcommandData("add", R.string("add_a_new_hide_n_seek_entry"))
                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                                 .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
@@ -137,32 +148,13 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
                                 .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
                                 .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating"))
+                                //#if dev
                                 .addOption(OptionType.STRING, "top10", R.string("top10"))
                                 .addOption(OptionType.INTEGER, "streak", R.string("streak"))
                                 .addOption(OptionType.STRING, "highest_rank", R.string("highest_rank")),
-                        new SubcommandData("list", R.string("list_hide_n_seek_entries"))
-                                .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
-                ));
-        else commandListUpdateAction.addCommands(Commands.slash("hns", R.string("hide_n_seek_related_commands"))
-                .addSubcommands(
-                        new SubcommandData("show", R.string("show_hide_n_seek_entry"))
-                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
-                        new SubcommandData("edit", R.string("edit_a_hide_n_seek_entry"))
-                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
-                                .addOption(OptionType.NUMBER, "points", R.string("points"), false, true)
-                                .addOption(OptionType.STRING, "rating", R.string("rating"))
-                                .addOption(OptionType.STRING, "joined", R.string("joined"))
-                                .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
-                                .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
-                                .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating")),
-                        new SubcommandData("add", R.string("add_a_new_hide_n_seek_entry"))
-                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
-                                .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
-                                .addOption(OptionType.STRING, "rating", R.string("rating"))
-                                .addOption(OptionType.STRING, "joined", R.string("joined"))
-                                .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
-                                .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
-                                .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating")),
+                                //#else
+                                //$$ ,
+                                //#endif
                         new SubcommandData("list", R.string("list_hide_n_seek_entries"))
                                 .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
                 ));
@@ -195,9 +187,10 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)));
     }
 
+    //#if dev
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addUserCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        if (BuildConfig.dev) commandListUpdateAction.addCommands(Commands.slash("user", R.string("user_related_commands"))
+        commandListUpdateAction.addCommands(Commands.slash("user", R.string("user_related_commands"))
                 .addSubcommands(
                         new SubcommandData("edit", R.string("edit_a_user_entry"))
                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
@@ -210,7 +203,7 @@ public final class Bot extends ListenerAdapter {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addGroupCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        if (BuildConfig.dev) commandListUpdateAction.addCommands(Commands.slash("group", R.string("group_related_commands"))
+        commandListUpdateAction.addCommands(Commands.slash("group", R.string("group_related_commands"))
                 .addSubcommandGroups(new SubcommandGroupData("user", R.string("user_related_group_commands"))
                         .addSubcommands(
                                 new SubcommandData("add", R.string("add_user_to_group"))
@@ -246,9 +239,12 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.BOOLEAN, "confirm", R.string("confirm_deletion"), true)
                 ));
     }
+    //#endif
 
     public static void main(@NonNull final String[] args) throws Exception {
-        if (BuildConfig.dev) log.info(R.logging("running_in_dev_mode"));
+        //#if dev
+        log.info(R.logging("running_in_dev_mode"));
+        //#endif
         new Bot(new DatabaseAdapter(Options.getJdbcUrl()));
     }
 }
