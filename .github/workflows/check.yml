@@ -16,7 +16,7 @@ on:
 jobs:
   test:
     name: Check code
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container: gradle:8.7.0-jdk21
     steps:
       - name: Checkout
