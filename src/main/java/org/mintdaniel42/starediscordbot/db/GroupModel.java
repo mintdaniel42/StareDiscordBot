@@ -4,6 +4,8 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.*;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 
 @Value
@@ -12,10 +14,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class GroupModel {
-	@DatabaseField(id = true) String tag;
-	@DatabaseField String name;
-	@DatabaseField UUID leader;
-	@DatabaseField Relation relation;
+	@NonNull @DatabaseField(id = true) String tag;
+	@NonNull @DatabaseField String name;
+	@NonNull @DatabaseField UUID leader;
+	@NonNull @DatabaseField Relation relation;
+	@NonNull @Builder.Default Collection<UserModel> members = Collections.emptyList();
 
 	public static @NonNull GroupModel from(@NonNull final RequestModel requestModel) {
 		return GroupModel.builder()

@@ -268,27 +268,23 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     public @Nullable GroupModel getGroup(@NonNull String tag) {
         try {
-            return groupModelDao.queryBuilder().where().eq("tag", tag).queryForFirst();
-        } catch (SQLException _) {
-            return null;
-        }
-    }
-
-    public @Nullable List<UserModel> getGroupMembers(@NonNull final GroupModel groupModel, final int page) {
-        try {
-            return userModelDao.queryBuilder()
-                    .limit((long) BuildConfig.entriesPerPage)
-                    .offset((long) page * BuildConfig.entriesPerPage)
+            return groupModelDao.queryBuilder()
                     .where()
-                    .eq("group_id", groupModel.getTag())
-                    .query()
-                    .stream()
-                    .map(userModel -> userModel.toBuilder()
-                            .username(MCHelper.getUsername(this, userModel.getUuid()))
-                            .hnsUser(getHnsUser(userModel.getUuid()))
-                            .pgUser(getPgUser(userModel.getUuid()))
-                            .build())
-                    .toList();
+                    .eq("tag", tag)
+                    .queryForFirst()
+                    .toBuilder()
+                    .members(userModelDao.queryBuilder()
+                            .where()
+                            .eq("group_id", tag)
+                            .query()
+                            .stream()
+                            .map(userModel -> userModel.toBuilder()
+                                    .username(MCHelper.getUsername(this, userModel.getUuid()))
+                                    .hnsUser(getHnsUser(userModel.getUuid()))
+                                    .pgUser(getPgUser(userModel.getUuid()))
+                                    .build())
+                            .toList())
+                    .build();
         } catch (SQLException _) {
             return null;
         }
