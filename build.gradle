@@ -1,9 +1,21 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath(libs.jcp)
+    }
+}
+
 plugins {
     id('java')
     id('application')
     alias(libs.plugins.lombok)
     alias(libs.plugins.buildConfig)
 }
+
+apply plugin: "com.igormaznitsa.jcp"
 
 repositories {
     mavenCentral()
@@ -27,6 +39,24 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(22)
     }
+}
+
+tasks.preprocess {
+    dependsOn generateBuildConfig
+    setSources(sourceSets.main.java.srcDirs)
+
+    keepComments = 'remove_jcp_only'
+    unknownVarAsFalse = true
+    vars = ["dev": System.getenv("DEV") == "1"]
+}
+
+tasks.preprocess.outputs.upToDateWhen {
+    false
+}
+
+tasks.withType(JavaCompile) {
+    dependsOn preprocess
+    source = preprocess.target
 }
 
 tasks.jar {
