@@ -20,15 +20,16 @@ public final class MaintenanceCommand extends ListenerAdapter {
                     if (event.getOption("active") instanceof OptionMapping activeMapping) {
                         Options.setInMaintenance(activeMapping.getAsBoolean());
                         event.reply(R.string("maintenance_is_now_set_to_s",
-                                activeMapping.getAsBoolean())).queue();
+                                activeMapping.getAsBoolean()))
+                                .setEphemeral(true)
+                                .queue();
                         if (activeMapping.getAsBoolean()) {
                             event.getJDA()
                                     .getPresence()
                                     .setPresence(OnlineStatus.DO_NOT_DISTURB,
                                             Activity.customStatus(R.string("under_maintenance")));
                         } else event.getJDA().getPresence().setPresence(null, null);
-                    } else event.reply(R.string("maintenance_is_now_set_to_s",
-                            Options.isInMaintenance())).queue();
+                    } else event.reply(R.string("your_command_was_incomplete")).queue();
                 } else event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
             }
         }
