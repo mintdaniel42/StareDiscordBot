@@ -16,6 +16,15 @@ import org.mintdaniel42.starediscordbot.utils.R;
 public final class ApproveChangeButton extends ListenerAdapter {
 	@NonNull final DatabaseAdapter databaseAdapter;
 
+	@Contract(pure = true, value = "_ -> new")
+	public static @NonNull ActionRow create(final long id) {
+		return ActionRow.of(Button.primary(
+						"approve:%s".formatted(id),
+						R.string("approve_this_change")
+				).withDisabled(id == -1)
+		);
+	}
+
 	@Override
 	public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
 		String[] buttonParts = event.getComponentId().split(":");
@@ -23,20 +32,12 @@ public final class ApproveChangeButton extends ListenerAdapter {
 			if (!Options.isInMaintenance()) {
 				if (DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) || DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
 					if (databaseAdapter.mergeRequest(Long.parseLong(buttonParts[1]))) {
-						event.reply(R.string("request_was_successfully_merged")).queue();
+						event.deferEdit()
+								.queue(interactionHook -> interactionHook.editOriginalComponents(create(-1))
+										.queue());
 					} else event.reply(R.string("request_could_not_be_merged")).queue();
 				} else event.reply(R.string("you_do_not_have_the_permission_to_use_this_button")).queue();
 			} else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
 		}
-	}
-
-	@Contract(pure = true, value = "_ -> new")
-	public static @NonNull ActionRow create(final long id) {
-		return ActionRow.of(
-				Button.primary(
-						"approve:%s".formatted(id),
-						R.string("approve_this_change")
-				)
-		);
 	}
 }
