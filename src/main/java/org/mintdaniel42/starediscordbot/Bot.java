@@ -42,9 +42,7 @@ public final class Bot extends ListenerAdapter {
                         new MaintenanceCommand(),
                         new HelpCommand(),
 
-                        //#if dev
                         new UserCommand(databaseAdapter),
-                        //#endif
                         new HNSCommand(databaseAdapter),
                         new PGCommand(databaseAdapter),
                         //#if dev
@@ -78,8 +76,8 @@ public final class Bot extends ListenerAdapter {
         addBasicCommands(commandListUpdateAction);
         addHnsCommands(commandListUpdateAction);
         addPgCommands(commandListUpdateAction);
-        //#if dev
         addUserCommands(commandListUpdateAction);
+        //#if dev
         addGroupCommands(commandListUpdateAction);
         //#endif
 
@@ -126,10 +124,8 @@ public final class Bot extends ListenerAdapter {
                 .addSubcommands(
                         new SubcommandData("show", R.string("show_hide_n_seek_entry"))
                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
-                        //#if dev
                         new SubcommandData("showmore", R.string("show_hide_n_seek_entry_more"))
                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
-                        //#endif
                         new SubcommandData("edit", R.string("edit_a_hide_n_seek_entry"))
                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                                 .addOption(OptionType.NUMBER, "points", R.string("points"), false, true)
@@ -138,13 +134,9 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
                                 .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
                                 .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating"))
-                                //#if dev
                                 .addOption(OptionType.STRING, "top10", R.string("top10"))
                                 .addOption(OptionType.INTEGER, "streak", R.string("streak"))
                                 .addOption(OptionType.STRING, "highest_rank", R.string("highest_rank")),
-                                //#else
-                                //$$ ,
-                                //#endif
                         new SubcommandData("add", R.string("add_a_new_hide_n_seek_entry"))
                                 .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
                                 .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
@@ -153,13 +145,9 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
                                 .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
                                 .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating"))
-                                //#if dev
                                 .addOption(OptionType.STRING, "top10", R.string("top10"))
                                 .addOption(OptionType.INTEGER, "streak", R.string("streak"))
                                 .addOption(OptionType.STRING, "highest_rank", R.string("highest_rank")),
-                                //#else
-                                //$$ ,
-                                //#endif
                         new SubcommandData("list", R.string("list_hide_n_seek_entries"))
                                 .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
                 ));
@@ -192,7 +180,6 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)));
     }
 
-    //#if dev
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addUserCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
         commandListUpdateAction.addCommands(Commands.slash("user", R.string("user_related_commands"))
@@ -206,6 +193,7 @@ public final class Bot extends ListenerAdapter {
                 ));
     }
 
+    //#if dev
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addGroupCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
         commandListUpdateAction.addCommands(Commands.slash("group", R.string("group_related_commands"))

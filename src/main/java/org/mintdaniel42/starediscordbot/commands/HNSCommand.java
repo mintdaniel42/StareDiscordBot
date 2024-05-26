@@ -65,18 +65,19 @@ public final class HNSCommand extends ListenerAdapter {
 			GroupModel groupModel = userModel.getGroup();
 			event.deferReply().queue(interactionHook -> interactionHook
 					.editOriginalEmbeds(UserEmbed.of(userModel, more ? UserEmbed.Type.HNS_MORE : UserEmbed.Type.HNS))
-					//#if dev
 					.setComponents(ActionRow.of(
 									Button.primary(
 											String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
 											R.string(!more ? "more_info" : "basic_info")
-									),
+									)
+									//#if dev
+									,
 									Button.primary(
 											String.format("group:%s", groupModel != null ? groupModel.getTag() : null),
 											R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid))
+									//#endif
 							)
 					)
-					//#endif
 					.queue());
 		} else event.reply(R.string("this_username_or_entry_does_not_exist")).queue();
 	}
@@ -87,18 +88,19 @@ public final class HNSCommand extends ListenerAdapter {
 				if (databaseAdapter.hasHnsUser(uuid) && databaseAdapter.getUser(uuid) instanceof final UserModel userModel) {
 					event.deferReply().queue(interactionHook -> interactionHook
 							.editOriginalEmbeds(UserEmbed.of(userModel, more ? UserEmbed.Type.HNS_MORE : UserEmbed.Type.HNS))
-							//#if dev
 							.setComponents(ActionRow.of(
 											Button.primary(
 													String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
 													R.string(!more ? "more_info" : "basic_info")
-											),
+											)
+											//#if dev
+											,
 											Button.primary(
 													String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
 													R.string("show_group")).withDisabled(userModel.getGroup() == null)
+											//#endif
 									)
 							)
-							//#endif
 							.queue());
 				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.string("this_username_does_not_exist")).queue();
