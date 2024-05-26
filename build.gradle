@@ -54,7 +54,7 @@ tasks.preprocess.outputs.upToDateWhen {
     false
 }
 
-tasks.withType(JavaCompile) {
+tasks.compileJava {
     dependsOn preprocess
     source = preprocess.target
 }
