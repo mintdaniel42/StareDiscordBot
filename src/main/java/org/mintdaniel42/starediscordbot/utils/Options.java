@@ -17,7 +17,7 @@ public class Options {
     /**
      * The JDBC Url used for creating and connecting to the database
      */
-    @Getter private final String jdbcUrl = "jdbc:sqlite:.data/data.db";
+    @Getter private final String jdbcUrl = System.getenv("JDBC_URL");
 
     /**
      * The ID of the guild to make sure the Bot is used on only one guild

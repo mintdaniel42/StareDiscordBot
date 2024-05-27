@@ -17,6 +17,7 @@ VIEW_ROLE_ID: The ID of the role that can view.
 REQUEST_CHANNEL_ID: The ID of the request channel.
 COLOR_NORMAL: Hex color code for normal messages.
 COLOR_REQUEST: Hex color code for request messages.
+JDBC_URL: JDBC Url for the database. Should be "jdbc:sqlite:/path/to/file.db"
 ```
 
 Example .env file
@@ -30,6 +31,7 @@ VIEW_ROLE_ID=your_view_role_id_here
 REQUEST_CHANNEL_ID=your_request_channel_id_here
 COLOR_NORMAL=ffffff
 COLOR_REQUEST=ff0000
+JDBC_URL=jdbc:sqlite:/path/to/file.db
 ```
 
 ## Updating the Bot
