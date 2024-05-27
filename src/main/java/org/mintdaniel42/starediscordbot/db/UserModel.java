@@ -17,7 +17,7 @@ public class UserModel {
 	@DatabaseField(foreign = true, foreignAutoRefresh = true, foreignAutoCreate = true) GroupModel group;
 	HNSUserModel hnsUser;
 	PGUserModel pgUser;
-	@DatabaseField long discord;
+	@DatabaseField @Builder.Default long discord = 0;
 	@DatabaseField @Builder.Default String note = "❌";
 
 	public static @NonNull UserModel from(@NonNull final RequestModel requestModel) {

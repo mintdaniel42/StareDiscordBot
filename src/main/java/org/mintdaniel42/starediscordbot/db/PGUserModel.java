@@ -15,10 +15,10 @@ public class PGUserModel {
     @NonNull @DatabaseField(id = true) UUID uuid;
     @DatabaseField @Builder.Default String rating = "❌";
     @DatabaseField @Builder.Default String joined = "❌";
-    @DatabaseField long points;
-    @DatabaseField double luck;
-    @DatabaseField double quota;
-    @DatabaseField double winrate;
+    @DatabaseField @Builder.Default long points = 0;
+    @DatabaseField @Builder.Default double luck = 0;
+    @DatabaseField @Builder.Default double quota = 0;
+    @DatabaseField @Builder.Default double winrate = 0;
 
     public static @NonNull PGUserModel from(@NonNull final RequestModel requestModel) {
         return PGUserModel.builder()
