@@ -323,6 +323,12 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * Get the number of hide 'n' seek pages.
+     * This uses the {@link BuildConfig}.{@code entriesPerPage} constant
+     *
+     * @return the number of pages
+     */
     public long getHnsPages() {
         try {
             return (long) Math.ceil((double) hnsUserModelDao.queryBuilder().countOf() / BuildConfig.entriesPerPage);
@@ -331,6 +337,12 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * Get the number of partygames pages.
+     * This uses the {@link BuildConfig}.{@code entriesPerPage} constant
+     *
+     * @return the number of pages
+     */
     public long getPgPages() {
         try {
             return (long) Math.ceil((double) pgUserModelDao.queryBuilder().countOf() / BuildConfig.entriesPerPage);
@@ -339,6 +351,13 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * Get the number of group member pages for a group.
+     * This uses the {@link BuildConfig}.{@code entriesPerPage} constant
+     *
+     * @param tag the group tag to calculate the pages for
+     * @return the number of pages if the group was found, 0 otherwise
+     */
     public long getGroupMemberPages(@NonNull final String tag) {
         try {
             return (long) Math.ceil((double) userModelDao.queryBuilder()
@@ -350,15 +369,19 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * Write a {@link UsernameModel} to the cache regardless if it already exists or not
+     * @param usernameModel the {@link UsernameModel} to be written
+     */
     public void putUsername(@NonNull UsernameModel usernameModel) {
         try {
-            usernameModelDao.createOrUpdate(usernameModel).getNumLinesChanged();
+            usernameModelDao.createOrUpdate(usernameModel);
         } catch (SQLException _) {}
     }
 
     /**
      * @param hnsUserModel the {@link HNSUserModel} to be added
-     * @return {@code true} if it was added, else {@code false}
+     * @return {@code true} if it was added, {@code false} otherwise
      */
     public boolean addHnsUser(@NonNull HNSUserModel hnsUserModel) {
         try {
@@ -373,7 +396,7 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     /**
      * @param pgUserModel the {@link PGUserModel} to be added
-     * @return {@code true} if it was added, else {@code false}
+     * @return {@code true} if it was added, {@code false} otherwise
      */
     public boolean addPgUser(@NonNull PGUserModel pgUserModel) {
         try {
@@ -388,7 +411,7 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     /**
      * @param groupModel the {@link GroupModel} to be added
-     * @return {@code true} if it was added, else {@code false}
+     * @return {@code true} if it was added, {@code false} otherwise
      */
     public boolean addGroup(@NonNull GroupModel groupModel) {
         try {
@@ -400,7 +423,7 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     /**
      * @param userModel the {@link UserModel} to be added
-     * @return {@code true} if it was added, else {@code false}
+     * @return {@code true} if it was added, {@code false} otherwise
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean addUser(@NonNull UserModel userModel) {
@@ -413,6 +436,11 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * Checks if a user has a corresponding hide 'n' seek entry
+     * @param uuid the Minecraft UUID of the user to check for
+     * @return {@code true} if the hide 'n' seek entry exists, {@code false} otherwise
+     */
     public boolean hasHnsUser(@NonNull UUID uuid) {
         try {
             return hnsUserModelDao.idExists(uuid);
@@ -421,6 +449,11 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * Checks if a user has a corresponding Partygames entry
+     * @param uuid the Minecraft UUID of the user to check for
+     * @return {@code true} if the partygames entry exists, {@code false} otherwise
+     */
     public boolean hasPgUser(@NonNull UUID uuid) {
         try {
             return pgUserModelDao.idExists(uuid);
@@ -429,6 +462,11 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * Checks if a group exists
+     * @param tag the group tag to check for if it exists
+     * @return {@code true} if it exists, {@code false} otherwise
+     */
     public boolean hasGroup(@NonNull String tag) {
         try {
             return groupModelDao.idExists(tag);
@@ -437,7 +475,11 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    /**
+     * Checks if a user is in a group
+     * @param uuid the Minecraft UUID of the user to check for
+     * @return {@code true} if the given user is in a group, {@code false} otherwise
+     */
     public boolean hasGroupFor(@NonNull UUID uuid) {
         try {
             return userModelDao.idExists(uuid) && userModelDao.queryBuilder()
@@ -453,9 +495,8 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     /**
      * @param requestModel the {@link RequestModel} to be added
-     * @return {@code true} if it was added, else {@code false}
+     * @return {@code true} if it was added, {@code false} otherwise
      */
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean addRequest(@NonNull RequestModel requestModel) {
         try {
             return requestModelDao.createIfNotExists(requestModel).equals(requestModel);
@@ -464,6 +505,12 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * Attempts to replace the current model of type {@code T} with a new one
+     * @param model the new model. This has to be one of:
+     *              {@link HNSUserModel}, {@link PGUserModel}, {@link GroupModel} or {@link UserModel}
+     * @return {@code true} if it could be edited, {@code false} otherwise
+     */
     public <T> boolean edit(@NonNull T model) {
         try {
             return switch(model) {
@@ -478,6 +525,11 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * Attempts to delete all user data including username cache
+     * @param uuid the Minecraft user UUID
+     * @return {@code true} if everything could be deleted, {@code false} otherwise
+     */
     public boolean deleteUser(@NonNull UUID uuid) {
         try {
             byte sum = 0;
@@ -494,6 +546,11 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * Attempts to delete the request of the provided id from the database
+     * @param id id of the request
+     * @return {@code true} if it could be deleted, {@code false} otherwise
+     */
     public boolean deleteRequest(final long id) {
         try {
             return requestModelDao.deleteById(id) == 1;
@@ -530,6 +587,10 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    /**
+     * Attempts to close the database connection
+     * @throws Exception if closing fails
+     */
     public void close() throws Exception{
         connectionSource.close();
     }
