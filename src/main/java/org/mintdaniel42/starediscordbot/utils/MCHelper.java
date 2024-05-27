@@ -32,7 +32,7 @@ public class MCHelper {
                     return uuid;
                 } else return null;
             } catch (IOException | JSONException e) {
-                log.error(R.logging("could_not_fetch_uuid"), e);
+                log.error(R.Strings.log("could_not_fetch_uuid"), e);
                 return null;
             }
         }
@@ -50,7 +50,7 @@ public class MCHelper {
                     return username;
                 } else return null;
             } catch (IOException e) {
-                log.error(R.logging("could_not_fetch_username"), e);
+                log.error(R.Strings.log("could_not_fetch_username"), e);
                 return null;
             }
         }
@@ -64,7 +64,7 @@ public class MCHelper {
 	            return new JSONObject(responseBody.string()).getJSONObject("data").getJSONObject("player").getString("username");
             } else return null;
         } catch (IOException e) {
-            log.error(R.logging("could_not_fetch_username"), e);
+            log.error(R.Strings.log("could_not_fetch_username"), e);
             return null;
         }
     }

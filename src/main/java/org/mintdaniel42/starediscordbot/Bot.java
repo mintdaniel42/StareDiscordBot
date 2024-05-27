@@ -55,14 +55,11 @@ public final class Bot extends ListenerAdapter {
                 .build();
     }
 
-    @Override
-    public void onShutdown(@NonNull final ShutdownEvent event) {
-        try {
-            databaseAdapter.close();
-        } catch (Exception e) {
-            log.error(R.logging("could_not_close_database"), e);
-            throw new RuntimeException(e);
-        }
+    public static void main(@NonNull final String[] args) throws Exception {
+        //#if dev
+        log.info(R.Strings.log("running_in_dev_mode"));
+        //#endif
+        new Bot(new DatabaseAdapter(Options.getJdbcUrl()));
     }
 
     @Override
@@ -84,21 +81,22 @@ public final class Bot extends ListenerAdapter {
         commandListUpdateAction.queue();
     }
 
+    @Override
+    public void onShutdown(@NonNull final ShutdownEvent event) {
+        try {
+            databaseAdapter.close();
+        } catch (Exception e) {
+            log.error(R.Strings.log("could_not_close_database"), e);
+            throw new RuntimeException(e);
+        }
+    }
+
     //#if dev
     @Override
     public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
         if (event.getMember() instanceof Member member) {
-            log.info(R.logging("command_s_invoked_by_user_s",
+            log.info(R.Strings.log("command_s_invoked_by_user_s",
                     event.getFullCommandName(),
-                    member.getEffectiveName()));
-        }
-    }
-
-    @Override
-    public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
-        if (event.getMember() instanceof Member member) {
-            log.info(R.logging("button_s_pressed_by_user_s",
-                    event.getComponentId(),
                     member.getEffectiveName()));
         }
     }
@@ -234,10 +232,12 @@ public final class Bot extends ListenerAdapter {
     }
     //#endif
 
-    public static void main(@NonNull final String[] args) throws Exception {
-        //#if dev
-        log.info(R.logging("running_in_dev_mode"));
-        //#endif
-        new Bot(new DatabaseAdapter(Options.getJdbcUrl()));
+    @Override
+    public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
+        if (event.getMember() instanceof Member member) {
+            log.info(R.Strings.log("button_s_pressed_by_user_s",
+                    event.getComponentId(),
+                    member.getEffectiveName()));
+        }
     }
 }

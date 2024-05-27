@@ -72,7 +72,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                         try {
                             requestModelDao.executeRawNoArgs("DROP TABLE requests");
                         } catch(SQLException e) {
-                            log.error(R.logging("could_not_perform_s_migration", "new_requests"), e);
+                            log.error(R.Strings.log("could_not_perform_s_migration", "new_requests"), e);
                             throw new RuntimeException(e);
                         }
                         TableUtils.createTableIfNotExists(connectionSource, RequestModel.class);
@@ -90,7 +90,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                             requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN discord BIGINT");
                             metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.GROUPS_ADDED));
                         } catch (SQLException e) {
-                            log.error(R.logging("could_not_perform_s_migration", "groups_added"), e);
+                            log.error(R.Strings.log("could_not_perform_s_migration", "groups_added"), e);
                             throw new RuntimeException(e);
                         }
                     }
@@ -128,14 +128,14 @@ public final class DatabaseAdapter implements AutoCloseable {
 
                             metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.HNS_V2));
                         } catch (SQLException e) {
-                            log.error(R.logging("could_not_perform_s_migration", "hns_v2"), e);
+                            log.error(R.Strings.log("could_not_perform_s_migration", "hns_v2"), e);
                             throw new RuntimeException(e);
                         }
                     }
                 }
             }
 	    } catch (SQLException e) {
-		    log.error(R.logging("could_not_prepare_database"), e);
+            log.error(R.Strings.log("could_not_prepare_database"), e);
             throw new RuntimeException(e);
 	    }
     }
@@ -152,12 +152,12 @@ public final class DatabaseAdapter implements AutoCloseable {
             usernameDeleteBuilder.delete();
 
         } catch (SQLException e) {
-            log.error(R.logging("could_not_clean_database"), e);
+            log.error(R.Strings.log("could_not_clean_database"), e);
         }
 
         // automatically fetch usernames after cleaning the database from old ones
         if (BuildConfig.autoFetch) {
-            log.info(R.logging("autofetching_usernames"));
+            log.info(R.Strings.log("autofetching_usernames"));
             var fetched = 0;
             try {
                 for (UserModel userModel : userModelDao.queryForAll()) {
@@ -172,13 +172,13 @@ public final class DatabaseAdapter implements AutoCloseable {
                             fetched++;
                         }
                     } catch (SQLException e) {
-                        log.error(R.logging("could_not_autofetch_usernames"), e);
+                        log.error(R.Strings.log("could_not_autofetch_usernames"), e);
                     }
                 }
             } catch (SQLException e) {
-                log.error(R.logging("could_not_autofetch_usernames"), e);
+                log.error(R.Strings.log("could_not_autofetch_usernames"), e);
             } finally {
-                log.info(R.logging("autofetched_s_usernames", fetched));
+                log.info(R.Strings.log("autofetched_s_usernames", fetched));
             }
         }
 
@@ -190,7 +190,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                 cleanDatabase();
             }
         }, Math.round(next));
-        log.info(R.logging("schedule_next_database_cleaning_in_s_seconds", next / 1000));
+        log.info(R.Strings.log("schedule_next_database_cleaning_in_s_seconds", next / 1000));
     }
 
     public @Nullable List<HNSUserModel> getHnsUserList(int page) {
@@ -525,7 +525,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                 }
             }
         } catch (SQLException e) {
-            log.error(R.logging("could_not_merge_request"), e);
+            log.error(R.Strings.log("could_not_merge_request"), e);
             return false;
         }
     }

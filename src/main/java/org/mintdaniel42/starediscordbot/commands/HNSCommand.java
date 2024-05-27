@@ -44,7 +44,7 @@ public final class HNSCommand extends ListenerAdapter {
 						case "hns list" -> hnsList(event);
 					}
 				} catch (Exception e) {
-					log.error(R.logging("the_command_s_caused_an_error", event.getFullCommandName()), e);
+					log.error(R.Strings.log("the_command_s_caused_an_error", event.getFullCommandName()), e);
 					event.replyEmbeds(ErrorEmbed.of(event.getInteraction(), e)).queue();
 				}
 			} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
