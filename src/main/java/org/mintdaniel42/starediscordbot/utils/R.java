@@ -12,16 +12,6 @@ import java.util.ResourceBundle;
  */
 @UtilityClass
 public class R {
-	@Deprecated
-	public @NonNull String string(@NonNull @PropertyKey(resourceBundle = "ui") final String string, Object... args) {
-		return Strings.ui(string, args);
-	}
-
-	@Deprecated
-	public @NonNull String logging(@NonNull @PropertyKey(resourceBundle = "log") final String string, Object... args) {
-		return Strings.log(string, args);
-	}
-
 	/**
 	 * This utility class contains two methods:<br>
 	 * {@code Strings.ui(stringKey, (optional) arguments...)}<br>
