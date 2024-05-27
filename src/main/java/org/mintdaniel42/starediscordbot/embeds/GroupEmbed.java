@@ -19,18 +19,18 @@ public class GroupEmbed {
 
 	public @NonNull MessageEmbed of(@NonNull final DatabaseAdapter databaseAdapter, @NonNull final GroupModel groupModel, final int page, final boolean isRequest) {
 		EmbedBuilder builder = new EmbedBuilder()
-				.setTitle(R.string("group_overview"))
+				.setTitle(R.Strings.ui("group_overview"))
 				.setDescription(String.format("%s [%s]", groupModel.getName(), groupModel.getTag()))
 				.setColor(isRequest ? Options.getColorRequest() : Options.getColorNormal())
-				.addField(R.string("group_leader"), MCHelper.getUsername(databaseAdapter, groupModel.getLeader()), false)
-				.addField(R.string("group_relation"), R.string(groupModel.getRelation().name()), false);
+				.addField(R.Strings.ui("group_leader"), MCHelper.getUsername(databaseAdapter, groupModel.getLeader()), false)
+				.addField(R.Strings.ui("group_relation"), R.Strings.ui(groupModel.getRelation().name()), false);
 
 		groupModel.getMembers().stream()
 				.skip((long) page * BuildConfig.entriesPerPage)
-				.limit((long) BuildConfig.entriesPerPage)
+				.limit(BuildConfig.entriesPerPage)
 				.forEach(user -> builder.addField(
 						user.getUsername(),
-						R.string("banned") + ": " + (user.getHnsUser().isBanned() ? "✅" : "❌"), false)
+						R.Strings.ui("banned") + ": " + (user.getHnsUser().isBanned() ? "✅" : "❌"), false)
 				);
 
 		return builder.build();

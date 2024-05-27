@@ -23,8 +23,8 @@ public class ListEmbed {
     @Contract(value = "_, _, _ -> new")
     public @NonNull MessageEmbed createHnsList(@NonNull DatabaseAdapter databaseAdapter, @NonNull List<HNSUserModel> hnsUserModels, int page) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle(R.string("hide_n_seek_player_database"));
-        embedBuilder.setDescription(R.string("page_s_of_s", page + 1, databaseAdapter.getHnsPages()));
+		embedBuilder.setTitle(R.Strings.ui("hide_n_seek_player_database"));
+		embedBuilder.setDescription(R.Strings.ui("page_s_of_s", page + 1, databaseAdapter.getHnsPages()));
         embedBuilder.setColor(Options.getColorNormal());
 
         for (int entry = 0; entry < hnsUserModels.size(); entry++) {
@@ -38,8 +38,8 @@ public class ListEmbed {
     @Contract(value = "_, _, _ -> new")
     public @NonNull MessageEmbed createPgList(@NonNull DatabaseAdapter databaseAdapter, @NonNull List<PGUserModel> pgUserModels, int page) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle(R.string("partygames_player_database"));
-        embedBuilder.setDescription(R.string("page_s_of_s", page + 1, databaseAdapter.getPgPages()));
+		embedBuilder.setTitle(R.Strings.ui("partygames_player_database"));
+		embedBuilder.setDescription(R.Strings.ui("page_s_of_s", page + 1, databaseAdapter.getPgPages()));
         embedBuilder.setColor(Options.getColorNormal());
 
         for (int entry = 0; entry < pgUserModels.size(); entry++) {

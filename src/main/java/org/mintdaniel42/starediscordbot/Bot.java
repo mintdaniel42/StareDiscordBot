@@ -107,129 +107,129 @@ public final class Bot extends ListenerAdapter {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addBasicCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
         commandListUpdateAction.addCommands(
-                Commands.slash("maintenance", R.string("control_maintenance"))
-                        .addOption(OptionType.BOOLEAN, "active", R.string("if_maintenance_should_be_enabled"), true)
+                Commands.slash("maintenance", R.Strings.ui("control_maintenance"))
+                        .addOption(OptionType.BOOLEAN, "active", R.Strings.ui("if_maintenance_should_be_enabled"), true)
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
-                Commands.slash("approve", R.string("approve_a_change"))
-                        .addOption(OptionType.INTEGER, "id", R.string("change_id"), true, true)
+                Commands.slash("approve", R.Strings.ui("approve_a_change"))
+                        .addOption(OptionType.INTEGER, "id", R.Strings.ui("change_id"), true, true)
                 //#if dev
-                , Commands.slash("help", R.string("list_all_commands"))
+                , Commands.slash("help", R.Strings.ui("list_all_commands"))
                 //#endif
         );
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addHnsCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        commandListUpdateAction.addCommands(Commands.slash("hns", R.string("hide_n_seek_related_commands"))
+        commandListUpdateAction.addCommands(Commands.slash("hns", R.Strings.ui("hide_n_seek_related_commands"))
                 .addSubcommands(
-                        new SubcommandData("show", R.string("show_hide_n_seek_entry"))
-                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
-                        new SubcommandData("showmore", R.string("show_hide_n_seek_entry_more"))
-                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
-                        new SubcommandData("edit", R.string("edit_a_hide_n_seek_entry"))
-                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
-                                .addOption(OptionType.NUMBER, "points", R.string("points"), false, true)
-                                .addOption(OptionType.STRING, "rating", R.string("rating"))
-                                .addOption(OptionType.STRING, "joined", R.string("joined"))
-                                .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
-                                .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
-                                .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating"))
-                                .addOption(OptionType.STRING, "top10", R.string("top10"))
-                                .addOption(OptionType.INTEGER, "streak", R.string("streak"))
-                                .addOption(OptionType.STRING, "highest_rank", R.string("highest_rank")),
-                        new SubcommandData("add", R.string("add_a_new_hide_n_seek_entry"))
-                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
-                                .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
-                                .addOption(OptionType.STRING, "rating", R.string("rating"))
-                                .addOption(OptionType.STRING, "joined", R.string("joined"))
-                                .addOption(OptionType.BOOLEAN, "secondary", R.string("secondary"))
-                                .addOption(OptionType.BOOLEAN, "banned", R.string("banned"))
-                                .addOption(OptionType.BOOLEAN, "cheating", R.string("cheating"))
-                                .addOption(OptionType.STRING, "top10", R.string("top10"))
-                                .addOption(OptionType.INTEGER, "streak", R.string("streak"))
-                                .addOption(OptionType.STRING, "highest_rank", R.string("highest_rank")),
-                        new SubcommandData("list", R.string("list_hide_n_seek_entries"))
-                                .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)
+                        new SubcommandData("show", R.Strings.ui("show_hide_n_seek_entry"))
+                                .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true),
+                        new SubcommandData("showmore", R.Strings.ui("show_hide_n_seek_entry_more"))
+                                .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true),
+                        new SubcommandData("edit", R.Strings.ui("edit_a_hide_n_seek_entry"))
+                                .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true)
+                                .addOption(OptionType.NUMBER, "points", R.Strings.ui("points"), false, true)
+                                .addOption(OptionType.STRING, "rating", R.Strings.ui("rating"))
+                                .addOption(OptionType.STRING, "joined", R.Strings.ui("joined"))
+                                .addOption(OptionType.BOOLEAN, "secondary", R.Strings.ui("secondary"))
+                                .addOption(OptionType.BOOLEAN, "banned", R.Strings.ui("banned"))
+                                .addOption(OptionType.BOOLEAN, "cheating", R.Strings.ui("cheating"))
+                                .addOption(OptionType.STRING, "top10", R.Strings.ui("top10"))
+                                .addOption(OptionType.INTEGER, "streak", R.Strings.ui("streak"))
+                                .addOption(OptionType.STRING, "highest_rank", R.Strings.ui("highest_rank")),
+                        new SubcommandData("add", R.Strings.ui("add_a_new_hide_n_seek_entry"))
+                                .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true)
+                                .addOption(OptionType.NUMBER, "points", R.Strings.ui("points"), true, true)
+                                .addOption(OptionType.STRING, "rating", R.Strings.ui("rating"))
+                                .addOption(OptionType.STRING, "joined", R.Strings.ui("joined"))
+                                .addOption(OptionType.BOOLEAN, "secondary", R.Strings.ui("secondary"))
+                                .addOption(OptionType.BOOLEAN, "banned", R.Strings.ui("banned"))
+                                .addOption(OptionType.BOOLEAN, "cheating", R.Strings.ui("cheating"))
+                                .addOption(OptionType.STRING, "top10", R.Strings.ui("top10"))
+                                .addOption(OptionType.INTEGER, "streak", R.Strings.ui("streak"))
+                                .addOption(OptionType.STRING, "highest_rank", R.Strings.ui("highest_rank")),
+                        new SubcommandData("list", R.Strings.ui("list_hide_n_seek_entries"))
+                                .addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true)
                 ));
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addPgCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
         commandListUpdateAction.addCommands(
-        Commands.slash("pg", R.string("partygames_related_commands"))
+                Commands.slash("pg", R.Strings.ui("partygames_related_commands"))
                 .addSubcommands(
-                        new SubcommandData("show", R.string("show_partygames_entry"))
-                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
-                        new SubcommandData("edit", R.string("edit_a_partygames_entry"))
-                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
-                                .addOption(OptionType.NUMBER, "points", R.string("points"), false, true)
-                                .addOption(OptionType.STRING, "rating", R.string("rating"))
-                                .addOption(OptionType.STRING, "joined", R.string("joined"))
-                                .addOption(OptionType.NUMBER, "luck", R.string("luck"), false, true)
-                                .addOption(OptionType.NUMBER, "quota", R.string("quota"))
-                                .addOption(OptionType.NUMBER, "winrate", R.string("winrate")),
-                        new SubcommandData("add", R.string("add_a_new_partygames_entry"))
-                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
-                                .addOption(OptionType.NUMBER, "points", R.string("points"), true, true)
-                                .addOption(OptionType.STRING, "rating", R.string("rating"))
-                                .addOption(OptionType.STRING, "joined", R.string("joined"))
-                                .addOption(OptionType.NUMBER, "luck", R.string("luck"), false, true)
-                                .addOption(OptionType.NUMBER, "quota", R.string("quota"))
-                                .addOption(OptionType.NUMBER, "winrate", R.string("winrate")),
-                        new SubcommandData("list", R.string("list_partygames_entries"))
-                                .addOption(OptionType.INTEGER, "page", R.string("page"), false, true)));
+                        new SubcommandData("show", R.Strings.ui("show_partygames_entry"))
+                                .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true),
+                        new SubcommandData("edit", R.Strings.ui("edit_a_partygames_entry"))
+                                .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true)
+                                .addOption(OptionType.NUMBER, "points", R.Strings.ui("points"), false, true)
+                                .addOption(OptionType.STRING, "rating", R.Strings.ui("rating"))
+                                .addOption(OptionType.STRING, "joined", R.Strings.ui("joined"))
+                                .addOption(OptionType.NUMBER, "luck", R.Strings.ui("luck"), false, true)
+                                .addOption(OptionType.NUMBER, "quota", R.Strings.ui("quota"))
+                                .addOption(OptionType.NUMBER, "winrate", R.Strings.ui("winrate")),
+                        new SubcommandData("add", R.Strings.ui("add_a_new_partygames_entry"))
+                                .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true)
+                                .addOption(OptionType.NUMBER, "points", R.Strings.ui("points"), true, true)
+                                .addOption(OptionType.STRING, "rating", R.Strings.ui("rating"))
+                                .addOption(OptionType.STRING, "joined", R.Strings.ui("joined"))
+                                .addOption(OptionType.NUMBER, "luck", R.Strings.ui("luck"), false, true)
+                                .addOption(OptionType.NUMBER, "quota", R.Strings.ui("quota"))
+                                .addOption(OptionType.NUMBER, "winrate", R.Strings.ui("winrate")),
+                        new SubcommandData("list", R.Strings.ui("list_partygames_entries"))
+                                .addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true)));
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addUserCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        commandListUpdateAction.addCommands(Commands.slash("user", R.string("user_related_commands"))
+        commandListUpdateAction.addCommands(Commands.slash("user", R.Strings.ui("user_related_commands"))
                 .addSubcommands(
-                        new SubcommandData("edit", R.string("edit_a_user_entry"))
-                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
-                                .addOption(OptionType.STRING, "note", R.string("note"))
-                                .addOption(OptionType.USER, "discord", R.string("discord_tag")),
-                        new SubcommandData("delete", R.string("delete_a_user_entry"))
-                                .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
+                        new SubcommandData("edit", R.Strings.ui("edit_a_user_entry"))
+                                .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true)
+                                .addOption(OptionType.STRING, "note", R.Strings.ui("note"))
+                                .addOption(OptionType.USER, "discord", R.Strings.ui("discord_tag")),
+                        new SubcommandData("delete", R.Strings.ui("delete_a_user_entry"))
+                                .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true)
                 ));
     }
 
     //#if dev
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void addGroupCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        commandListUpdateAction.addCommands(Commands.slash("group", R.string("group_related_commands"))
-                .addSubcommandGroups(new SubcommandGroupData("user", R.string("user_related_group_commands"))
+        commandListUpdateAction.addCommands(Commands.slash("group", R.Strings.ui("group_related_commands"))
+                .addSubcommandGroups(new SubcommandGroupData("user", R.Strings.ui("user_related_group_commands"))
                         .addSubcommands(
-                                new SubcommandData("add", R.string("add_user_to_group"))
-                                        .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
-                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
-                                new SubcommandData("remove", R.string("remove_user_from_group"))
-                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true),
-                                new SubcommandData("show", R.string("show_group_of_user"))
-                                        .addOption(OptionType.STRING, "username", R.string("minecraft_username"), true, true)
+                                new SubcommandData("add", R.Strings.ui("add_user_to_group"))
+                                        .addOption(OptionType.STRING, "tag", R.Strings.ui("group_tag"), true, true)
+                                        .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true),
+                                new SubcommandData("remove", R.Strings.ui("remove_user_from_group"))
+                                        .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true),
+                                new SubcommandData("show", R.Strings.ui("show_group_of_user"))
+                                        .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true)
                         )
                 )
                 .addSubcommands(
-                        new SubcommandData("show", R.string("show_group"))
-                                .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true),
-                        new SubcommandData("create", R.string("create_group"))
-                                .addOption(OptionType.STRING, "tag", R.string("group_tag"), true)
-                                .addOption(OptionType.STRING, "name", R.string("group_name"), true)
-                                .addOption(OptionType.STRING, "leader", R.string("group_leader"), true, true)
-                                .addOptions(new OptionData(OptionType.STRING, "relation", R.string("group_relation"), true)
-                                        .addChoice(R.string("enemy"), GroupModel.Relation.enemy.name())
-                                        .addChoice(R.string("neutral"), GroupModel.Relation.neutral.name())
-                                        .addChoice(R.string("ally"), GroupModel.Relation.ally.name())),
-                        new SubcommandData("edit", R.string("edit_group"))
-                                .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
-                                .addOption(OptionType.STRING, "name", R.string("group_name"))
-                                .addOption(OptionType.STRING, "leader", R.string("group_leader"), false, true)
-                                .addOptions(new OptionData(OptionType.STRING, "relation", R.string("group_relation"))
-                                        .addChoice(R.string("enemy"), GroupModel.Relation.enemy.name())
-                                        .addChoice(R.string("neutral"), GroupModel.Relation.neutral.name())
-                                        .addChoice(R.string("ally"), GroupModel.Relation.ally.name())),
-                        new SubcommandData("delete", R.string("delete_group"))
-                                .addOption(OptionType.STRING, "tag", R.string("group_tag"), true, true)
-                                .addOption(OptionType.BOOLEAN, "confirm", R.string("confirm_deletion"), true)
+                        new SubcommandData("show", R.Strings.ui("show_group"))
+                                .addOption(OptionType.STRING, "tag", R.Strings.ui("group_tag"), true, true),
+                        new SubcommandData("create", R.Strings.ui("create_group"))
+                                .addOption(OptionType.STRING, "tag", R.Strings.ui("group_tag"), true)
+                                .addOption(OptionType.STRING, "name", R.Strings.ui("group_name"), true)
+                                .addOption(OptionType.STRING, "leader", R.Strings.ui("group_leader"), true, true)
+                                .addOptions(new OptionData(OptionType.STRING, "relation", R.Strings.ui("group_relation"), true)
+                                        .addChoice(R.Strings.ui("enemy"), GroupModel.Relation.enemy.name())
+                                        .addChoice(R.Strings.ui("neutral"), GroupModel.Relation.neutral.name())
+                                        .addChoice(R.Strings.ui("ally"), GroupModel.Relation.ally.name())),
+                        new SubcommandData("edit", R.Strings.ui("edit_group"))
+                                .addOption(OptionType.STRING, "tag", R.Strings.ui("group_tag"), true, true)
+                                .addOption(OptionType.STRING, "name", R.Strings.ui("group_name"))
+                                .addOption(OptionType.STRING, "leader", R.Strings.ui("group_leader"), false, true)
+                                .addOptions(new OptionData(OptionType.STRING, "relation", R.Strings.ui("group_relation"))
+                                        .addChoice(R.Strings.ui("enemy"), GroupModel.Relation.enemy.name())
+                                        .addChoice(R.Strings.ui("neutral"), GroupModel.Relation.neutral.name())
+                                        .addChoice(R.Strings.ui("ally"), GroupModel.Relation.ally.name())),
+                        new SubcommandData("delete", R.Strings.ui("delete_group"))
+                                .addOption(OptionType.STRING, "tag", R.Strings.ui("group_tag"), true, true)
+                                .addOption(OptionType.BOOLEAN, "confirm", R.Strings.ui("confirm_deletion"), true)
                 ));
     }
     //#endif

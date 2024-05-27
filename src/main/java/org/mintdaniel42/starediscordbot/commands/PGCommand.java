@@ -48,7 +48,7 @@ public final class PGCommand extends ListenerAdapter {
 					log.error(R.logging("the_command_s_caused_an_error", event.getFullCommandName()), e);
 					event.replyEmbeds(ErrorEmbed.of(event.getInteraction(), e)).queue();
 				}
-			} else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
+			} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
 		}
 	}
 
@@ -62,14 +62,14 @@ public final class PGCommand extends ListenerAdapter {
 							.setComponents(ActionRow.of(
 											Button.primary(
 													String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
-													R.string("show_group")).withDisabled(userModel.getGroup() == null)
+													R.Strings.ui("show_group")).withDisabled(userModel.getGroup() == null)
 									)
 							)
 							//#endif
 							.queue());
-				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
-			} else event.reply(R.string("this_username_does_not_exist")).queue();
-		} else event.reply(R.string("your_command_was_incomplete")).queue();
+				} else event.reply(R.Strings.ui("this_user_entry_does_not_exist")).queue();
+			} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
+		} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
 	}
 
 	private void pgAdd(@NonNull final SlashCommandInteractionEvent event) {
@@ -83,14 +83,14 @@ public final class PGCommand extends ListenerAdapter {
 						userBuilder.pgUser(pgModel).build();
 
 						if (!databaseAdapter.addUser(userBuilder.build()) && !databaseAdapter.addPgUser(pgModel)) {
-							event.reply(R.string("the_entry_could_not_be_created")).queue();
-						} else event.reply(R.string("the_entry_was_successfully_created"))
+							event.reply(R.Strings.ui("the_entry_could_not_be_created")).queue();
+						} else event.reply(R.Strings.ui("the_entry_was_successfully_created"))
 								.setEmbeds(UserEmbed.of(userBuilder.build(), UserEmbed.Type.PG))
 								.queue();
-					} else event.reply(R.string("this_user_entry_already_exists")).queue();
-				} else event.reply(R.string("this_username_does_not_exist")).queue();
-			} else event.reply(R.string("your_command_was_incomplete")).queue();
-		} else event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
+					} else event.reply(R.Strings.ui("this_user_entry_already_exists")).queue();
+				} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
+			} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
+		} else event.reply(R.Strings.ui("you_do_not_have_the_permission_to_use_this_command")).queue();
 	}
 
 	private void pgEdit(@NonNull final SlashCommandInteractionEvent event) {
@@ -108,24 +108,24 @@ public final class PGCommand extends ListenerAdapter {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof TextChannel requestChannel) {
 								if (event.getMember() instanceof Member member) {
 									if (databaseAdapter.addRequest(RequestModel.from(timestamp, pgUserModel))) {
-										requestChannel.sendMessage(R.string("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
+										requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
 														member.getAsMention(),
 														timestamp))
 												.setComponents(ApproveChangeButton.create(timestamp))
 												.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG, true)).queue();
-										event.reply(R.string("the_entry_change_was_successfully_requested")).queue();
-									} else event.reply(R.string("the_entry_could_not_be_updated")).queue();
+										event.reply(R.Strings.ui("the_entry_change_was_successfully_requested")).queue();
+									} else event.reply(R.Strings.ui("the_entry_could_not_be_updated")).queue();
 								}
 							}
 						}
 					} else if (!databaseAdapter.edit(pgUserModel)) {
-						event.reply(R.string("the_entry_could_not_be_updated")).queue();
-					} else event.reply(R.string("the_entry_was_successfully_updated"))
+						event.reply(R.Strings.ui("the_entry_could_not_be_updated")).queue();
+					} else event.reply(R.Strings.ui("the_entry_was_successfully_updated"))
 							.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG))
 							.queue();
-				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
-			} else event.reply(R.string("this_username_does_not_exist")).queue();
-		} else event.reply(R.string("your_command_was_incomplete")).queue();
+				} else event.reply(R.Strings.ui("this_user_entry_does_not_exist")).queue();
+			} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
+		} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
 	}
 
 	private static PGUserModel buildPgModel(@NonNull final SlashCommandInteractionEvent event, @NonNull final PGUserModel.PGUserModelBuilder pgBuilder) {
@@ -152,7 +152,7 @@ public final class PGCommand extends ListenerAdapter {
 				event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createPgList(databaseAdapter, entries, page))
 						.setComponents(ListButtons.create(ListButtons.Type.pg, page, databaseAdapter.getPgPages()))
 						.queue());
-			} else event.reply(R.string("this_page_does_not_exist")).queue();
-		} else event.reply(R.string("no_entries_available")).queue();
+			} else event.reply(R.Strings.ui("this_page_does_not_exist")).queue();
+		} else event.reply(R.Strings.ui("no_entries_available")).queue();
 	}
 }

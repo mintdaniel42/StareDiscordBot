@@ -35,66 +35,66 @@ public class UserEmbed {
 
     @Contract(pure = true, value = "_, _ -> new")
     private @NonNull MessageEmbed buildBaseEmbed(@NonNull final UserModel userModel, @NonNull final EmbedBuilder builder) {
-        return builder.setTitle(R.string("user_base_info"))
+		return builder.setTitle(R.Strings.ui("user_base_info"))
                 //#if dev
-                .addField(R.string("group_name"), userModel.getGroup() != null ? userModel.getGroup().getName() : "❌", true)
+				.addField(R.Strings.ui("group_name"), userModel.getGroup() != null ? userModel.getGroup().getName() : "❌", true)
                 //#endif
-                .addField(R.string("discord_tag"), userModel.getDiscord() == 0 ? "❌" : "<@%s>".formatted(userModel.getDiscord()), true)
-                .addField(R.string("note"), userModel.getNote(), false)
+				.addField(R.Strings.ui("discord_tag"), userModel.getDiscord() == 0 ? "❌" : "<@%s>".formatted(userModel.getDiscord()), true)
+				.addField(R.Strings.ui("note"), userModel.getNote(), false)
                 .build();
     }
 
     @Contract(pure = true, value = "_, _ -> new")
     private @NonNull MessageEmbed buildHnsEmbed(@NonNull final UserModel userModel, @NonNull final EmbedBuilder builder) {
-        return builder.setTitle(R.string("hide_n_seek_player_database"))
-                .addField(R.string("rating"), userModel.getHnsUser().getRating(), true)
-                .addField(R.string("points"), formatNumber(userModel.getHnsUser().getPoints()), true)
-                .addField(R.string("joined"), userModel.getHnsUser().getJoined(), true)
-                .addField(R.string("note"), userModel.getNote(), userModel.getNote().length() <= 10)
-                .addField(R.string("banned"), userModel.getHnsUser().isBanned() ? "✅" : "❌", true)
-                .addField(R.string("cheating"), userModel.getHnsUser().isCheating() ? "✅" : "❌", true)
+		return builder.setTitle(R.Strings.ui("hide_n_seek_player_database"))
+				.addField(R.Strings.ui("rating"), userModel.getHnsUser().getRating(), true)
+				.addField(R.Strings.ui("points"), formatNumber(userModel.getHnsUser().getPoints()), true)
+				.addField(R.Strings.ui("joined"), userModel.getHnsUser().getJoined(), true)
+				.addField(R.Strings.ui("note"), userModel.getNote(), userModel.getNote().length() <= 10)
+				.addField(R.Strings.ui("banned"), userModel.getHnsUser().isBanned() ? "✅" : "❌", true)
+				.addField(R.Strings.ui("cheating"), userModel.getHnsUser().isCheating() ? "✅" : "❌", true)
                 .build();
     }
 
     @Contract(pure = true, value = "_, _ -> new")
     private @NonNull MessageEmbed buildHnsMoreEmbed(@NonNull final UserModel userModel, @NonNull final EmbedBuilder builder) {
-        return builder.setTitle(R.string("hide_n_seek_player_database_more_information"))
-                .addField(R.string("top10"), userModel.getHnsUser().getTop10(), true)
-                .addField(R.string("streak"), formatNumber(userModel.getHnsUser().getStreak()), true)
-                .addField(R.string("highest_rank"), userModel.getHnsUser().getHighestRank(), true)
-                .addField(R.string("secondary"), userModel.getHnsUser().isSecondary() ? "✅" : "❌", true)
-                .addField(R.string("discord_tag"), userModel.getDiscord() == 0 ? "❌" : "<@%s>".formatted(userModel.getDiscord()), true)
+		return builder.setTitle(R.Strings.ui("hide_n_seek_player_database_more_information"))
+				.addField(R.Strings.ui("top10"), userModel.getHnsUser().getTop10(), true)
+				.addField(R.Strings.ui("streak"), formatNumber(userModel.getHnsUser().getStreak()), true)
+				.addField(R.Strings.ui("highest_rank"), userModel.getHnsUser().getHighestRank(), true)
+				.addField(R.Strings.ui("secondary"), userModel.getHnsUser().isSecondary() ? "✅" : "❌", true)
+				.addField(R.Strings.ui("discord_tag"), userModel.getDiscord() == 0 ? "❌" : "<@%s>".formatted(userModel.getDiscord()), true)
                 //#if dev
-                .addField(R.string("group_name"), userModel.getGroup() != null ? userModel.getGroup().getName() : "❌", true)
+				.addField(R.Strings.ui("group_name"), userModel.getGroup() != null ? userModel.getGroup().getName() : "❌", true)
                 //#endif
                 .build();
     }
 
     @Contract(pure = true, value = "_, _ -> new")
     private @NonNull MessageEmbed buildHnsAllEmbed(@NonNull final UserModel userModel, @NonNull final EmbedBuilder builder) {
-        return builder.setTitle(R.string("hide_n_seek_player_database"))
-                .addField(R.string("rating"), userModel.getHnsUser().getRating(), true)
-                .addField(R.string("points"), formatNumber(userModel.getHnsUser().getPoints()), true)
-                .addField(R.string("joined"), userModel.getHnsUser().getJoined(), true)
-                .addField(R.string("banned"), userModel.getHnsUser().isBanned() ? "✅" : "❌", true)
-                .addField(R.string("cheating"), userModel.getHnsUser().isCheating() ? "✅" : "❌", true)
-                .addField(R.string("top10"), userModel.getHnsUser().getTop10(), true)
-                .addField(R.string("streak"), formatNumber(userModel.getHnsUser().getStreak()), true)
-                .addField(R.string("highest_rank"), userModel.getHnsUser().getHighestRank(), true)
-                .addField(R.string("secondary"), userModel.getHnsUser().isSecondary() ? "✅" : "❌", true)
+		return builder.setTitle(R.Strings.ui("hide_n_seek_player_database"))
+				.addField(R.Strings.ui("rating"), userModel.getHnsUser().getRating(), true)
+				.addField(R.Strings.ui("points"), formatNumber(userModel.getHnsUser().getPoints()), true)
+				.addField(R.Strings.ui("joined"), userModel.getHnsUser().getJoined(), true)
+				.addField(R.Strings.ui("banned"), userModel.getHnsUser().isBanned() ? "✅" : "❌", true)
+				.addField(R.Strings.ui("cheating"), userModel.getHnsUser().isCheating() ? "✅" : "❌", true)
+				.addField(R.Strings.ui("top10"), userModel.getHnsUser().getTop10(), true)
+				.addField(R.Strings.ui("streak"), formatNumber(userModel.getHnsUser().getStreak()), true)
+				.addField(R.Strings.ui("highest_rank"), userModel.getHnsUser().getHighestRank(), true)
+				.addField(R.Strings.ui("secondary"), userModel.getHnsUser().isSecondary() ? "✅" : "❌", true)
                 .build();
     }
 
     @Contract(pure = true, value = "_, _ -> new")
     private @NonNull MessageEmbed buildPgEmbed(@NonNull final UserModel userModel, @NonNull final EmbedBuilder builder) {
-        return builder.setTitle(R.string("partygames_player_database"))
+		return builder.setTitle(R.Strings.ui("partygames_player_database"))
                 .setThumbnail(MCHelper.getThumbnail(userModel.getPgUser().getUuid()))
-                .addField(R.string("rating"), userModel.getPgUser().getRating(), true)
-                .addField(R.string("points"), formatNumber(userModel.getPgUser().getPoints()), true)
-                .addField(R.string("joined"), userModel.getPgUser().getJoined(), true)
-                .addField(R.string("luck"), String.valueOf(userModel.getPgUser().getLuck()), true)
-                .addField(R.string("quota"), String.format("%s%%", userModel.getPgUser().getQuota()), true)
-                .addField(R.string("winrate"), String.format("%s%%", userModel.getPgUser().getWinrate()), true)
+				.addField(R.Strings.ui("rating"), userModel.getPgUser().getRating(), true)
+				.addField(R.Strings.ui("points"), formatNumber(userModel.getPgUser().getPoints()), true)
+				.addField(R.Strings.ui("joined"), userModel.getPgUser().getJoined(), true)
+				.addField(R.Strings.ui("luck"), String.valueOf(userModel.getPgUser().getLuck()), true)
+				.addField(R.Strings.ui("quota"), String.format("%s%%", userModel.getPgUser().getQuota()), true)
+				.addField(R.Strings.ui("winrate"), String.format("%s%%", userModel.getPgUser().getWinrate()), true)
                 .build();
     }
 

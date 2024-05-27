@@ -74,8 +74,8 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 			} case "luck" -> {
 				if (event.getOption("winrate") instanceof OptionMapping winrateMapping &&
 						event.getOption("quota") instanceof OptionMapping quotaMapping) {
-					event.replyChoice(R.string("calculated_value_for_s_s",
-									R.string("luck"),
+					event.replyChoice(R.Strings.ui("calculated_value_for_s_s",
+									R.Strings.ui("luck"),
 									quotaMapping.getAsDouble() - winrateMapping.getAsDouble()),
 							quotaMapping.getAsDouble() - winrateMapping.getAsDouble()).queue();
 				}

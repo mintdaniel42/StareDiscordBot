@@ -45,11 +45,11 @@ public final class ListButtons extends ListenerAdapter {
         return ActionRow.of(
                 Button.primary(
                         "previous:%s:%s".formatted(type.name(), page),
-                        R.string("previous_page")
+						R.Strings.ui("previous_page")
                 ).withDisabled(page <= 0),
                 Button.primary(
                         "next:%s:%s".formatted(type.name(), page),
-                        R.string("next_page")
+						R.Strings.ui("next_page")
                 ).withDisabled(page >= maxPages - 1)
         );
     }

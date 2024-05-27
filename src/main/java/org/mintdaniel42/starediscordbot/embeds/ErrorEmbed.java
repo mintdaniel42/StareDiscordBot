@@ -22,11 +22,11 @@ public class ErrorEmbed {
 		interaction.getOptions().forEach(optionMapping -> commandBuilder.append(optionMapping.getName()).append(":").append(optionMapping.getAsString()));
 
 		return new EmbedBuilder()
-				.setTitle(R.string("an_impossible_error_occurred"))
+				.setTitle(R.Strings.ui("an_impossible_error_occurred"))
 				.setColor(Options.getColorNormal())
-				.addField(R.string("the_error"),  exception.toString(), false)
-				.addField(R.string("location_of_the_error"), stackTraceBuilder.toString(), false)
-				.addField(R.string("the_command_you_executed"), interaction.getFullCommandName() + " " + commandBuilder, false)
+				.addField(R.Strings.ui("the_error"), exception.toString(), false)
+				.addField(R.Strings.ui("location_of_the_error"), stackTraceBuilder.toString(), false)
+				.addField(R.Strings.ui("the_command_you_executed"), interaction.getFullCommandName() + " " + commandBuilder, false)
 				.build();
 	}
 }

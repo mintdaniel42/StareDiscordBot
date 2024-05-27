@@ -44,7 +44,7 @@ public final class GroupCommand extends ListenerAdapter {
 						case "group user show" -> groupUserShow(event);
 						case "group user remove" -> groupUserRemove(event);
 					}
-				} else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
+				} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
 			} catch (Exception e) {
 				log.error(R.logging("the_command_s_caused_an_error", event.getFullCommandName()), e);
 				event.replyEmbeds(ErrorEmbed.of(event.getInteraction(), e)).queue();
@@ -62,9 +62,8 @@ public final class GroupCommand extends ListenerAdapter {
 				event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
 						.setComponents(ListButtons.create(ListButtons.Type.group, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())))
 						.queue());
-			}
-			else event.reply(R.string("this_group_does_not_exist")).queue();
-		} else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
+			} else event.reply(R.Strings.ui("this_group_does_not_exist")).queue();
+		} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
 	}
 
 	private void groupShow(@NonNull final SlashCommandInteractionEvent event) {
@@ -73,8 +72,8 @@ public final class GroupCommand extends ListenerAdapter {
 				event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
 						.setComponents(ListButtons.create(ListButtons.Type.group, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())))
 						.queue());
-			} else event.reply(R.string("this_group_does_not_exist")).queue();
-		} else event.reply(R.string("your_command_was_incomplete")).queue();
+			} else event.reply(R.Strings.ui("this_group_does_not_exist")).queue();
+		} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
 	}
 
 	private void groupCreate(@NonNull final SlashCommandInteractionEvent event) {
@@ -93,14 +92,14 @@ public final class GroupCommand extends ListenerAdapter {
 
 						GroupModel groupModel = builder.build();
 						if (databaseAdapter.addGroup(groupModel)) {
-							event.reply(R.string("the_group_was_successfully_created"))
+							event.reply(R.Strings.ui("the_group_was_successfully_created"))
 									.setEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
 									.queue();
-						} else event.reply(R.string("the_group_could_not_be_created")).queue();
-					} else event.reply(R.string("this_username_does_not_exist")).queue();
-				} else event.reply(R.string("this_group_already_exists")).queue();
-			} else event.reply(R.string("your_command_was_incomplete")).queue();
-		} else event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
+						} else event.reply(R.Strings.ui("the_group_could_not_be_created")).queue();
+					} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
+				} else event.reply(R.Strings.ui("this_group_already_exists")).queue();
+			} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
+		} else event.reply(R.Strings.ui("you_do_not_have_the_permission_to_use_this_command")).queue();
 	}
 
 	private void groupEdit(@NonNull final SlashCommandInteractionEvent event) {
@@ -115,23 +114,23 @@ public final class GroupCommand extends ListenerAdapter {
 						if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof final TextChannel requestChannel) {
 							if (event.getMember() instanceof final Member member) {
 								if (databaseAdapter.addRequest(RequestModel.from(timestamp, groupModel))) {
-									requestChannel.sendMessage(R.string("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
+									requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
 													member.getAsMention(),
 													timestamp))
 											.setComponents(ApproveChangeButton.create(timestamp))
 											.addEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0, true)).queue();
-									event.reply(R.string("the_entry_change_was_successfully_requested")).queue();
-								} else event.reply(R.string("the_entry_could_not_be_updated")).queue();
+									event.reply(R.Strings.ui("the_entry_change_was_successfully_requested")).queue();
+								} else event.reply(R.Strings.ui("the_entry_could_not_be_updated")).queue();
 							}
 						}
 					}
 				} else if (!databaseAdapter.edit(groupModel)) {
-					event.reply(R.string("the_entry_could_not_be_updated")).queue();
-				} else event.reply(R.string("the_entry_was_successfully_updated"))
+					event.reply(R.Strings.ui("the_entry_could_not_be_updated")).queue();
+				} else event.reply(R.Strings.ui("the_entry_was_successfully_updated"))
 						.setEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
 						.queue();
-			} else event.reply(R.string("this_group_does_not_exist")).queue();
-		} else event.reply(R.string("your_command_was_incomplete")).queue();
+			} else event.reply(R.Strings.ui("this_group_does_not_exist")).queue();
+		} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
 	}
 
 	private @Nullable GroupModel buildGroupModel(@NonNull final SlashCommandInteractionEvent event, @NonNull final GroupModel groupModel) {
@@ -144,7 +143,7 @@ public final class GroupCommand extends ListenerAdapter {
 					if (MCHelper.getUuid(databaseAdapter, optionMapping.getAsString()) instanceof final UUID uuid) {
 						groupBuilder.leader(uuid);
 					} else {
-						event.reply(R.string("this_username_does_not_exist")).queue();
+						event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
 						return null;
 					}
 				}
@@ -165,14 +164,14 @@ public final class GroupCommand extends ListenerAdapter {
 								databaseAdapter.edit(userModel.toBuilder()
 										.group(groupModel)
 										.build())) {
-							event.reply(R.string("the_user_s_was_added_to_the_group_s",
+							event.reply(R.Strings.ui("the_user_s_was_added_to_the_group_s",
 									MCHelper.getUsername(databaseAdapter, uuid),
 									groupModel.getName())).queue();
-						} else event.reply(R.string("this_group_does_not_exist")).queue();
-					} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
-				} else event.reply(R.string("this_username_does_not_exist")).queue();
-			} else event.reply(R.string("your_command_was_incomplete")).queue();
-		} else event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
+						} else event.reply(R.Strings.ui("this_group_does_not_exist")).queue();
+					} else event.reply(R.Strings.ui("this_user_entry_does_not_exist")).queue();
+				} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
+			} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
+		} else event.reply(R.Strings.ui("you_do_not_have_the_permission_to_use_this_command")).queue();
 	}
 
 	private void groupUserShow(@NonNull final SlashCommandInteractionEvent event) {
@@ -181,11 +180,11 @@ public final class GroupCommand extends ListenerAdapter {
 				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
 					if (userModel.getGroup() instanceof GroupModel groupModel) {
 						event.replyEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0)).queue();
-					} else event.reply(R.string("the_user_s_is_not_in_any_group",
+					} else event.reply(R.Strings.ui("the_user_s_is_not_in_any_group",
 							userModel.getUsername())).queue();
-				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
-			} else event.reply(R.string("this_username_does_not_exist")).queue();
-		} else event.reply(R.string("your_command_was_incomplete")).queue();
+				} else event.reply(R.Strings.ui("this_user_entry_does_not_exist")).queue();
+			} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
+		} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
 	}
 
 	private void groupUserRemove(@NonNull final SlashCommandInteractionEvent event) {
@@ -199,15 +198,15 @@ public final class GroupCommand extends ListenerAdapter {
 									databaseAdapter.edit(userModel.toBuilder()
 										.group(null)
 										.build())) {
-								event.reply(R.string("the_user_s_was_removed_from_the_group_s",
+								event.reply(R.Strings.ui("the_user_s_was_removed_from_the_group_s",
 										MCHelper.getUsername(databaseAdapter, uuid),
 										groupModel.getName())).queue();
-							} else event.reply(R.string("the_user_s_is_not_in_any_group",
+							} else event.reply(R.Strings.ui("the_user_s_is_not_in_any_group",
 									userModel.getUsername())).queue();
-						} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
-					} else event.reply(R.string("this_username_does_not_exist")).queue();
-				} else event.reply(R.string("this_group_does_not_exist")).queue();
-			} else event.reply(R.string("your_command_was_incomplete")).queue();
-		} else event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
+						} else event.reply(R.Strings.ui("this_user_entry_does_not_exist")).queue();
+					} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
+				} else event.reply(R.Strings.ui("this_group_does_not_exist")).queue();
+			} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
+		} else event.reply(R.Strings.ui("you_do_not_have_the_permission_to_use_this_command")).queue();
 	}
 }

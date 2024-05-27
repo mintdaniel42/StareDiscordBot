@@ -15,8 +15,8 @@ import java.util.List;
 public class HelpEmbed {
 	public MessageEmbed of(@NonNull final List<ICommandReference> commandReferences, final int page) {
 		var builder = new EmbedBuilder()
-				.setTitle(R.string("help"))
-				.setDescription(R.string("you_can_find_all_commands_and_their_descriptions_here"))
+				.setTitle(R.Strings.ui("help"))
+				.setDescription(R.Strings.ui("you_can_find_all_commands_and_their_descriptions_here"))
 				.setColor(Options.getColorNormal());
 
 		commandReferences.stream()

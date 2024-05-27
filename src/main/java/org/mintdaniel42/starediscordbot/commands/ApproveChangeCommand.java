@@ -25,15 +25,15 @@ public final class ApproveChangeCommand extends ListenerAdapter {
                     if (DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) || DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
                         if (event.getOption("id") instanceof OptionMapping idMapping) {
                             if (databaseAdapter.mergeRequest(idMapping.getAsLong())) {
-                                event.reply(R.string("request_was_successfully_merged")).queue();
-                            } else event.reply(R.string("request_could_not_be_merged")).queue();
-                        } else event.reply(R.string("your_command_was_incomplete")).queue();
-                    } else event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
+								event.reply(R.Strings.ui("request_was_successfully_merged")).queue();
+							} else event.reply(R.Strings.ui("request_could_not_be_merged")).queue();
+						} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
+					} else event.reply(R.Strings.ui("you_do_not_have_the_permission_to_use_this_command")).queue();
                 } catch (Exception e) {
                     log.error(R.logging("the_command_s_caused_an_error", event.getFullCommandName()), e);
                     event.replyEmbeds(ErrorEmbed.of(event.getInteraction(), e)).queue();
                 }
-            } else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
+			} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
         }
     }
 }

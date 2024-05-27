@@ -47,7 +47,7 @@ public final class HNSCommand extends ListenerAdapter {
 					log.error(R.logging("the_command_s_caused_an_error", event.getFullCommandName()), e);
 					event.replyEmbeds(ErrorEmbed.of(event.getInteraction(), e)).queue();
 				}
-			} else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
+			} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
 		}
 	}
 
@@ -68,18 +68,18 @@ public final class HNSCommand extends ListenerAdapter {
 					.setComponents(ActionRow.of(
 									Button.primary(
 											String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
-											R.string(!more ? "more_info" : "basic_info")
+											R.Strings.ui(!more ? "more_info" : "basic_info")
 									)
 									//#if dev
 									,
 									Button.primary(
 											String.format("group:%s", groupModel != null ? groupModel.getTag() : null),
-											R.string("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid))
+											R.Strings.ui("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid))
 									//#endif
 							)
 					)
 					.queue());
-		} else event.reply(R.string("this_username_or_entry_does_not_exist")).queue();
+		} else event.reply(R.Strings.ui("this_username_or_entry_does_not_exist")).queue();
 	}
 
 	private void hnsShow(@NonNull final SlashCommandInteractionEvent event, final boolean more) {
@@ -91,20 +91,20 @@ public final class HNSCommand extends ListenerAdapter {
 							.setComponents(ActionRow.of(
 											Button.primary(
 													String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
-													R.string(!more ? "more_info" : "basic_info")
+													R.Strings.ui(!more ? "more_info" : "basic_info")
 											)
 											//#if dev
 											,
 											Button.primary(
 													String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
-													R.string("show_group")).withDisabled(userModel.getGroup() == null)
+													R.Strings.ui("show_group")).withDisabled(userModel.getGroup() == null)
 											//#endif
 									)
 							)
 							.queue());
-				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
-			} else event.reply(R.string("this_username_does_not_exist")).queue();
-		} else event.reply(R.string("your_command_was_incomplete")).queue();
+				} else event.reply(R.Strings.ui("this_user_entry_does_not_exist")).queue();
+			} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
+		} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
 	}
 
 	private void hnsAdd(@NonNull final SlashCommandInteractionEvent event) {
@@ -118,14 +118,14 @@ public final class HNSCommand extends ListenerAdapter {
 						userBuilder.hnsUser(hnsModel).build();
 
 						if (!databaseAdapter.addUser(userBuilder.build()) && !databaseAdapter.addHnsUser(hnsModel)) {
-							event.reply(R.string("the_entry_could_not_be_created")).queue();
-						} else event.reply(R.string("the_entry_was_successfully_created"))
+							event.reply(R.Strings.ui("the_entry_could_not_be_created")).queue();
+						} else event.reply(R.Strings.ui("the_entry_was_successfully_created"))
 								.setEmbeds(UserEmbed.of(userBuilder.build(), UserEmbed.Type.HNS_ALL))
 								.queue();
-					} else event.reply(R.string("this_user_entry_already_exists")).queue();
-				} else event.reply(R.string("this_username_does_not_exist")).queue();
-			} else event.reply(R.string("your_command_was_incomplete")).queue();
-		} else event.reply(R.string("you_do_not_have_the_permission_to_use_this_command")).queue();
+					} else event.reply(R.Strings.ui("this_user_entry_already_exists")).queue();
+				} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
+			} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
+		} else event.reply(R.Strings.ui("you_do_not_have_the_permission_to_use_this_command")).queue();
 	}
 
 	private void hnsEdit(@NonNull final SlashCommandInteractionEvent event) {
@@ -143,24 +143,24 @@ public final class HNSCommand extends ListenerAdapter {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof TextChannel requestChannel) {
 								if (event.getMember() instanceof Member member) {
 									if (databaseAdapter.addRequest(RequestModel.from(timestamp, hnsUserModel))) {
-										requestChannel.sendMessage(R.string("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
+										requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
 														member.getAsMention(),
 														timestamp))
 												.setComponents(ApproveChangeButton.create(timestamp))
 												.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS_ALL, true)).queue();
-										event.reply(R.string("the_entry_change_was_successfully_requested")).queue();
-									} else event.reply(R.string("the_entry_could_not_be_updated")).queue();
+										event.reply(R.Strings.ui("the_entry_change_was_successfully_requested")).queue();
+									} else event.reply(R.Strings.ui("the_entry_could_not_be_updated")).queue();
 								}
 							}
 						}
 					} else if (!databaseAdapter.edit(hnsUserModel)) {
-						event.reply(R.string("the_entry_could_not_be_updated")).queue();
-					} else event.reply(R.string("the_entry_was_successfully_updated"))
+						event.reply(R.Strings.ui("the_entry_could_not_be_updated")).queue();
+					} else event.reply(R.Strings.ui("the_entry_was_successfully_updated"))
 							.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.HNS_ALL))
 							.queue();
-				} else event.reply(R.string("this_user_entry_does_not_exist")).queue();
-			} else event.reply(R.string("this_username_does_not_exist")).queue();
-		} else event.reply(R.string("your_command_was_incomplete")).queue();
+				} else event.reply(R.Strings.ui("this_user_entry_does_not_exist")).queue();
+			} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
+		} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
 	}
 
 	private static HNSUserModel buildHnsModel(@NonNull final SlashCommandInteractionEvent event, @NonNull final HNSUserModel.HNSUserModelBuilder hnsBuilder) {
@@ -190,7 +190,7 @@ public final class HNSCommand extends ListenerAdapter {
 				event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(ListEmbed.createHnsList(databaseAdapter, entries, page))
 						.setComponents(ListButtons.create(ListButtons.Type.hns, page, databaseAdapter.getHnsPages()))
 						.queue());
-			} else event.reply(R.string("this_page_does_not_exist")).queue();
-		} else event.reply(R.string("no_entries_available")).queue();
+			} else event.reply(R.Strings.ui("this_page_does_not_exist")).queue();
+		} else event.reply(R.Strings.ui("no_entries_available")).queue();
 	}
 }

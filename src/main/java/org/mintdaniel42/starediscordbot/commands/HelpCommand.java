@@ -33,7 +33,7 @@ public final class HelpCommand extends ListenerAdapter {
 							event.replyEmbeds(embedBuilder.build()).queue();
 						}
 				);
-			} else event.reply(R.string("an_impossible_error_occurred")).queue();
+			} else event.reply(R.Strings.ui("an_impossible_error_occurred")).queue();
 		}
 	}
 

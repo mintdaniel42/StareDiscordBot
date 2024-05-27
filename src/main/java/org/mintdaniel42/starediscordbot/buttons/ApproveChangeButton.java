@@ -20,7 +20,7 @@ public final class ApproveChangeButton extends ListenerAdapter {
 	public static @NonNull ActionRow create(final long id) {
 		return ActionRow.of(Button.primary(
 						"approve:%s".formatted(id),
-						R.string("approve_this_change")
+				R.Strings.ui("approve_this_change")
 				).withDisabled(id == -1)
 		);
 	}
@@ -35,9 +35,9 @@ public final class ApproveChangeButton extends ListenerAdapter {
 						event.deferEdit()
 								.queue(interactionHook -> interactionHook.editOriginalComponents(create(-1))
 										.queue());
-					} else event.reply(R.string("request_could_not_be_merged")).queue();
-				} else event.reply(R.string("you_do_not_have_the_permission_to_use_this_button")).queue();
-			} else event.reply(R.string("the_bot_is_currently_in_maintenance_mode")).queue();
+					} else event.reply(R.Strings.ui("request_could_not_be_merged")).queue();
+				} else event.reply(R.Strings.ui("you_do_not_have_the_permission_to_use_this_button")).queue();
+			} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
 		}
 	}
 }
