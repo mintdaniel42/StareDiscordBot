@@ -4,7 +4,7 @@ ormlite = "6.1"
 jdbc-sqlite = "3.45.3.0"
 json = "20240303"
 slf4j = "2.0.13"
-lombok = "8.6"
+lombok = "1.18.32"
 buildConfig = "5.3.5"
 jcp = "7.1.1"
 
@@ -16,7 +16,7 @@ json = { module = "org.json:json", version.ref = "json" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 jcp = { module = "com.igormaznitsa:jcp", version.ref = "jcp"}
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 
 [plugins]
-lombok = { id = "io.freefair.lombok", version.ref = "lombok"}
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig"}
