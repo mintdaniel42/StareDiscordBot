@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
@@ -72,12 +73,27 @@ public final class PGCommand extends ListenerAdapter {
 		} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
 	}
 
+	@Contract(pure = true, value = "_, _ -> new")
+	private static @NonNull PGUserModel buildPgModel(@NonNull final List<OptionMapping> options, @NonNull final PGUserModel.PGUserModelBuilder builder) {
+		for (final var optionMapping : options) {
+			switch (optionMapping.getName()) {
+				case "rating" -> builder.rating(optionMapping.getAsString());
+				case "points" -> builder.points(Math.round(optionMapping.getAsDouble()));
+				case "joined" -> builder.joined(optionMapping.getAsString());
+				case "luck" -> builder.luck(optionMapping.getAsDouble());
+				case "quota" -> builder.quota(optionMapping.getAsDouble());
+				case "winrate" -> builder.winrate(optionMapping.getAsDouble());
+			}
+		}
+		return builder.build();
+	}
+
 	private void pgAdd(@NonNull final SlashCommandInteractionEvent event) {
 		if (DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
 			if (event.getOption("username") instanceof final OptionMapping usernameMapping && event.getOptions().size() >= 2) {
 				if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof final UUID uuid) {
 					if (!databaseAdapter.hasPgUser(uuid)) {
-						final var pgModel = buildPgModel(event, PGUserModel.builder().uuid(uuid));
+						final var pgModel = buildPgModel(event.getOptions(), PGUserModel.builder().uuid(uuid));
 						final var userModel = databaseAdapter.getUser(uuid);
 						final var userBuilder = userModel == null ? UserModel.builder().uuid(uuid) : userModel.toBuilder();
 						userBuilder.pgUser(pgModel).build();
@@ -99,7 +115,7 @@ public final class PGCommand extends ListenerAdapter {
 			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof final UUID uuid) {
 				if (databaseAdapter.getPgUser(uuid) instanceof PGUserModel pgUserModel &&
 						databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
-					pgUserModel = buildPgModel(event, pgUserModel.toBuilder());
+					pgUserModel = buildPgModel(event.getOptions(), pgUserModel.toBuilder());
 					userModel = userModel.toBuilder().pgUser(pgUserModel).build();
 
 					if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
@@ -126,20 +142,6 @@ public final class PGCommand extends ListenerAdapter {
 				} else event.reply(R.Strings.ui("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
 		} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
-	}
-
-	private static PGUserModel buildPgModel(@NonNull final SlashCommandInteractionEvent event, @NonNull final PGUserModel.PGUserModelBuilder pgBuilder) {
-		for (OptionMapping optionMapping : event.getOptions()) {
-			switch (optionMapping.getName()) {
-				case "rating" -> pgBuilder.rating(optionMapping.getAsString());
-				case "points" -> pgBuilder.points(Math.round(optionMapping.getAsDouble()));
-				case "joined" -> pgBuilder.joined(optionMapping.getAsString());
-				case "luck" -> pgBuilder.luck(optionMapping.getAsDouble());
-				case "quota" -> pgBuilder.quota(optionMapping.getAsDouble());
-				case "winrate" -> pgBuilder.winrate(optionMapping.getAsDouble());
-			}
-		}
-		return pgBuilder.build();
 	}
 
 	private void pgList(@NonNull final SlashCommandInteractionEvent event) {

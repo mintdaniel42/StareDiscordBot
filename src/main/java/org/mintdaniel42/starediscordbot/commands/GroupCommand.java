@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
@@ -24,6 +25,7 @@ import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -105,53 +107,50 @@ public final class GroupCommand extends ListenerAdapter {
 	private void groupEdit(@NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("tag") instanceof final OptionMapping tagMapping && event.getOptions().size() >= 2) {
 			if (databaseAdapter.getGroup(tagMapping.getAsString()) instanceof GroupModel groupModel) {
-				groupModel = buildGroupModel(event, groupModel);
-				if (groupModel == null) return;
+				UUID leaderUuid = null;
+				if (!(event.getOption("leader") instanceof final OptionMapping leaderMapping) ||
+						(leaderUuid = MCHelper.getUuid(databaseAdapter, leaderMapping.getAsString())) == null) {
+					groupModel = buildGroupModel(event.getOptions(), groupModel.toBuilder(), leaderUuid);
 
-				if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
-					long timestamp = System.currentTimeMillis();
-					if (event.getGuild() instanceof final Guild guild) {
-						if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof final TextChannel requestChannel) {
-							if (event.getMember() instanceof final Member member) {
-								if (databaseAdapter.addRequest(RequestModel.from(timestamp, groupModel))) {
-									requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
-													member.getAsMention(),
-													timestamp))
-											.setComponents(ApproveChangeButton.create(timestamp))
-											.addEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0, true)).queue();
-									event.reply(R.Strings.ui("the_entry_change_was_successfully_requested")).queue();
-								} else event.reply(R.Strings.ui("the_entry_could_not_be_updated")).queue();
+					if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
+						long timestamp = System.currentTimeMillis();
+						if (event.getGuild() instanceof final Guild guild) {
+							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof final TextChannel requestChannel) {
+								if (event.getMember() instanceof final Member member) {
+									if (databaseAdapter.addRequest(RequestModel.from(timestamp, groupModel))) {
+										requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
+														member.getAsMention(),
+														timestamp))
+												.setComponents(ApproveChangeButton.create(timestamp))
+												.addEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0, true)).queue();
+										event.reply(R.Strings.ui("the_entry_change_was_successfully_requested")).queue();
+									} else event.reply(R.Strings.ui("the_entry_could_not_be_updated")).queue();
+								}
 							}
 						}
-					}
-				} else if (!databaseAdapter.edit(groupModel)) {
-					event.reply(R.Strings.ui("the_entry_could_not_be_updated")).queue();
-				} else event.reply(R.Strings.ui("the_entry_was_successfully_updated"))
-						.setEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
-						.queue();
+					} else if (!databaseAdapter.edit(groupModel)) {
+						event.reply(R.Strings.ui("the_entry_could_not_be_updated")).queue();
+					} else event.reply(R.Strings.ui("the_entry_was_successfully_updated"))
+							.setEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
+							.queue();
+				} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
 			} else event.reply(R.Strings.ui("this_group_does_not_exist")).queue();
 		} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
 	}
 
-	private @Nullable GroupModel buildGroupModel(@NonNull final SlashCommandInteractionEvent event, @NonNull final GroupModel groupModel) {
-		var groupBuilder = groupModel.toBuilder();
-
-		for (OptionMapping optionMapping : event.getOptions()) {
+	@Contract(pure = true, value = "_, _, _ -> new")
+	private @NonNull GroupModel buildGroupModel(@NonNull final List<OptionMapping> options, @NonNull final GroupModel.GroupModelBuilder builder, @Nullable UUID leaderUuid) {
+		for (OptionMapping optionMapping : options) {
 			switch (optionMapping.getName()) {
-				case "name" -> groupBuilder.name(optionMapping.getAsString());
+				case "name" -> builder.name(optionMapping.getAsString());
 				case "leader" -> {
-					if (MCHelper.getUuid(databaseAdapter, optionMapping.getAsString()) instanceof final UUID uuid) {
-						groupBuilder.leader(uuid);
-					} else {
-						event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
-						return null;
-					}
+					if (leaderUuid != null) builder.leader(leaderUuid);
 				}
-				case "relation" -> groupBuilder.relation(GroupModel.Relation.valueOf(optionMapping.getAsString()));
+				case "relation" -> builder.relation(GroupModel.Relation.valueOf(optionMapping.getAsString()));
 			}
 		}
 
-		return groupBuilder.build();
+		return builder.build();
 	}
 
 	private void groupUserAdd(@NonNull final SlashCommandInteractionEvent event) {

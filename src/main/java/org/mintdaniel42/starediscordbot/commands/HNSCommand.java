@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.db.*;
@@ -107,12 +108,30 @@ public final class HNSCommand extends ListenerAdapter {
 		} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
 	}
 
+	@Contract(pure = true, value = "_, _ -> new")
+	private static @NonNull HNSUserModel buildHnsModel(@NonNull final List<OptionMapping> options, @NonNull final HNSUserModel.HNSUserModelBuilder builder) {
+		for (final var optionMapping : options) {
+			switch (optionMapping.getName()) {
+				case "rating" -> builder.rating(optionMapping.getAsString());
+				case "points" -> builder.points(Math.round(optionMapping.getAsDouble()));
+				case "joined" -> builder.joined(optionMapping.getAsString());
+				case "secondary" -> builder.secondary(optionMapping.getAsBoolean());
+				case "banned" -> builder.banned(optionMapping.getAsBoolean());
+				case "cheating" -> builder.cheating(optionMapping.getAsBoolean());
+				case "top10" -> builder.top10(optionMapping.getAsString());
+				case "streak" -> builder.streak(optionMapping.getAsInt());
+				case "highest_rank" -> builder.highestRank(optionMapping.getAsString());
+			}
+		}
+		return builder.build();
+	}
+
 	private void hnsAdd(@NonNull final SlashCommandInteractionEvent event) {
 		if (DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
 			if (event.getOption("username") instanceof final OptionMapping usernameMapping && event.getOptions().size() >= 2) {
 				if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof final UUID uuid) {
 					if (!databaseAdapter.hasHnsUser(uuid)) {
-						final var hnsModel = buildHnsModel(event, HNSUserModel.builder().uuid(uuid));
+						final var hnsModel = buildHnsModel(event.getOptions(), HNSUserModel.builder().uuid(uuid));
 						final var userModel = databaseAdapter.getUser(uuid);
 						final var userBuilder = userModel == null ? UserModel.builder().uuid(uuid) : userModel.toBuilder();
 						userBuilder.hnsUser(hnsModel).build();
@@ -134,7 +153,7 @@ public final class HNSCommand extends ListenerAdapter {
 			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof final UUID uuid) {
 				if (databaseAdapter.getHnsUser(uuid) instanceof HNSUserModel hnsUserModel &&
 						databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
-					hnsUserModel = buildHnsModel(event, hnsUserModel.toBuilder());
+					hnsUserModel = buildHnsModel(event.getOptions(), hnsUserModel.toBuilder());
 					userModel = userModel.toBuilder().hnsUser(hnsUserModel).build();
 
 					if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
@@ -161,23 +180,6 @@ public final class HNSCommand extends ListenerAdapter {
 				} else event.reply(R.Strings.ui("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
 		} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
-	}
-
-	private static HNSUserModel buildHnsModel(@NonNull final SlashCommandInteractionEvent event, @NonNull final HNSUserModel.HNSUserModelBuilder hnsBuilder) {
-		for (OptionMapping optionMapping : event.getOptions()) {
-			switch (optionMapping.getName()) {
-				case "rating" -> hnsBuilder.rating(optionMapping.getAsString());
-				case "points" -> hnsBuilder.points(Math.round(optionMapping.getAsDouble()));
-				case "joined" -> hnsBuilder.joined(optionMapping.getAsString());
-				case "secondary" -> hnsBuilder.secondary(optionMapping.getAsBoolean());
-				case "banned" -> hnsBuilder.banned(optionMapping.getAsBoolean());
-				case "cheating" -> hnsBuilder.cheating(optionMapping.getAsBoolean());
-				case "top10" -> hnsBuilder.top10(optionMapping.getAsString());
-				case "streak" -> hnsBuilder.streak(optionMapping.getAsInt());
-				case "highest_rank" -> hnsBuilder.highestRank(optionMapping.getAsString());
-			}
-		}
-		return hnsBuilder.build();
 	}
 
 	private void hnsList(@NonNull final SlashCommandInteractionEvent event) {
