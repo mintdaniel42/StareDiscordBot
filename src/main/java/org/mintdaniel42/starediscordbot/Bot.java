@@ -12,11 +12,8 @@ import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
-import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
+import net.dv8tion.jda.api.interactions.commands.build.*;
+import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
@@ -68,17 +65,15 @@ public final class Bot extends ListenerAdapter {
         if (event.getGuild().getIdLong() != Options.getGuildId()) return;
 
         // setup commands
-        final var commandListUpdateAction = event.getGuild().updateCommands();
-
-        addBasicCommands(commandListUpdateAction);
-        addHnsCommands(commandListUpdateAction);
-        addPgCommands(commandListUpdateAction);
-        addUserCommands(commandListUpdateAction);
-        //#if dev
-        addGroupCommands(commandListUpdateAction);
-        //#endif
-
-        commandListUpdateAction.queue();
+        event.getGuild().updateCommands()
+                .addCommands(addBasicCommands())
+                .addCommands(addHnsCommands())
+                .addCommands(addPgCommands())
+                .addCommands(addUserCommands())
+                //#if dev
+                .addCommands(addGroupCommands())
+                //#endif
+                .queue();
     }
 
     @Override
@@ -102,9 +97,9 @@ public final class Bot extends ListenerAdapter {
     }
     //#endif
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void addBasicCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        commandListUpdateAction.addCommands(
+    @Contract(" -> new")
+    private @NonNull SlashCommandData[] addBasicCommands() {
+        return new SlashCommandData[]{
                 Commands.slash("maintenance", R.Strings.ui("control_maintenance"))
                         .addOption(OptionType.BOOLEAN, "active", R.Strings.ui("if_maintenance_should_be_enabled"), true)
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
@@ -113,12 +108,12 @@ public final class Bot extends ListenerAdapter {
                 //#if dev
                 , Commands.slash("help", R.Strings.ui("list_all_commands"))
                 //#endif
-        );
+        };
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void addHnsCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        commandListUpdateAction.addCommands(Commands.slash("hns", R.Strings.ui("hide_n_seek_related_commands"))
+    @Contract(" -> new")
+    private @NonNull SlashCommandData addHnsCommands() {
+        return Commands.slash("hns", R.Strings.ui("hide_n_seek_related_commands"))
                 .addSubcommands(
                         new SubcommandData("show", R.Strings.ui("show_hide_n_seek_entry"))
                                 .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true),
@@ -148,13 +143,12 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.STRING, "highest_rank", R.Strings.ui("highest_rank")),
                         new SubcommandData("list", R.Strings.ui("list_hide_n_seek_entries"))
                                 .addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true)
-                ));
+                );
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void addPgCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        commandListUpdateAction.addCommands(
-                Commands.slash("pg", R.Strings.ui("partygames_related_commands"))
+    @Contract(" -> new")
+    private @NonNull SlashCommandData addPgCommands() {
+        return Commands.slash("pg", R.Strings.ui("partygames_related_commands"))
                 .addSubcommands(
                         new SubcommandData("show", R.Strings.ui("show_partygames_entry"))
                                 .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true),
@@ -175,12 +169,12 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.NUMBER, "quota", R.Strings.ui("quota"))
                                 .addOption(OptionType.NUMBER, "winrate", R.Strings.ui("winrate")),
                         new SubcommandData("list", R.Strings.ui("list_partygames_entries"))
-                                .addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true)));
+                                .addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true));
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void addUserCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        commandListUpdateAction.addCommands(Commands.slash("user", R.Strings.ui("user_related_commands"))
+    @Contract(" -> new")
+    private @NonNull SlashCommandData addUserCommands() {
+        return Commands.slash("user", R.Strings.ui("user_related_commands"))
                 .addSubcommands(
                         new SubcommandData("edit", R.Strings.ui("edit_a_user_entry"))
                                 .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true)
@@ -188,13 +182,13 @@ public final class Bot extends ListenerAdapter {
                                 .addOption(OptionType.USER, "discord", R.Strings.ui("discord_tag")),
                         new SubcommandData("delete", R.Strings.ui("delete_a_user_entry"))
                                 .addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true)
-                ));
+                );
     }
 
     //#if dev
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void addGroupCommands(@NonNull final CommandListUpdateAction commandListUpdateAction) {
-        commandListUpdateAction.addCommands(Commands.slash("group", R.Strings.ui("group_related_commands"))
+    @Contract(" -> new")
+    private @NonNull SlashCommandData addGroupCommands() {
+        return Commands.slash("group", R.Strings.ui("group_related_commands"))
                 .addSubcommandGroups(new SubcommandGroupData("user", R.Strings.ui("user_related_group_commands"))
                         .addSubcommands(
                                 new SubcommandData("add", R.Strings.ui("add_user_to_group"))
@@ -228,7 +222,7 @@ public final class Bot extends ListenerAdapter {
                         new SubcommandData("delete", R.Strings.ui("delete_group"))
                                 .addOption(OptionType.STRING, "tag", R.Strings.ui("group_tag"), true, true)
                                 .addOption(OptionType.BOOLEAN, "confirm", R.Strings.ui("confirm_deletion"), true)
-                ));
+                );
     }
     //#endif
 
