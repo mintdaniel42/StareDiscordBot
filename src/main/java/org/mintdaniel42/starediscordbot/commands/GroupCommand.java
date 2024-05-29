@@ -62,7 +62,7 @@ public final class GroupCommand extends ListenerAdapter {
 		if (!Options.isInMaintenance()) {
 			if (databaseAdapter.getGroup(buttonParts[1]) instanceof GroupModel groupModel) {
 				event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
-						.setComponents(ListButtons.create(ListButtons.Type.group, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())))
+						.setComponents(ListButtons.create(groupModel, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())))
 						.queue());
 			} else event.reply(R.Strings.ui("this_group_does_not_exist")).queue();
 		} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
@@ -72,7 +72,7 @@ public final class GroupCommand extends ListenerAdapter {
 		if (event.getOption("tag") instanceof OptionMapping tagMapping) {
 			if (databaseAdapter.getGroup(tagMapping.getAsString()) instanceof GroupModel groupModel) {
 				event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
-						.setComponents(ListButtons.create(ListButtons.Type.group, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())))
+						.setComponents(ListButtons.create(groupModel, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())))
 						.queue());
 			} else event.reply(R.Strings.ui("this_group_does_not_exist")).queue();
 		} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
@@ -178,7 +178,9 @@ public final class GroupCommand extends ListenerAdapter {
 			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
 				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
 					if (userModel.getGroup() instanceof GroupModel groupModel) {
-						event.replyEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0)).queue();
+						event.replyEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
+								.setComponents(ListButtons.create(groupModel, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())))
+								.queue();
 					} else event.reply(R.Strings.ui("the_user_s_is_not_in_any_group",
 							userModel.getUsername())).queue();
 				} else event.reply(R.Strings.ui("this_user_entry_does_not_exist")).queue();
