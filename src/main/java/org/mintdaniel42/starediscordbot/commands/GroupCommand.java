@@ -177,7 +177,7 @@ public final class GroupCommand extends ListenerAdapter {
 		if (event.getOption("username") instanceof OptionMapping usernameMapping) {
 			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
 				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
-					if (userModel.getGroup() instanceof GroupModel groupModel) {
+					if (databaseAdapter.getGroup(userModel.getGroup().getTag()) instanceof GroupModel groupModel) {
 						event.replyEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
 								.setComponents(ListButtons.create(groupModel, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())))
 								.queue();
