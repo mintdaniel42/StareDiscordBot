@@ -285,7 +285,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                                     .build())
                             .toList())
                     .build();
-        } catch (SQLException _) {
+        } catch (SQLException | NullPointerException _) {
             return null;
         }
     }
