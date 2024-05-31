@@ -292,16 +292,20 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     public @Nullable UserModel getUser(@NonNull UUID uuid) {
         try {
-            UserModel userModel = userModelDao.queryBuilder()
+            final var userModel = userModelDao.queryBuilder()
                     .where()
                     .eq("uuid", uuid)
                     .queryForFirst();
-            return userModel == null ? null : userModel
-                    .toBuilder()
-                    .username(MCHelper.getUsername(this, uuid))
-                    .hnsUser(getHnsUser(uuid))
-                    .pgUser(getPgUser(uuid))
-                    .build();
+            if (userModel != null) {
+                final var builder = userModel.toBuilder()
+                        .username(MCHelper.getUsername(this, uuid))
+                        .hnsUser(getHnsUser(uuid))
+                        .pgUser(getPgUser(uuid));
+                if (userModel.getGroup() != null) {
+                    builder.group(getGroup(userModel.getGroup().getTag()));
+                }
+                return builder.build();
+            } else return null;
         } catch (SQLException _) {
             return null;
         }
