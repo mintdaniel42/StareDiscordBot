@@ -39,7 +39,7 @@ public final class DatabaseAdapter implements AutoCloseable {
         metaDataModelDao = DaoManager.createDao(connectionSource, MetaDataModel.class);
 
         prepareDatabase();
-        cleanDatabase();
+        new Thread(this::cleanDatabase).start();
     }
 
     private void prepareDatabase() {
@@ -567,6 +567,11 @@ public final class DatabaseAdapter implements AutoCloseable {
      */
     public boolean deleteGroup(String tag) {
         try {
+            final var updateBuilder = userModelDao.updateBuilder();
+            updateBuilder
+                    .where()
+                    .eq("group_id", tag);
+            updateBuilder.updateColumnValue("group_id", null).update();
             return groupModelDao.deleteById(tag) == 1;
         } catch (SQLException _) {
             return false;
