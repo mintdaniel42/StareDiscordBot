@@ -42,9 +42,7 @@ public final class Bot extends ListenerAdapter {
                         new UserCommand(databaseAdapter),
                         new HNSCommand(databaseAdapter),
                         new PGCommand(databaseAdapter),
-                        //#if dev
                         new GroupCommand(databaseAdapter),
-                        //#endif
                         new ApproveChangeCommand(databaseAdapter),
 
                         this
@@ -70,9 +68,7 @@ public final class Bot extends ListenerAdapter {
                 .addCommands(addHnsCommands())
                 .addCommands(addPgCommands())
                 .addCommands(addUserCommands())
-                //#if dev
                 .addCommands(addGroupCommands())
-                //#endif
                 .queue();
     }
 
@@ -185,7 +181,6 @@ public final class Bot extends ListenerAdapter {
                 );
     }
 
-    //#if dev
     @Contract(" -> new")
     private @NonNull SlashCommandData addGroupCommands() {
         return Commands.slash("group", R.Strings.ui("group_related_commands"))
@@ -221,10 +216,8 @@ public final class Bot extends ListenerAdapter {
                                         .addChoice(R.Strings.ui("ally"), GroupModel.Relation.ally.name())),
                         new SubcommandData("delete", R.Strings.ui("delete_group"))
                                 .addOption(OptionType.STRING, "tag", R.Strings.ui("group_tag"), true, true)
-                                .addOption(OptionType.BOOLEAN, "confirm", R.Strings.ui("confirm_deletion"), true)
                 );
     }
-    //#endif
 
     @Override
     public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
