@@ -42,6 +42,7 @@ public final class GroupCommand extends ListenerAdapter {
 						case "group show" -> groupShow(event);
 						case "group create" -> groupCreate(event);
 						case "group edit" -> groupEdit(event);
+						case "group delete" -> groupDelete(event);
 						case "group user add" -> groupUserAdd(event);
 						case "group user show" -> groupUserShow(event);
 						case "group user remove" -> groupUserRemove(event);
@@ -100,6 +101,16 @@ public final class GroupCommand extends ListenerAdapter {
 						} else event.reply(R.Strings.ui("the_group_could_not_be_created")).queue();
 					} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();
 				} else event.reply(R.Strings.ui("this_group_already_exists")).queue();
+			} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
+		} else event.reply(R.Strings.ui("you_do_not_have_the_permission_to_use_this_command")).queue();
+	}
+
+	private void groupDelete(@NonNull final SlashCommandInteractionEvent event) {
+		if (DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
+			if (event.getOption("tag") instanceof OptionMapping tagMapping) {
+				if (databaseAdapter.deleteGroup(tagMapping.getAsString())) {
+					event.reply(R.Strings.ui("the_group_was_successfully_deleted")).queue();
+				} else event.reply(R.Strings.ui("the_group_could_not_be_deleted")).queue();
 			} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
 		} else event.reply(R.Strings.ui("you_do_not_have_the_permission_to_use_this_command")).queue();
 	}
@@ -177,7 +188,8 @@ public final class GroupCommand extends ListenerAdapter {
 		if (event.getOption("username") instanceof OptionMapping usernameMapping) {
 			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
 				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
-					if (databaseAdapter.getGroup(userModel.getGroup().getTag()) instanceof GroupModel groupModel) {
+					if (userModel.getGroup() != null &&
+							databaseAdapter.getGroup(userModel.getGroup().getTag()) instanceof GroupModel groupModel) {
 						event.replyEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
 								.setComponents(ListButtons.create(groupModel, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())))
 								.queue();
