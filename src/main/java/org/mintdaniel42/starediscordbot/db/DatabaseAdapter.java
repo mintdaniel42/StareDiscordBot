@@ -560,6 +560,20 @@ public final class DatabaseAdapter implements AutoCloseable {
     }
 
     /**
+     * Attempts to delete a group
+     *
+     * @param tag the group tag of the group to delete
+     * @return {@code true} if it could be deleted, {@code false} otherwise
+     */
+    public boolean deleteGroup(String tag) {
+        try {
+            return groupModelDao.deleteById(tag) == 1;
+        } catch (SQLException _) {
+            return false;
+        }
+    }
+
+    /**
      * Attempts to merge the request of the provided id into the database
      * @param id id of the request
      * @return {@code true} if request could be merged, {@code false} otherwise
