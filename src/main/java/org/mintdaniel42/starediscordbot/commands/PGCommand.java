@@ -59,14 +59,12 @@ public final class PGCommand extends ListenerAdapter {
 				if (databaseAdapter.hasPgUser(uuid) && databaseAdapter.getUser(uuid) instanceof final UserModel userModel) {
 					event.deferReply().queue(interactionHook -> interactionHook
 							.editOriginalEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG))
-							//#if dev
 							.setComponents(ActionRow.of(
 											Button.primary(
 													String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
 													R.Strings.ui("show_group")).withDisabled(userModel.getGroup() == null)
 									)
 							)
-							//#endif
 							.queue());
 				} else event.reply(R.Strings.ui("this_user_entry_does_not_exist")).queue();
 			} else event.reply(R.Strings.ui("this_username_does_not_exist")).queue();

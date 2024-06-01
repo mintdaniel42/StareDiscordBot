@@ -36,9 +36,7 @@ public class UserEmbed {
     @Contract(pure = true, value = "_, _ -> new")
     private @NonNull MessageEmbed buildBaseEmbed(@NonNull final UserModel userModel, @NonNull final EmbedBuilder builder) {
 		return builder.setTitle(R.Strings.ui("user_base_info"))
-                //#if dev
 				.addField(R.Strings.ui("group_name"), userModel.getGroup() != null ? userModel.getGroup().getName() : "❌", true)
-                //#endif
 				.addField(R.Strings.ui("discord_tag"), userModel.getDiscord() == 0 ? "❌" : "<@%s>".formatted(userModel.getDiscord()), true)
 				.addField(R.Strings.ui("note"), userModel.getNote(), false)
                 .build();
@@ -64,9 +62,7 @@ public class UserEmbed {
 				.addField(R.Strings.ui("highest_rank"), userModel.getHnsUser().getHighestRank(), true)
 				.addField(R.Strings.ui("secondary"), userModel.getHnsUser().isSecondary() ? "✅" : "❌", true)
 				.addField(R.Strings.ui("discord_tag"), userModel.getDiscord() == 0 ? "❌" : "<@%s>".formatted(userModel.getDiscord()), true)
-                //#if dev
 				.addField(R.Strings.ui("group_name"), userModel.getGroup() != null ? userModel.getGroup().getName() : "❌", true)
-                //#endif
                 .build();
     }
 

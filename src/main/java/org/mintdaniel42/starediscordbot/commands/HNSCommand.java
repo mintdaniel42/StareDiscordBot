@@ -71,12 +71,10 @@ public final class HNSCommand extends ListenerAdapter {
 											String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
 											R.Strings.ui(!more ? "more_info" : "basic_info")
 									)
-									//#if dev
 									,
 									Button.primary(
 											String.format("group:%s", groupModel != null ? groupModel.getTag() : null),
 											R.Strings.ui("show_group")).withDisabled(!databaseAdapter.hasGroupFor(uuid))
-									//#endif
 							)
 					)
 					.queue());
@@ -93,13 +91,10 @@ public final class HNSCommand extends ListenerAdapter {
 											Button.primary(
 													String.format(more ? "hns:%s" : "detailedhns:%s", uuid),
 													R.Strings.ui(!more ? "more_info" : "basic_info")
-											)
-											//#if dev
-											,
+											),
 											Button.primary(
 													String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
 													R.Strings.ui("show_group")).withDisabled(userModel.getGroup() == null)
-											//#endif
 									)
 							)
 							.queue());
