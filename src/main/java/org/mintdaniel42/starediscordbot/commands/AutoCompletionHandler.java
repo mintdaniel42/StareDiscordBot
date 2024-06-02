@@ -10,6 +10,7 @@ import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.GroupModel;
 import org.mintdaniel42.starediscordbot.db.RequestModel;
+import org.mintdaniel42.starediscordbot.utils.Calculator;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -76,8 +77,8 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 						event.getOption("quota") instanceof OptionMapping quotaMapping) {
 					event.replyChoice(R.Strings.ui("calculated_value_for_s_s",
 									R.Strings.ui("luck"),
-									quotaMapping.getAsDouble() - winrateMapping.getAsDouble()),
-							quotaMapping.getAsDouble() - winrateMapping.getAsDouble()).queue();
+									Calculator.calculateLuck(quotaMapping.getAsDouble(), winrateMapping.getAsDouble())),
+							Calculator.calculateLuck(quotaMapping.getAsDouble(), winrateMapping.getAsDouble())).queue();
 				}
 			}
 			default -> event.replyChoices().queue();
