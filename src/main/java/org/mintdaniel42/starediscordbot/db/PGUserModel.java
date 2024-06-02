@@ -3,6 +3,7 @@ package org.mintdaniel42.starediscordbot.db;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.*;
+import org.mintdaniel42.starediscordbot.utils.Calculator;
 
 import java.util.UUID;
 
@@ -30,5 +31,10 @@ public class PGUserModel {
                 .quota(requestModel.getQuota())
                 .winrate(requestModel.getWinrate())
                 .build();
+    }
+
+    public double getLuck() {
+        if (luck != 0) return luck;
+        else return Calculator.calculateLuck(quota, winrate);
     }
 }
