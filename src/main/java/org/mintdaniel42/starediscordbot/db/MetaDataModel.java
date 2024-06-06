@@ -22,6 +22,7 @@ public class MetaDataModel {
 		USERNAMES_ADDED,
 		NEW_REQUESTS,
 		GROUPS_ADDED,
-		HNS_V2
+		HNS_V2,
+		LEADER_BUG
 	}
 }
