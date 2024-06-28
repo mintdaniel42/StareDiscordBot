@@ -4,7 +4,7 @@ ormlite = "6.1"
 jdbc-sqlite = "3.46.0.0"
 json = "20240303"
 slf4j = "2.0.13"
-lombok = "1.18.32"
+lombok = "1.18.34"
 buildConfig = "5.3.5"
 jcp = "7.1.2"
 
