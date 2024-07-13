@@ -13,7 +13,6 @@ import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
-import org.mintdaniel42.starediscordbot.utils.CommandEngine;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -59,7 +58,7 @@ public final class Bot extends ListenerAdapter {
 			// setup commands
 			event.getGuild()
 					.updateCommands()
-					.addCommands(CommandEngine.generateCommands("commands.json"))
+					.addCommands(R.Commands.load("commands.json"))
 					.queue();
 		}
 	}
