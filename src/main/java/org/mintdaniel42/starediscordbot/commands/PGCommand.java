@@ -94,7 +94,8 @@ public final class PGCommand extends ListenerAdapter {
 						final var pgModel = buildPgModel(event.getOptions(), PGUserModel.builder().uuid(uuid));
 						final var userModel = databaseAdapter.getUser(uuid);
 						final var userBuilder = userModel == null ? UserModel.builder().uuid(uuid) : userModel.toBuilder();
-						userBuilder.pgUser(pgModel).build();
+						userBuilder.pgUser(pgModel)
+								.username(MCHelper.getUsername(uuid));
 
 						if (!databaseAdapter.addUser(userBuilder.build()) && !databaseAdapter.addPgUser(pgModel)) {
 							event.reply(R.Strings.ui("the_entry_could_not_be_created")).queue();

@@ -129,7 +129,8 @@ public final class HNSCommand extends ListenerAdapter {
 						final var hnsModel = buildHnsModel(event.getOptions(), HNSUserModel.builder().uuid(uuid));
 						final var userModel = databaseAdapter.getUser(uuid);
 						final var userBuilder = userModel == null ? UserModel.builder().uuid(uuid) : userModel.toBuilder();
-						userBuilder.hnsUser(hnsModel).build();
+						userBuilder.hnsUser(hnsModel)
+								.username(MCHelper.getUsername(uuid));
 
 						if (!databaseAdapter.addUser(userBuilder.build()) && !databaseAdapter.addHnsUser(hnsModel)) {
 							event.reply(R.Strings.ui("the_entry_could_not_be_created")).queue();
