@@ -1,0 +1,621 @@
+{
+  "user": {
+    "options": [
+      {
+        "name": "edit",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "username",
+            "description": "minecraft_username",
+            "type": 3,
+            "required": true
+          },
+          {
+            "autocomplete": false,
+            "name": "note",
+            "description": "note",
+            "type": 3,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "discord",
+            "description": "discord_tag",
+            "type": 6,
+            "required": false
+          }
+        ],
+        "description": "edit_a_user_entry",
+        "type": 1
+      },
+      {
+        "name": "delete",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "username",
+            "description": "minecraft_username",
+            "type": 3,
+            "required": true
+          }
+        ],
+        "description": "delete_a_user_entry",
+        "type": 1
+      }
+    ],
+    "description": "user_related_commands",
+    "type": 1
+  },
+  "hns": {
+    "name": "hns",
+    "options": [
+      {
+        "name": "show",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "username",
+            "description": "minecraft_username",
+            "type": 3,
+            "required": true
+          }
+        ],
+        "description": "show_hide_n_seek_entry",
+        "type": 1
+      },
+      {
+        "name": "showmore",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "username",
+            "description": "minecraft_username",
+            "type": 3,
+            "required": true
+          }
+        ],
+        "description": "show_hide_n_seek_entry_more",
+        "type": 1
+      },
+      {
+        "name": "edit",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "username",
+            "description": "minecraft_username",
+            "type": 3,
+            "required": true
+          },
+          {
+            "autocomplete": true,
+            "name": "points",
+            "description": "points",
+            "type": 10,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "rating",
+            "description": "rating",
+            "type": 3,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "joined",
+            "description": "joined",
+            "type": 3,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "secondary",
+            "description": "secondary",
+            "type": 5,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "banned",
+            "description": "banned",
+            "type": 5,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "cheating",
+            "description": "cheating",
+            "type": 5,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "top10",
+            "description": "top10",
+            "type": 3,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "streak",
+            "description": "streak",
+            "type": 4,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "highest_rank",
+            "description": "highest_rank",
+            "type": 3,
+            "required": false
+          }
+        ],
+        "description": "edit_a_hide_n_seek_entry",
+        "type": 1
+      },
+      {
+        "name": "add",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "username",
+            "description": "minecraft_username",
+            "type": 3,
+            "required": true
+          },
+          {
+            "autocomplete": true,
+            "name": "points",
+            "description": "points",
+            "type": 10,
+            "required": true
+          },
+          {
+            "autocomplete": false,
+            "name": "rating",
+            "description": "rating",
+            "type": 3,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "joined",
+            "description": "joined",
+            "type": 3,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "secondary",
+            "description": "secondary",
+            "type": 5,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "banned",
+            "description": "banned",
+            "type": 5,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "cheating",
+            "description": "cheating",
+            "type": 5,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "top10",
+            "description": "top10",
+            "type": 3,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "streak",
+            "description": "streak",
+            "type": 4,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "highest_rank",
+            "description": "highest_rank",
+            "type": 3,
+            "required": false
+          }
+        ],
+        "description": "add_a_new_hide_n_seek_entry",
+        "type": 1
+      },
+      {
+        "name": "list",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "page",
+            "description": "Seite",
+            "type": 4,
+            "required": false
+          }
+        ],
+        "description": "list_hide_n_seek_entries",
+        "type": 1
+      }
+    ],
+    "description": "hide_n_seek_related_commands",
+    "type": 1
+  },
+  "pg": {
+    "name": "pg",
+    "options": [
+      {
+        "name": "show",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "username",
+            "description": "minecraft_username",
+            "type": 3,
+            "required": true
+          }
+        ],
+        "description": "show_a_partygames_entry",
+        "type": 1
+      },
+      {
+        "name": "edit",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "username",
+            "description": "minecraft_username",
+            "type": 3,
+            "required": true
+          },
+          {
+            "autocomplete": true,
+            "name": "points",
+            "description": "points",
+            "type": 10,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "rating",
+            "description": "rating",
+            "type": 3,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "joined",
+            "description": "joined",
+            "type": 3,
+            "required": false
+          },
+          {
+            "autocomplete": true,
+            "name": "luck",
+            "description": "luck",
+            "type": 10,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "quota",
+            "description": "quota",
+            "type": 10,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "winrate",
+            "description": "winrate",
+            "type": 10,
+            "required": false
+          }
+        ],
+        "description": "edit_a_partygames_entry",
+        "type": 1
+      },
+      {
+        "name": "add",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "username",
+            "description": "minecraft_username",
+            "type": 3,
+            "required": true
+          },
+          {
+            "autocomplete": true,
+            "name": "points",
+            "description": "points",
+            "type": 10,
+            "required": true
+          },
+          {
+            "autocomplete": false,
+            "name": "rating",
+            "description": "rating",
+            "type": 3,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "joined",
+            "description": "joined",
+            "type": 3,
+            "required": false
+          },
+          {
+            "autocomplete": true,
+            "name": "luck",
+            "description": "luck",
+            "type": 10,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "quota",
+            "description": "quota",
+            "type": 10,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "winrate",
+            "description": "winrate",
+            "type": 10,
+            "required": false
+          }
+        ],
+        "description": "add_a_new_partygames_entry",
+        "type": 1
+      },
+      {
+        "name": "list",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "page",
+            "description": "page",
+            "type": 4,
+            "required": false
+          }
+        ],
+        "description": "list_partygames_entries",
+        "type": 1
+      }
+    ],
+    "description": "partygames_related_commands",
+    "type": 1
+  },
+  "group": {
+    "name": "group",
+    "options": [
+      {
+        "name": "user",
+        "options": [
+          {
+            "name": "add",
+            "options": [
+              {
+                "autocomplete": true,
+                "name": "tag",
+                "description": "group_tag",
+                "type": 3,
+                "required": true
+              },
+              {
+                "autocomplete": true,
+                "name": "username",
+                "description": "minecraft_username",
+                "type": 3,
+                "required": true
+              }
+            ],
+            "description": "add_user_to_group",
+            "type": 1
+          },
+          {
+            "name": "remove",
+            "options": [
+              {
+                "autocomplete": true,
+                "name": "username",
+                "description": "minecraft_username",
+                "type": 3,
+                "required": true
+              }
+            ],
+            "description": "remove_user_from_group",
+            "type": 1
+          },
+          {
+            "name": "show",
+            "options": [
+              {
+                "autocomplete": true,
+                "name": "username",
+                "description": "minecraft_username",
+                "type": 3,
+                "required": true
+              }
+            ],
+            "description": "show_group_of_user",
+            "type": 1
+          }
+        ],
+        "description": "user_related_group_commands",
+        "type": 2
+      },
+      {
+        "name": "show",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "tag",
+            "description": "group_tag",
+            "type": 3,
+            "required": true
+          }
+        ],
+        "description": "show_group",
+        "type": 1
+      },
+      {
+        "name": "create",
+        "options": [
+          {
+            "autocomplete": false,
+            "name": "tag",
+            "description": "group_tag",
+            "type": 3,
+            "required": true
+          },
+          {
+            "autocomplete": false,
+            "name": "name",
+            "description": "group_name",
+            "type": 3,
+            "required": true
+          },
+          {
+            "autocomplete": true,
+            "name": "leader",
+            "description": "group_leader",
+            "type": 3,
+            "required": true
+          },
+          {
+            "autocomplete": false,
+            "name": "relation",
+            "description": "group_relation",
+            "type": 3,
+            "choices": [
+              {
+                "name": "Feind",
+                "value": "enemy"
+              },
+              {
+                "name": "Neutral",
+                "value": "neutral"
+              },
+              {
+                "name": "Verbündeter",
+                "value": "ally"
+              }
+            ],
+            "required": true
+          }
+        ],
+        "description": "create_group",
+        "type": 1
+      },
+      {
+        "name": "edit",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "tag",
+            "description": "group_tag",
+            "type": 3,
+            "required": true
+          },
+          {
+            "autocomplete": false,
+            "name": "name",
+            "description": "group_name",
+            "type": 3,
+            "required": false
+          },
+          {
+            "autocomplete": true,
+            "name": "leader",
+            "description": "group_leader",
+            "type": 3,
+            "required": false
+          },
+          {
+            "autocomplete": false,
+            "name": "relation",
+            "description": "group_relation",
+            "type": 3,
+            "choices": [
+              {
+                "name": "Feind",
+                "value": "enemy"
+              },
+              {
+                "name": "Neutral",
+                "value": "neutral"
+              },
+              {
+                "name": "Verbündeter",
+                "value": "ally"
+              }
+            ],
+            "required": false
+          }
+        ],
+        "description": "edit_group",
+        "type": 1
+      },
+      {
+        "name": "delete",
+        "options": [
+          {
+            "autocomplete": true,
+            "name": "tag",
+            "description": "group_tag",
+            "type": 3,
+            "required": true
+          }
+        ],
+        "description": "delete_group",
+        "type": 1
+      }
+    ],
+    "description": "group_related_commands",
+    "type": 1
+  },
+  "maintenance": {
+    "options": [
+      {
+        "autocomplete": false,
+        "name": "active",
+        "description": "if_maintenance_should_be_enabled",
+        "type": 5,
+        "required": true
+      }
+    ],
+    "description": "control_maintenance",
+    "default_member_permissions": "8",
+    "type": 1
+  },
+  "approve": {
+    "options": [
+      {
+        "autocomplete": true,
+        "name": "id",
+        "description": "change_id",
+        "type": 4,
+        "required": true
+      }
+    ],
+    "description": "approve_a_change",
+    "type": 1
+  },
+  "help": {
+    "dev": true,
+    "description": "list_all_commands",
+    "type": 1
+  }
+}
