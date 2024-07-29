@@ -617,5 +617,9 @@
     "dev": true,
     "description": "list_all_commands",
     "type": 1
+  },
+  "info": {
+    "description": "show_bot_information",
+    "type": 1
   }
 }
