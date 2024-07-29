@@ -15,10 +15,10 @@ import java.util.Date;
 public class InfoEmbed {
 	public MessageEmbed create(@NonNull final DatabaseAdapter databaseAdapter) {
 		return new EmbedBuilder()
-				.addField(R.Strings.ui("uptime"), getUptime(), true)
-				.addField(R.Strings.ui("username_count"), String.valueOf(databaseAdapter.getUsernameCount()), true)
-				.addField(R.Strings.ui("hide_n_seek_entry_count"), String.valueOf(databaseAdapter.getHnsCount()), true)
-				.addField(R.Strings.ui("partygames_entry_count"), String.valueOf(databaseAdapter.getPgCount()), true)
+				.addField(R.Strings.ui("uptime"), getUptime(), false)
+				.addField(R.Strings.ui("count_of_stored_usernames"), String.valueOf(databaseAdapter.getUsernameCount()), false)
+				.addField(R.Strings.ui("hide_n_seek_entry_count"), String.valueOf(databaseAdapter.getHnsCount()), false)
+				.addField(R.Strings.ui("partygames_entry_count"), String.valueOf(databaseAdapter.getPgCount()), false)
 				.build();
 	}
 
