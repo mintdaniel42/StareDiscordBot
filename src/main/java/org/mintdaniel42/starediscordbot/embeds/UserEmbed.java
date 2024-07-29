@@ -10,6 +10,8 @@ import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+import java.text.DecimalFormat;
+
 @UtilityClass
 public class UserEmbed {
     @Contract(pure = true, value = "_, _ -> new")
@@ -95,11 +97,21 @@ public class UserEmbed {
     }
 
     @Contract(pure = true, value = "_ -> new")
-    private @NonNull String formatNumber(final double value) {
-        if (value >= 5_000_000_000L) return Math.round(value / 1_000_000_000L) + "B";
-        else if (value >= 5_000_000L) return Math.round(value / 1_000_000) + "M";
-        else if (value >= 5_000) return Math.round(value / 1_000) + "K";
-        else return String.valueOf(value);
+	private @NonNull String formatNumber(double value) {
+		final var stringBuilder = new StringBuilder("##.0");
+
+		if (value >= 5_000_000_000L) {
+			value /= 1_000_000_000L;
+			stringBuilder.append('B');
+		} else if (value >= 5_000_000L) {
+			value /= 1_000_000;
+			stringBuilder.append('M');
+		} else if (value >= 5_000) {
+			value /= 1_000;
+			stringBuilder.append('K');
+		}
+
+		return new DecimalFormat(stringBuilder.toString()).format(value);
     }
 
     public enum Type {
