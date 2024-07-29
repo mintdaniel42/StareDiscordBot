@@ -327,6 +327,30 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
+    public long getHnsCount() {
+        try {
+            return hnsUserModelDao.countOf();
+        } catch (SQLException _) {
+            return 0;
+        }
+    }
+
+    public long getPgCount() {
+        try {
+            return pgUserModelDao.countOf();
+        } catch (SQLException _) {
+            return 0;
+        }
+    }
+
+    public long getUsernameCount() {
+        try {
+            return usernameModelDao.countOf();
+        } catch (SQLException _) {
+            return 0;
+        }
+    }
+
     /**
      * Get the number of hide 'n' seek pages.
      * This uses the {@link BuildConfig}.{@code entriesPerPage} constant
