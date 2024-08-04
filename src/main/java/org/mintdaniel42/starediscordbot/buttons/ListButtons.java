@@ -6,6 +6,8 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.requests.restaction.AbstractWebhookMessageAction;
+import net.dv8tion.jda.api.utils.messages.MessageRequest;
 import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.db.GroupModel;
@@ -49,10 +51,7 @@ public final class ListButtons extends ListenerAdapter {
     public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
         String[] buttonParts = event.getComponentId().split(":");
         if (buttonParts.length == 3 || (buttonParts.length == 4 && buttonParts[1].equals("group"))) {
-            final int page;
-            if (buttonParts.length == 3)
-                page = Integer.parseInt(buttonParts[2]) + (buttonParts[0].equals("previous") ? -1 : 1);
-            else page = Integer.parseInt(buttonParts[3]) + (buttonParts[0].equals("previous") ? -1 : 1);
+            final int page = Integer.parseInt(buttonParts[buttonParts.length - 1]) + (buttonParts[0].equals("previous") ? -1 : 1);
             final var embedType = Type.valueOf(buttonParts[1]);
             GroupModel groupModel = null;
             final var messageEmbed = switch (embedType) {
@@ -79,9 +78,14 @@ public final class ListButtons extends ListenerAdapter {
             };
 
             if (messageEmbed != null) {
-                event.deferEdit().queue(interactionHook -> interactionHook.editOriginalEmbeds(messageEmbed)
-                        .setComponents(actionRow)
-                        .queue());
+                event.deferEdit().queue(interactionHook -> {
+                    if (buttonParts[0].equals("info") && page == 0) interactionHook.sendMessageEmbeds(messageEmbed)
+                            .setComponents(actionRow)
+                            .queue();
+                    else interactionHook.editOriginalEmbeds(messageEmbed)
+                            .setComponents(actionRow)
+                            .queue();
+                });
             } else event.deferEdit().queue();
         }
     }
