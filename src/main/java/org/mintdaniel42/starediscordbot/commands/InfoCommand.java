@@ -10,7 +10,7 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
-public class InfoCommand extends ListenerAdapter {
+public final class InfoCommand extends ListenerAdapter {
 	@NonNull final DatabaseAdapter databaseAdapter;
 
 	@Override
