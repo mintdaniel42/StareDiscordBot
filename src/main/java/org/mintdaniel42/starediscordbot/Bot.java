@@ -9,12 +9,15 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
 import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
+
+import java.util.Arrays;
 
 @Slf4j
 public final class Bot extends ListenerAdapter {
@@ -59,7 +62,9 @@ public final class Bot extends ListenerAdapter {
 			// setup commands
 			event.getGuild()
 					.updateCommands()
-					.addCommands(R.Commands.load("commands.json"))
+					.addCommands(Arrays.stream(CommandList.values())
+							.map(CommandList::get)
+							.toArray(CommandData[]::new))
 					.queue();
 		}
 	}
