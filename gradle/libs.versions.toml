@@ -20,3 +20,6 @@ lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 
 [plugins]
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig"}
+
+[bundles]
+jdbc-all = ["jdbc-sqlite"]
