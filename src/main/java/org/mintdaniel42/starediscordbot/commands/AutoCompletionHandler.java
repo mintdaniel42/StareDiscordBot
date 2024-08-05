@@ -119,7 +119,7 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 		} else return new Command.Choice[0];
 	}
 
-	public enum OptionName {
+	private enum OptionName {
 		username,
 		leader,
 		points,
