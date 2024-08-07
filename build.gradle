@@ -1,3 +1,5 @@
+import java.util.concurrent.TimeUnit
+
 buildscript {
     repositories {
         mavenCentral()
@@ -75,9 +77,9 @@ buildConfig {
     forClass(className = "BuildConfig") {
         buildConfigField("java.util.Locale", "locale", "Locale.GERMANY")
 
-        buildConfigField(long, "cleaningInterval", 300 * 1_000) // 300 seconds
-        buildConfigField(long, "maxRequestAge", 2 * 1_000 * 86400) // 2 days
-        buildConfigField(long, "maxUsernameAge", 5 * 1_000 * 86400) // 5 days
+        buildConfigField(long, "cleaningInterval", TimeUnit.MINUTES.toMillis(5))
+        buildConfigField(long, "maxRequestAge", TimeUnit.DAYS.toMillis(2))
+        buildConfigField(long, "maxUsernameAge", TimeUnit.DAYS.toMillis(5))
 
         buildConfigField(byte, "entriesPerPage", 10)
 
