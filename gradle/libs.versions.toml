@@ -1,5 +1,5 @@
 [versions]
-jda = "5.0.1"
+jda = "5.0.2"
 ormlite = "6.1"
 jdbc-sqlite = "3.46.0.1"
 json = "20240303"
