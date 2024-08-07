@@ -52,9 +52,7 @@ public final class DatabaseAdapter implements AutoCloseable {
             TableUtils.createTableIfNotExists(connectionSource, GroupModel.class);
             TableUtils.createTableIfNotExists(connectionSource, UserModel.class);
 
-            if (metaDataModelDao.countOf() == 0) {
-                metaDataModelDao.create(new MetaDataModel(MetaDataModel.Version.V1));
-            }
+            metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.V1));
         } catch (SQLException e) {
             log.error(R.Strings.log("could_not_prepare_database"), e);
             throw new RuntimeException(e);
@@ -245,6 +243,14 @@ public final class DatabaseAdapter implements AutoCloseable {
             return usernameModelDao.queryBuilder().where().eq("username", username).queryForFirst();
         } catch (SQLException _) {
             return null;
+        }
+    }
+
+    public @NonNull MetaDataModel.Version getVersion() {
+        try {
+            return metaDataModelDao.queryForFirst().getVersion();
+        } catch (SQLException _) {
+            return MetaDataModel.Version.UNKNOWN;
         }
     }
 

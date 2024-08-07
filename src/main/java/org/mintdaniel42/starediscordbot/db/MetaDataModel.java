@@ -2,10 +2,7 @@ package org.mintdaniel42.starediscordbot.db;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Value;
+import lombok.*;
 
 @Value
 @DatabaseTable(tableName = "metadata")
@@ -15,7 +12,12 @@ public class MetaDataModel {
 	@DatabaseField(id = true) int id = 0;
 	@NonNull @DatabaseField Version version;
 
+	@Getter
+	@RequiredArgsConstructor
 	public enum Version {
-		V1
+		UNKNOWN("?"),
+		V1("Apollo");
+
+		@NonNull private final String title;
 	}
 }
