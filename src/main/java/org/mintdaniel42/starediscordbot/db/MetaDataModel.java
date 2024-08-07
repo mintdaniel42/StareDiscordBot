@@ -16,12 +16,6 @@ public class MetaDataModel {
 	@NonNull @DatabaseField Version version;
 
 	public enum Version {
-		META,
-		HNS_ONLY,
-		PG_ADDED,
-		USERNAMES_ADDED,
-		NEW_REQUESTS,
-		GROUPS_ADDED,
-		HNS_V2
+		V1
 	}
 }

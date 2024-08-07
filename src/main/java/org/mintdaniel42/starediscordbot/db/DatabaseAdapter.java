@@ -45,96 +45,17 @@ public final class DatabaseAdapter implements AutoCloseable {
     private void prepareDatabase() {
 	    try {
             TableUtils.createTableIfNotExists(connectionSource, MetaDataModel.class);
+            TableUtils.createTableIfNotExists(connectionSource, HNSUserModel.class);
+            TableUtils.createTableIfNotExists(connectionSource, PGUserModel.class);
+            TableUtils.createTableIfNotExists(connectionSource, UsernameModel.class);
+            TableUtils.createTableIfNotExists(connectionSource, RequestModel.class);
+            TableUtils.createTableIfNotExists(connectionSource, GroupModel.class);
+            TableUtils.createTableIfNotExists(connectionSource, UserModel.class);
+
             if (metaDataModelDao.countOf() == 0) {
-                metaDataModelDao.create(new MetaDataModel(MetaDataModel.Version.META));
+                metaDataModelDao.create(new MetaDataModel(MetaDataModel.Version.V1));
             }
-            boolean hnsUserModelV2 = false;
-            while (metaDataModelDao.queryForFirst().getVersion() != MetaDataModel.Version.values()[MetaDataModel.Version.values().length - 1]) {
-                switch (metaDataModelDao.queryForFirst().getVersion()) {
-                    case META -> {
-                        try {
-                            hnsUserModelDao.executeRawNoArgs("ALTER TABLE entries RENAME TO hns_entries");
-                        } catch (SQLException _) {
-                            TableUtils.createTableIfNotExists(connectionSource, HNSUserModel.class);
-                            hnsUserModelV2 = true;
-                        }
-                        metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.HNS_ONLY));
-                    }
-                    case HNS_ONLY -> {
-                        TableUtils.createTableIfNotExists(connectionSource, PGUserModel.class);
-                        metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.PG_ADDED));
-                    }
-                    case PG_ADDED -> {
-                        TableUtils.createTableIfNotExists(connectionSource, UsernameModel.class);
-                        metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.USERNAMES_ADDED));
-                    }
-                    case USERNAMES_ADDED -> {
-                        try {
-                            requestModelDao.executeRawNoArgs("DROP TABLE requests");
-                        } catch(SQLException e) {
-                            log.error(R.Strings.log("could_not_perform_s_migration", "new_requests"), e);
-                            throw new RuntimeException(e);
-                        }
-                        TableUtils.createTableIfNotExists(connectionSource, RequestModel.class);
-                        metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.NEW_REQUESTS));
-                    }
-                    case NEW_REQUESTS -> {
-                        TableUtils.createTableIfNotExists(connectionSource, GroupModel.class);
-                        TableUtils.createTableIfNotExists(connectionSource, UserModel.class);
-                        try {
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN tag VARCHAR");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN name VARCHAR");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN leader VARCHAR");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN relation VARCHAR");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN \"group\" VARCHAR");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN discord BIGINT");
-                            metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.GROUPS_ADDED));
-                        } catch (SQLException e) {
-                            log.error(R.Strings.log("could_not_perform_s_migration", "groups_added"), e);
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    case GROUPS_ADDED -> {
-                        try {
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests RENAME COLUMN \"group\" TO group_id");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN top10 VARCHAR DEFAULT ❌");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN streak INTEGER");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN highestRank VARCHAR DEFAULT ❌");
-                            requestModelDao.executeRawNoArgs("ALTER TABLE requests ADD COLUMN note VARCHAR DEFAULT ❌");
-                            if (!hnsUserModelV2) {
-                                hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN top10 VARCHAR DEFAULT ❌");
-                                hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN streak INTEGER");
-                                hnsUserModelDao.executeRawNoArgs("ALTER TABLE hns_entries ADD COLUMN highestRank VARCHAR DEFAULT ❌");
-                            }
-
-                            List<UUID> uuids = Stream.of(hnsUserModelDao.queryForAll(), pgUserModelDao.queryForAll())
-                                    .flatMap(Collection::stream)
-                                    .map(object -> {
-                                        if (object instanceof HNSUserModel hnsUserModel) return hnsUserModel.getUuid();
-                                        else if (object instanceof PGUserModel pgUserModel) return pgUserModel.getUuid();
-                                        else return null;
-                                    })
-                                    .filter(Objects::nonNull)
-                                    .distinct()
-                                    .toList();
-
-                            for (UUID uuid : uuids) {
-                                UserModel.UserModelBuilder builder = UserModel.builder();
-                                builder.uuid(uuid);
-                                if (hnsUserModelDao.idExists(uuid)) builder.hnsUser(hnsUserModelDao.queryForId(uuid));
-                                if (pgUserModelDao.idExists(uuid)) builder.pgUser(pgUserModelDao.queryForId(uuid));
-                                userModelDao.create(builder.build());
-                            }
-
-                            metaDataModelDao.update(new MetaDataModel(MetaDataModel.Version.HNS_V2));
-                        } catch (SQLException e) {
-                            log.error(R.Strings.log("could_not_perform_s_migration", "hns_v2"), e);
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
-            }
-	    } catch (SQLException e) {
+        } catch (SQLException e) {
             log.error(R.Strings.log("could_not_prepare_database"), e);
             throw new RuntimeException(e);
 	    }
