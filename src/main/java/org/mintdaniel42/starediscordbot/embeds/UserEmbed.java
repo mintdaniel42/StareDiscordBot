@@ -100,13 +100,13 @@ public class UserEmbed {
 	private @NonNull String formatNumber(double value) {
 		final var stringBuilder = new StringBuilder("##.0");
 
-		if (value >= 5_000_000_000L) {
+		if (value >= 10_000_000_000L) {
 			value /= 1_000_000_000L;
 			stringBuilder.append('B');
-		} else if (value >= 5_000_000L) {
+		} else if (value >= 10_000_000L) {
 			value /= 1_000_000;
 			stringBuilder.append('M');
-		} else if (value >= 5_000) {
+		} else if (value >= 10_000) {
 			value /= 1_000;
 			stringBuilder.append('K');
 		}
