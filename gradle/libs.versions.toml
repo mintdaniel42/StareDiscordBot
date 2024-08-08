@@ -2,7 +2,7 @@
 jda = "5.0.2"
 ormlite = "6.1"
 jdbc-sqlite = "3.46.0.1"
-jdbc-mariadb = "3.3.2"
+jdbc-mariadb = "3.4.1"
 json = "20240303"
 slf4j = "2.0.14"
 lombok = "1.18.34"
