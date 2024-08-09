@@ -1,16 +1,9 @@
 name: Build & Upload Docker Image
 
 on:
-  push:
+  tag:
     branches:
       - 'master'
-    paths:
-      - Dockerfile
-      - 'src/**'
-      - '**.gradle'
-      - 'gradle/**'
-      - lombok.config
-      - .github/workflows/docker.yml
 
 jobs:
   check:
