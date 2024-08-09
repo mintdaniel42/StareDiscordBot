@@ -16,7 +16,8 @@ public class MetaDataModel {
 	@RequiredArgsConstructor
 	public enum Version {
 		UNKNOWN("?"),
-		V1("Apollo");
+		V1("Apollo"),
+		V2("Ares");
 
 		@NonNull private final String title;
 	}

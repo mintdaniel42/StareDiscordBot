@@ -13,8 +13,10 @@ import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
 
 @Slf4j
 public final class DatabaseAdapter implements AutoCloseable {
@@ -52,7 +54,7 @@ public final class DatabaseAdapter implements AutoCloseable {
             TableUtils.createTableIfNotExists(connectionSource, GroupModel.class);
             TableUtils.createTableIfNotExists(connectionSource, UserModel.class);
 
-            metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.V1));
+            metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.V2));
         } catch (SQLException e) {
             log.error(R.Strings.log("could_not_prepare_database"), e);
             throw new RuntimeException(e);
@@ -248,7 +250,10 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     public @NonNull MetaDataModel.Version getVersion() {
         try {
-            return metaDataModelDao.queryForFirst().getVersion();
+            if (metaDataModelDao.queryForFirst() instanceof MetaDataModel metaDataModel) {
+                return metaDataModel.getVersion();
+            }
+            return MetaDataModel.Version.UNKNOWN;
         } catch (SQLException _) {
             return MetaDataModel.Version.UNKNOWN;
         }
