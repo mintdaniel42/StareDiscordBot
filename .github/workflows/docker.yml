@@ -1,9 +1,8 @@
 name: Build & Upload Docker Image
 
 on:
-  tag:
-    branches:
-      - 'master'
+  release:
+    types: [ published ]
 
 jobs:
   check:
