@@ -11,7 +11,7 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 @NoArgsConstructor(force = true)
 @Value
 public class TutorialModel implements Comparable<TutorialModel> {
-	@Builder.Default @JsonInclude int prio = Integer.MAX_VALUE;
+	@Builder.Default @JsonInclude int priority = Integer.MAX_VALUE;
 	@JsonIgnore String id;
 	@NonNull String title;
 	@NonNull String description;
@@ -22,6 +22,6 @@ public class TutorialModel implements Comparable<TutorialModel> {
 
 	@Override
 	public int compareTo(@NonNull final TutorialModel other) {
-		return Integer.compare(prio, other.getPrio());
+		return Integer.compare(priority, other.getPriority());
 	}
 }
