@@ -14,6 +14,7 @@ public class TutorialModel implements Comparable<TutorialModel> {
 	@Builder.Default @JsonInclude int priority = Integer.MAX_VALUE;
 	@JsonIgnore String id;
 	@NonNull String title;
+	@Nullable String summary;
 	@NonNull String description;
 	int color = Options.getColorNormal();
 	@Nullable String thumbnailUrl;
