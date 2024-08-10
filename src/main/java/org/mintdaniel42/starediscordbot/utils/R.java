@@ -1,7 +1,9 @@
 package org.mintdaniel42.starediscordbot.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Accessors;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
@@ -58,23 +60,22 @@ public class R {
 
 	@UtilityClass
 	public class Tutorials {
-		// TODO: replace this
-		private final String prefix = "tutorials/de/";
+		private final String prefix = "tutorials/de/"; // TODO: replace this
+		@Getter(lazy = true) @Accessors(fluent = true) @NonNull private final TutorialModel[] list = load_tutorials();
 
 		/**
 		 * Get all tutorial ids in the {@code tutorials/de} directory
-		 *
 		 * @return array of all tutorial ids
 		 */
-		public @NonNull TutorialModel[] list() {
+		private @NonNull TutorialModel[] load_tutorials() {
 			try {
-				return IOUtils.readLines(R.Tutorials.class.getClassLoader().getResourceAsStream(prefix), StandardCharsets.UTF_8)
+				return IOUtils.readLines(Objects.requireNonNull(Tutorials.class.getClassLoader().getResourceAsStream(prefix)), StandardCharsets.UTF_8)
 						.stream()
 						.map(s -> get(s.substring(0, s.length() - 5)))
 						.filter(Objects::nonNull)
 						.sorted()
 						.toArray(TutorialModel[]::new);
-			} catch (IOException _) {
+			} catch (IOException | NullPointerException _) {
 				return new TutorialModel[0];
 			}
 		}
