@@ -27,13 +27,14 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 	@Override
 	public void onCommandAutoCompleteInteraction(@NonNull final CommandAutoCompleteInteractionEvent event) {
 		final var focusedOptionValue = event.getFocusedOption().getValue().toLowerCase(BuildConfig.locale);
-		event.replyChoices(switch (OptionName.valueOf(event.getFocusedOption().getName())) {
-			case username, leader -> autoCompleteUsername(focusedOptionValue);
-			case points -> autoCompleteDouble(focusedOptionValue);
-			case id -> autoCompleteId(focusedOptionValue);
-			case page -> autoCompletePage(event.getFullCommandName(), focusedOptionValue);
-			case tag -> autoCompleteTag(focusedOptionValue);
-			case luck -> autoCompleteLuck(event.getOption("quota"), event.getOption("winrate"));
+		event.replyChoices(switch (event.getFocusedOption().getName()) {
+			case "username", "leader" -> autoCompleteUsername(focusedOptionValue);
+			case "points" -> autoCompleteDouble(focusedOptionValue);
+			case "id" -> autoCompleteId(focusedOptionValue);
+			case "page" -> autoCompletePage(event.getFullCommandName(), focusedOptionValue);
+			case "tag" -> autoCompleteTag(focusedOptionValue);
+			case "luck" -> autoCompleteLuck(event.getOption("quota"), event.getOption("winrate"));
+			default -> new Command.Choice[0];
 		}).queue();
 	}
 
@@ -117,15 +118,5 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 							Calculator.calculateLuck(quotaMapping.getAsDouble(), winrateMapping.getAsDouble()))
 			};
 		} else return new Command.Choice[0];
-	}
-
-	private enum OptionName {
-		username,
-		leader,
-		points,
-		id,
-		page,
-		tag,
-		luck
 	}
 }
