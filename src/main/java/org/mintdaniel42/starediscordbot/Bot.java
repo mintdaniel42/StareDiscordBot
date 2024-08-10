@@ -2,10 +2,7 @@ package org.mintdaniel42.starediscordbot;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -20,20 +17,16 @@ import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
 
 @Slf4j
 public final class Bot extends ListenerAdapter {
-	@NonNull private final JDA jda;
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	public Bot(@NonNull final DatabaseAdapter databaseAdapter) {
 		this.databaseAdapter = databaseAdapter;
 
-		jda = JDABuilder.createLight(Options.getToken())
+		JDABuilder.createLight(Options.getToken())
 				.addEventListeners(
 						new AutoCompletionHandler(databaseAdapter),
 
@@ -75,9 +68,6 @@ public final class Bot extends ListenerAdapter {
 							.map(CommandList::get)
 							.toArray(CommandData[]::new))
 					.queue();
-
-			// start MOTD thread
-			new Thread(this::changeMotd).start();
 		}
 	}
 
@@ -110,32 +100,4 @@ public final class Bot extends ListenerAdapter {
 		}
 	}
 	//#endif
-
-	private void changeMotd() {
-		if (!Options.isInMaintenance()) {
-			try {
-				final var url = new URL("https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/texts/splashes.txt");
-				final var connection = url.openConnection();
-				final var inputStream = connection.getInputStream();
-
-				final var scanner = new Scanner(inputStream).useDelimiter("\\A");
-				final var lines = (scanner.hasNext() ? scanner.next() : "").split("\\n");
-				final var random = new Random();
-
-				final var onlineStatus = OnlineStatus.ONLINE;
-				final var activity = Activity.customStatus(lines[random.nextInt(lines.length)]);
-
-				jda.getPresence().setPresence(onlineStatus, activity);
-			} catch (IOException _) {
-			}
-		}
-
-		float next = TimeUnit.HOURS.toMillis(1) - System.currentTimeMillis() % TimeUnit.HOURS.toMillis(1);
-		new Timer().schedule(new TimerTask() {
-			@Override
-			public void run() {
-				changeMotd();
-			}
-		}, Math.round(next));
-	}
 }
