@@ -17,7 +17,8 @@ public class MetaDataModel {
 	public enum Version {
 		UNKNOWN("?"),
 		V1("Apollo"),
-		V2("Ares");
+		V2("Ares"),
+		V2_1("Artemis");
 
 		@NonNull private final String title;
 	}
