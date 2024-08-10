@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.mintdaniel42.starediscordbot.buttons.InfoButtons;
+import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.embeds.InfoEmbed;
 import org.mintdaniel42.starediscordbot.utils.Options;
@@ -19,7 +19,7 @@ public final class InfoCommand extends ListenerAdapter {
 		if (event.getFullCommandName().equals("info")) {
 			if (!Options.isInMaintenance()) {
 				event.replyEmbeds(InfoEmbed.of(databaseAdapter))
-						.addComponents(InfoButtons.create())
+						.addComponents(ListButtons.create())
 						.queue();
 			} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
 		}
