@@ -1,28 +1,27 @@
 package org.mintdaniel42.starediscordbot.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.utils.data.DataObject;
-import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.PropertyKey;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
+import org.mintdaniel42.starediscordbot.data.TutorialModel;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 /**
  * A utility class for easier resource access
  */
 @UtilityClass
 public class R {
+	private final ObjectMapper objectMapper = new ObjectMapper();
+
 	/**
 	 * This utility class contains two methods:<br>
 	 * {@code Strings.ui(stringKey, (optional) arguments...)}<br>
@@ -55,6 +54,53 @@ public class R {
 		public @NonNull String log(@NonNull @PropertyKey(resourceBundle = "log") final String string, Object... args) {
 			ResourceBundle resourceBundle = ResourceBundle.getBundle("log", BuildConfig.locale);
 			return resourceBundle.containsKey(string) ? resourceBundle.getString(string).formatted(args) : string;
+		}
+	}
+
+	@UtilityClass
+	public class Tutorials {
+		// TODO: replace this
+		private final String prefix = "tutorials/de";
+
+		/**
+		 * Get all tutorial ids in the {@code tutorials/de} directory
+		 *
+		 * @return array of all tutorial ids
+		 */
+		public @NonNull String[] list() {
+			try {
+				return Collections.list(R.Tutorials.class.getClassLoader().getResources(prefix))
+						.stream()
+						.map(url -> {
+							try {
+								return new Scanner((InputStream) url.getContent()).useDelimiter("\\A").next();
+							} catch (IOException e) {
+								return null;
+							}
+						})
+						.filter(Objects::nonNull)
+						.map(s -> s.substring(0, s.length() - 6))
+						.toArray(String[]::new);
+			} catch (IOException _) {
+				return new String[0];
+			}
+		}
+
+		/**
+		 * Load a tutorial from the bots' resource files
+		 *
+		 * @param id the tutorial id
+		 * @return the model of the tutorial
+		 */
+		public @Nullable TutorialModel get(@NonNull final String id) {
+			try (var inputStream = R.Tutorials.class.getClassLoader().getResourceAsStream(prefix + id + ".json")) {
+				return objectMapper.readValue(inputStream, TutorialModel.class)
+						.toBuilder()
+						.id(id)
+						.build();
+			} catch (IOException _) {
+				return null;
+			}
 		}
 	}
 }
