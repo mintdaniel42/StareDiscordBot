@@ -163,7 +163,7 @@ public enum CommandList {
 	//#if dev
 	private @NonNull CommandData getTutorialCommand() {
 		return Commands.slash("tutorial", R.Strings.ui("tutorial"))
-				.addOption(OptionType.STRING, "page", R.Strings.ui("page"), true, true);
+				.addOption(OptionType.STRING, "page", R.Strings.ui("page"), false, true);
 	}
 
 	private @NonNull CommandData getStreakCommand() {
