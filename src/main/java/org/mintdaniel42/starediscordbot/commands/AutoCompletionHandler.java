@@ -16,6 +16,7 @@ import org.mintdaniel42.starediscordbot.data.UsernameModel;
 import org.mintdaniel42.starediscordbot.utils.Calculator;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.LongStream;
@@ -94,6 +95,12 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 					.boxed()
 					.filter(operand -> String.valueOf(operand).startsWith(input))
 					.map(page -> new Command.Choice(String.valueOf(page + 1), page))
+					.toArray(Command.Choice[]::new);
+		} else if (command.equals("tutorial")) {
+			return Arrays.stream(R.Tutorials.list())
+					.limit(25)
+					.filter(s -> s.contains(input))
+					.map(s -> new Command.Choice(s, s))
 					.toArray(Command.Choice[]::new);
 		} else return new Command.Choice[0];
 	}
