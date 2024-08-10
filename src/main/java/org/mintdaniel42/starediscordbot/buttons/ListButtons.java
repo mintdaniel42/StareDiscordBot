@@ -45,14 +45,14 @@ public final class ListButtons extends ListenerAdapter {
         return ActionRow.of(
                 Button.primary(
                         "%s:%s:%s".formatted("tutorial", tutorialList.get(index > 0 ? index - 1 : 0).getId(), UUID.randomUUID()),
-                        R.Strings.ui("previous_page")
+                                R.Strings.ui("back_s", tutorialList.get(index > 0 ? index - 1 : 0).getTitle())
                         ).withEmoji(R.Emojis.arrowLeft)
                         .withDisabled(index < 1),
                 Button.primary(
-                        "%s:%s:%s".formatted("tutorial", tutorialList.get(index < tutorialList.size() - 1 ? index + 1 : 0).getId(), UUID.randomUUID()),
-                        R.Strings.ui("next_page")
+                                "%s:%s:%s".formatted("tutorial", tutorialList.get(index < tutorialList.size() - 1 ? index + 1 : index).getId(), UUID.randomUUID()),
+                                R.Strings.ui("continue_s", tutorialList.get(index < tutorialList.size() - 1 ? index + 1 : index).getTitle())
                         ).withEmoji(R.Emojis.arrowRight)
-                        .withDisabled(index >= tutorialList.size())
+                        .withDisabled(index >= tutorialList.size() - 1)
         );
     }
 
