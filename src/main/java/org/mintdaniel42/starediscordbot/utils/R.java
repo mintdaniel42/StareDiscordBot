@@ -68,6 +68,9 @@ public class R {
 		}
 	}
 
+	/**
+	 * This utility class manages and holds all loaded tutorial files
+	 */
 	@UtilityClass
 	public class Tutorials {
 		private final String prefix = "tutorials/de/"; // TODO: replace this
