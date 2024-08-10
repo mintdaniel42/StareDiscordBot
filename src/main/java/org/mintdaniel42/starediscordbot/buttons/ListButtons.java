@@ -9,9 +9,13 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.data.GroupModel;
+import org.mintdaniel42.starediscordbot.data.TutorialModel;
 import org.mintdaniel42.starediscordbot.embeds.GroupEmbed;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
+
+import java.util.Arrays;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public final class ListButtons extends ListenerAdapter {
@@ -28,6 +32,25 @@ public final class ListButtons extends ListenerAdapter {
                         "list:%s:%s".formatted("pg", 0),
                         R.Strings.ui("list_partygames_entries")
                 )
+        );
+    }
+
+    @Contract(pure = true, value = "_ -> new")
+    public static @NonNull ActionRow createTutorial(@NonNull final TutorialModel tutorialModel) {
+        final var tutorialList = Arrays.asList(R.Tutorials.list());
+        final var index = tutorialList.stream()
+                .sorted()
+                .toList()
+                .indexOf(tutorialModel);
+        return ActionRow.of(
+                Button.primary(
+                        "%s:%s:%s".formatted("tutorial", tutorialList.get(index > 0 ? index - 1 : 0).getId(), UUID.randomUUID()),
+                        R.Strings.ui("previous_page")
+                ).withDisabled(index < 1),
+                Button.primary(
+                        "%s:%s:%s".formatted("tutorial", tutorialList.get(index < tutorialList.size() - 1 ? index + 1 : 0).getId(), UUID.randomUUID()),
+                        R.Strings.ui("next_page")
+                ).withDisabled(index >= tutorialList.size())
         );
     }
 

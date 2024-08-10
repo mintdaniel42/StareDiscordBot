@@ -26,12 +26,25 @@ public class TutorialButtons extends ListenerAdapter {
 	@Override
 	public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
 		String[] buttonParts = event.getComponentId().split(":");
-		if (buttonParts[0].equals("tutorial") && buttonParts.length == 2) {
+		if (buttonParts[0].equals("tutorial") && buttonParts.length >= 2 && buttonParts.length <= 3) {
 			if (!Options.isInMaintenance()) {
 				if (R.Tutorials.get(buttonParts[1]) instanceof TutorialModel tutorialModel) {
-					final var callback = event.replyEmbeds(TutorialEmbed.of(tutorialModel));
-					TutorialButtons.create(tutorialModel).ifPresent(callback::addComponents);
-					callback.queue();
+					if (buttonParts.length == 2) {
+						final var callback = event.replyEmbeds(TutorialEmbed.of(tutorialModel));
+						TutorialButtons.create(tutorialModel).ifPresent(callback::addComponents);
+						callback.queue();
+					} else {
+						final var callback = event.editMessageEmbeds(TutorialEmbed.of(tutorialModel));
+						callback.setComponents(ListButtons.createTutorial(tutorialModel));
+						TutorialButtons.create(tutorialModel)
+								.ifPresentOrElse(actionRow -> {
+									callback.setComponents(
+											ListButtons.createTutorial(tutorialModel),
+											actionRow
+									);
+								}, () -> callback.setComponents(ListButtons.createTutorial(tutorialModel)));
+						callback.queue();
+					}
 				} else event.reply(R.Strings.ui("this_page_does_not_exist")).queue();
 			} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
 		}
