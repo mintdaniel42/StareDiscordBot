@@ -17,6 +17,7 @@ public enum CommandList {
 	approve,
 	info,
 	//#if dev
+	//$$ tutorial,
 	//$$ streak,
 	//$$ help;
 	//#else
@@ -33,6 +34,7 @@ public enum CommandList {
 			case approve -> getApproveCommand();
 			case info -> Commands.slash("info", R.Strings.ui("show_bot_information"));
 			//#if dev
+			//$$ case tutorial -> getTutorialCommand();
 			//$$ case streak -> getStreakCommand();
 			//$$ case help -> Commands.slash("help", R.Strings.ui("list_all_commands"));
 			//#endif
@@ -158,6 +160,12 @@ public enum CommandList {
 				.addOption(OptionType.INTEGER, "id", R.Strings.ui("change_id"), true, true);
 	}
 
+	//#if dev
+	private @NonNull CommandData getTutorialCommand() {
+		return Commands.slash("tutorial", R.Strings.ui("tutorial"))
+				.addOption(OptionType.STRING, "page", R.Strings.ui("page"), true, true);
+	}
+
 	private @NonNull CommandData getStreakCommand() {
 		return Commands.slash("streak", R.Strings.ui("manage_streak_of_a_user"))
 				.addSubcommands(
@@ -167,4 +175,5 @@ public enum CommandList {
 								.addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true)
 				);
 	}
+	//#endif
 }
