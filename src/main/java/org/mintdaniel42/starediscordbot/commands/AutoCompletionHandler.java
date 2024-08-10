@@ -98,9 +98,9 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 					.toArray(Command.Choice[]::new);
 		} else if (command.equals("tutorial")) {
 			return Arrays.stream(R.Tutorials.list())
+					.filter(tutorialModel -> tutorialModel.getTitle().contains(input) || tutorialModel.getId().contains(input))
 					.limit(25)
-					.filter(s -> s.contains(input))
-					.map(s -> new Command.Choice(s, s))
+					.map(tutorialModel -> new Command.Choice(tutorialModel.getTitle() + tutorialModel.getPrio(), tutorialModel.getId()))
 					.toArray(Command.Choice[]::new);
 		} else return new Command.Choice[0];
 	}

@@ -11,6 +11,7 @@ import org.mintdaniel42.starediscordbot.data.TutorialModel;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
@@ -65,14 +66,16 @@ public class R {
 		 *
 		 * @return array of all tutorial ids
 		 */
-		public @NonNull String[] list() {
+		public @NonNull TutorialModel[] list() {
 			try {
 				return IOUtils.readLines(R.Tutorials.class.getClassLoader().getResourceAsStream(prefix), StandardCharsets.UTF_8)
 						.stream()
-						.map(s -> s.substring(0, s.length() - 5))
-						.toArray(String[]::new);
+						.map(s -> get(s.substring(0, s.length() - 5)))
+						.filter(Objects::nonNull)
+						.sorted()
+						.toArray(TutorialModel[]::new);
 			} catch (IOException _) {
-				return new String[0];
+				return new TutorialModel[0];
 			}
 		}
 
