@@ -162,12 +162,12 @@ public enum CommandList {
 
 	//#if dev
 	private @NonNull CommandData getTutorialCommand() {
-		return Commands.slash("tutorial", R.Strings.ui("tutorial"))
+		return Commands.slash("tutorial", R.Strings.ui("show_the_tutorial"))
 				.addOption(OptionType.STRING, "page", R.Strings.ui("page"), false, true);
 	}
 
 	private @NonNull CommandData getStreakCommand() {
-		return Commands.slash("streak", R.Strings.ui("manage_streak_of_a_user"))
+		return Commands.slash("streak", R.Strings.ui("manage_the_streak_of_a_user"))
 				.addSubcommands(
 						new SubcommandData("start", R.Strings.ui("start_a_users_streak"))
 								.addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true),
