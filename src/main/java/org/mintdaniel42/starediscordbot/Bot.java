@@ -44,6 +44,8 @@ public final class Bot extends ListenerAdapter {
 						new HelpCommand(),
 						new InfoCommand(databaseAdapter),
 
+						new TutorialCommand(),
+
 						new UserCommand(databaseAdapter),
 						new HNSCommand(databaseAdapter),
 						new PGCommand(databaseAdapter),
