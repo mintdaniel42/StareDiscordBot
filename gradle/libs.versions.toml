@@ -9,6 +9,7 @@ lombok = "1.18.34"
 buildConfig = "5.4.0"
 jcp = "7.1.2"
 jackson-databind = "2.17.2"
+ioutils = "2.5"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
@@ -21,6 +22,7 @@ slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 jcp = { module = "com.igormaznitsa:jcp", version.ref = "jcp"}
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson-databind" }
+ioutils = { module = "commons-io:commons-io", version.ref = "ioutils" }
 
 [plugins]
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig"}
