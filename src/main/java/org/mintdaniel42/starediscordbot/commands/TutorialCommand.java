@@ -17,9 +17,10 @@ public final class TutorialCommand extends ListenerAdapter {
 			if (!Options.isInMaintenance()) {
 				if (event.getOption("page") instanceof OptionMapping pageMapping) {
 					if (R.Tutorials.get(pageMapping.getAsString()) instanceof TutorialModel tutorialModel) {
-						event.replyEmbeds(TutorialEmbed.of(tutorialModel))
-								.addComponents(TutorialButton.create(tutorialModel))
-								.queue();
+						final var actionBar = TutorialButton.create(tutorialModel);
+						final var callback = event.replyEmbeds(TutorialEmbed.of(tutorialModel));
+						if (actionBar != null) callback.addComponents(actionBar);
+						callback.queue();
 					} else event.reply(R.Strings.ui("this_page_does_not_exist")).queue();
 				} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
 			} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
