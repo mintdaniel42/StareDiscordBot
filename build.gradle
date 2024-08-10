@@ -31,6 +31,7 @@ dependencies {
     implementation(libs.slf4j.api)
     implementation(libs.slf4j.simple)
     implementation(libs.lombok)
+    implementation(libs.jackson.databind)
     annotationProcessor(libs.lombok)
 }
 
