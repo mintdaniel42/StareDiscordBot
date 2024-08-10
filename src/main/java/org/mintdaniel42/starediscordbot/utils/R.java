@@ -71,13 +71,13 @@ public class R {
 	@UtilityClass
 	public class Tutorials {
 		private final String prefix = "tutorials/de/"; // TODO: replace this
-		@Getter(lazy = true) @Accessors(fluent = true) @NonNull private final TutorialModel[] list = load_tutorials();
+		@Getter(lazy = true) @Accessors(fluent = true) @NonNull private final TutorialModel[] list = loadTutorials();
 
 		/**
 		 * Get all tutorial ids in the {@code tutorials/de} directory
 		 * @return array of all tutorial ids
 		 */
-		private @NonNull TutorialModel[] load_tutorials() {
+		private @NonNull TutorialModel[] loadTutorials() {
 			try {
 				return IOUtils.readLines(Objects.requireNonNull(Tutorials.class.getClassLoader().getResourceAsStream(prefix)), StandardCharsets.UTF_8)
 						.stream()
@@ -85,7 +85,7 @@ public class R {
 						.filter(Objects::nonNull)
 						.sorted()
 						.toArray(TutorialModel[]::new);
-			} catch (IOException | NullPointerException _) {
+			} catch (IOException | IllegalArgumentException | NullPointerException _) {
 				return new TutorialModel[0];
 			}
 		}
@@ -102,7 +102,7 @@ public class R {
 						.toBuilder()
 						.id(id)
 						.build();
-			} catch (IOException _) {
+			} catch (IOException | IllegalArgumentException _) {
 				return null;
 			}
 		}
