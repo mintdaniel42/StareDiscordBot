@@ -18,14 +18,14 @@ public final class ListButtons extends ListenerAdapter {
     @NonNull private final DatabaseAdapter databaseAdapter;
 
     @Contract(pure = true, value = "-> new")
-    public static @NonNull ActionRow create() {
+    public static @NonNull ActionRow createInfo() {
         return ActionRow.of(
                 Button.primary(
-                        "%s:%s".formatted("hns", 0),
+                        "list:%s:%s".formatted("hns", 0),
                         R.Strings.ui("list_hide_n_seek_entries")
                 ),
                 Button.primary(
-                        "%s:%s".formatted("pg", 0),
+                        "list:%s:%s".formatted("pg", 0),
                         R.Strings.ui("list_partygames_entries")
                 )
         );
@@ -49,11 +49,11 @@ public final class ListButtons extends ListenerAdapter {
     public static @NonNull ActionRow create(@NonNull final Type type, final int page, final long maxPages) {
         return ActionRow.of(
                 Button.primary(
-                        "%s:%s".formatted(type.name(), page - 1),
+                        "list:%s:%s".formatted(type.name(), page - 1),
 						R.Strings.ui("previous_page")
                 ).withDisabled(page <= 0),
                 Button.primary(
-                        "%s:%s".formatted(type.name(), page + 1),
+                        "list:%s:%s".formatted(type.name(), page + 1),
 						R.Strings.ui("next_page")
                 ).withDisabled(page >= maxPages - 1)
         );
@@ -62,9 +62,9 @@ public final class ListButtons extends ListenerAdapter {
     @Override
     public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
         String[] buttonParts = event.getComponentId().split(":");
-        if (buttonParts.length == 2 || (buttonParts.length == 3 && buttonParts[0].equals("group"))) {
-            final int page = Integer.parseInt(buttonParts[buttonParts.length - 1]);
-            final var embedType = Type.valueOf(buttonParts[0]);
+        if (buttonParts.length == 3 && (buttonParts[0].equals("group") || buttonParts[0].equals("list"))) {
+            final var page = Integer.parseInt(buttonParts[buttonParts.length - 1]);
+            final var embedType = Type.valueOf(buttonParts[1]);
             GroupModel groupModel = null;
             final var messageEmbed = switch (embedType) {
                 case pg -> ListEmbed.createPgList(databaseAdapter, page);
