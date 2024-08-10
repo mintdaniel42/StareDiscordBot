@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 @UtilityClass
 public class InfoEmbed {
-	public MessageEmbed create(@NonNull final DatabaseAdapter databaseAdapter) {
+	public MessageEmbed of(@NonNull final DatabaseAdapter databaseAdapter) {
 		return new EmbedBuilder()
 				.setColor(Options.getColorNormal())
 				.addField(R.Strings.ui("version"), "%s - \"%s\"".formatted(databaseAdapter.getVersion(), databaseAdapter.getVersion().getTitle()), false)

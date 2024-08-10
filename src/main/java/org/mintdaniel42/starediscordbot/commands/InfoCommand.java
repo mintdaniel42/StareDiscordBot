@@ -18,7 +18,7 @@ public final class InfoCommand extends ListenerAdapter {
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
 		if (event.getFullCommandName().equals("info")) {
 			if (!Options.isInMaintenance()) {
-				event.replyEmbeds(InfoEmbed.create(databaseAdapter))
+				event.replyEmbeds(InfoEmbed.of(databaseAdapter))
 						.addComponents(InfoButtons.create())
 						.queue();
 			} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
