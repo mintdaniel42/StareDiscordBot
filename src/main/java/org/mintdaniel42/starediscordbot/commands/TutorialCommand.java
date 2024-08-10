@@ -4,11 +4,14 @@ import lombok.NonNull;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import org.mintdaniel42.starediscordbot.buttons.TutorialButton;
+import org.mintdaniel42.starediscordbot.buttons.ListButtons;
+import org.mintdaniel42.starediscordbot.buttons.TutorialButtons;
 import org.mintdaniel42.starediscordbot.data.TutorialModel;
 import org.mintdaniel42.starediscordbot.embeds.TutorialEmbed;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
+
+import java.util.Arrays;
 
 public final class TutorialCommand extends ListenerAdapter {
 	@Override
@@ -17,12 +20,20 @@ public final class TutorialCommand extends ListenerAdapter {
 			if (!Options.isInMaintenance()) {
 				if (event.getOption("page") instanceof OptionMapping pageMapping) {
 					if (R.Tutorials.get(pageMapping.getAsString()) instanceof TutorialModel tutorialModel) {
-						final var actionBar = TutorialButton.create(tutorialModel);
 						final var callback = event.replyEmbeds(TutorialEmbed.of(tutorialModel));
-						if (actionBar != null) callback.addComponents(actionBar);
+						TutorialButtons.create(tutorialModel).ifPresent(callback::addComponents);
 						callback.queue();
 					} else event.reply(R.Strings.ui("this_page_does_not_exist")).queue();
-				} else event.reply(R.Strings.ui("your_command_was_incomplete")).queue();
+				} else Arrays.stream(R.Tutorials.list())
+						.sorted()
+						.findFirst()
+						.ifPresentOrElse(tutorialModel -> {
+									final var callback = event.replyEmbeds(TutorialEmbed.of(tutorialModel))
+											.addComponents(ListButtons.createTutorial(tutorialModel));
+									TutorialButtons.create(tutorialModel).ifPresent(callback::addComponents);
+									callback.queue();
+								},
+								() -> event.reply(R.Strings.ui("no_entries_available")).queue());
 			} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
 		}
 	}
