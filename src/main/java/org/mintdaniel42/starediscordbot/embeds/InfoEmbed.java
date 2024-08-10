@@ -16,7 +16,7 @@ public class InfoEmbed {
 	public MessageEmbed of(@NonNull final DatabaseAdapter databaseAdapter) {
 		return new EmbedBuilder()
 				.setColor(Options.getColorNormal())
-				.addField(R.Strings.ui("version"), "%s - \"%s\"".formatted(databaseAdapter.getVersion(), databaseAdapter.getVersion().getTitle()), false)
+				.addField(R.Strings.ui("version"), "%s - \"%s\"".formatted(databaseAdapter.getVersion().name().replace('_', '.'), databaseAdapter.getVersion().getTitle()), false)
 				.addField(R.Strings.ui("uptime"), getUptime(), false)
 				.addField(R.Strings.ui("count_of_stored_usernames"), String.valueOf(databaseAdapter.getUsernameCount()), false)
 				.addField(R.Strings.ui("hide_n_seek_entry_count"), String.valueOf(databaseAdapter.getHnsCount()), false)
