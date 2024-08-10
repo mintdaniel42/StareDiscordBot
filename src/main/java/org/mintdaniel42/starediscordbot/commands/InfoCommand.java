@@ -19,7 +19,7 @@ public final class InfoCommand extends ListenerAdapter {
 		if (event.getFullCommandName().equals("info")) {
 			if (!Options.isInMaintenance()) {
 				event.replyEmbeds(InfoEmbed.of(databaseAdapter))
-						.addComponents(ListButtons.create())
+						.addComponents(ListButtons.createInfo())
 						.queue();
 			} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
 		}
