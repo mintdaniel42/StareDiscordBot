@@ -24,6 +24,10 @@ public final class ListButtons extends ListenerAdapter {
     @Contract(pure = true, value = "-> new")
     public static @NonNull ActionRow createInfo() {
         return ActionRow.of(
+                Button.link(
+                        "https://github.com/mintdaniel42/StareDiscordBot",
+                        R.Strings.ui("show_source_code")
+                ),
                 Button.primary(
                         "list:%s:%s".formatted("hns", 0),
                         R.Strings.ui("list_hide_n_seek_entries")
