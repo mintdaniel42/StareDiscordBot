@@ -46,11 +46,13 @@ public final class ListButtons extends ListenerAdapter {
                 Button.primary(
                         "%s:%s:%s".formatted("tutorial", tutorialList.get(index > 0 ? index - 1 : 0).getId(), UUID.randomUUID()),
                         R.Strings.ui("previous_page")
-                ).withDisabled(index < 1),
+                        ).withEmoji(R.Emojis.arrowLeft)
+                        .withDisabled(index < 1),
                 Button.primary(
                         "%s:%s:%s".formatted("tutorial", tutorialList.get(index < tutorialList.size() - 1 ? index + 1 : 0).getId(), UUID.randomUUID()),
                         R.Strings.ui("next_page")
-                ).withDisabled(index >= tutorialList.size())
+                        ).withEmoji(R.Emojis.arrowRight)
+                        .withDisabled(index >= tutorialList.size())
         );
     }
 
@@ -60,11 +62,13 @@ public final class ListButtons extends ListenerAdapter {
                 Button.primary(
                         "group:%s:%s".formatted(groupModel.getTag(), page - 1),
                         R.Strings.ui("previous_page")
-                ).withDisabled(page <= 0),
+                        ).withEmoji(R.Emojis.arrowLeft)
+                        .withDisabled(page <= 0),
                 Button.primary(
                         "group:%s:%s".formatted(groupModel.getTag(), page + 1),
                         R.Strings.ui("next_page")
-                ).withDisabled(page >= maxPages - 1)
+                        ).withEmoji(R.Emojis.arrowRight)
+                        .withDisabled(page >= maxPages - 1)
         );
     }
 
@@ -74,11 +78,13 @@ public final class ListButtons extends ListenerAdapter {
                 Button.primary(
                         "list:%s:%s".formatted(type.name(), page - 1),
 						R.Strings.ui("previous_page")
-                ).withDisabled(page <= 0),
+                        ).withEmoji(R.Emojis.arrowLeft)
+                        .withDisabled(page <= 0),
                 Button.primary(
                         "list:%s:%s".formatted(type.name(), page + 1),
 						R.Strings.ui("next_page")
-                ).withDisabled(page >= maxPages - 1)
+                        ).withEmoji(R.Emojis.arrowRight)
+                        .withDisabled(page >= maxPages - 1)
         );
     }
 

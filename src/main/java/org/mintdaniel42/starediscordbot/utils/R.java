@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 import lombok.experimental.UtilityClass;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.PropertyKey;
@@ -22,6 +23,15 @@ import java.util.ResourceBundle;
 @UtilityClass
 public class R {
 	private final ObjectMapper objectMapper = new ObjectMapper();
+
+	/**
+	 * This utility class holds different emojis
+	 */
+	@UtilityClass
+	public class Emojis {
+		public final Emoji arrowLeft = Emoji.fromUnicode("⬅");
+		public final Emoji arrowRight = Emoji.fromUnicode("➡");
+	}
 
 	/**
 	 * This utility class contains two methods:<br>
