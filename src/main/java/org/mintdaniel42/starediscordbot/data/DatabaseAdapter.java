@@ -1,4 +1,4 @@
-package org.mintdaniel42.starediscordbot.db;
+package org.mintdaniel42.starediscordbot.data;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;

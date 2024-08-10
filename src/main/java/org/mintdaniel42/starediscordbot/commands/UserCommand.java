@@ -10,9 +10,9 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
-import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
-import org.mintdaniel42.starediscordbot.db.RequestModel;
-import org.mintdaniel42.starediscordbot.db.UserModel;
+import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.data.RequestModel;
+import org.mintdaniel42.starediscordbot.data.UserModel;
 import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
 import org.mintdaniel42.starediscordbot.utils.DCHelper;

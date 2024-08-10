@@ -9,10 +9,10 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
-import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
-import org.mintdaniel42.starediscordbot.db.GroupModel;
-import org.mintdaniel42.starediscordbot.db.RequestModel;
-import org.mintdaniel42.starediscordbot.db.UsernameModel;
+import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.data.GroupModel;
+import org.mintdaniel42.starediscordbot.data.RequestModel;
+import org.mintdaniel42.starediscordbot.data.UsernameModel;
 import org.mintdaniel42.starediscordbot.utils.Calculator;
 import org.mintdaniel42.starediscordbot.utils.R;
 

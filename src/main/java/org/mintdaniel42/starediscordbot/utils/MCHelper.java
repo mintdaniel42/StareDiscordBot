@@ -9,8 +9,8 @@ import okhttp3.ResponseBody;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
-import org.mintdaniel42.starediscordbot.db.UsernameModel;
+import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.data.UsernameModel;
 
 import java.io.IOException;
 import java.time.Instant;

@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.*;
-import org.mintdaniel42.starediscordbot.db.GroupModel;
+import org.mintdaniel42.starediscordbot.data.GroupModel;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 public enum CommandList {

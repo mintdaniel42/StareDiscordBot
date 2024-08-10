@@ -16,7 +16,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
-import org.mintdaniel42.starediscordbot.db.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
