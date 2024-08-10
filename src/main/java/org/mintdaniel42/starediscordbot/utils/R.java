@@ -3,17 +3,15 @@ package org.mintdaniel42.starediscordbot.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.PropertyKey;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.data.TutorialModel;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.Objects;
+import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 
 /**
  * A utility class for easier resource access
@@ -60,7 +58,7 @@ public class R {
 	@UtilityClass
 	public class Tutorials {
 		// TODO: replace this
-		private final String prefix = "tutorials/de";
+		private final String prefix = "tutorials/de/";
 
 		/**
 		 * Get all tutorial ids in the {@code tutorials/de} directory
@@ -69,17 +67,9 @@ public class R {
 		 */
 		public @NonNull String[] list() {
 			try {
-				return Collections.list(R.Tutorials.class.getClassLoader().getResources(prefix))
+				return IOUtils.readLines(R.Tutorials.class.getClassLoader().getResourceAsStream(prefix), StandardCharsets.UTF_8)
 						.stream()
-						.map(url -> {
-							try {
-								return new Scanner((InputStream) url.getContent()).useDelimiter("\\A").next();
-							} catch (IOException e) {
-								return null;
-							}
-						})
-						.filter(Objects::nonNull)
-						.map(s -> s.substring(0, s.length() - 6))
+						.map(s -> s.substring(0, s.length() - 5))
 						.toArray(String[]::new);
 			} catch (IOException _) {
 				return new String[0];
