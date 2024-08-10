@@ -14,11 +14,11 @@ public class InfoButtons extends ListenerAdapter {
 	public @NonNull ActionRow create() {
 		return ActionRow.of(
 				Button.primary(
-						"info:%s:%s".formatted("hns", -1),
+						"info:%s:%s".formatted("hns", 0),
 						R.Strings.ui("list_hide_n_seek_entries")
 				),
 				Button.primary(
-						"info:%s:%s".formatted("pg", -1),
+						"info:%s:%s".formatted("pg", 0),
 						R.Strings.ui("list_partygames_entries")
 				)
 		);
