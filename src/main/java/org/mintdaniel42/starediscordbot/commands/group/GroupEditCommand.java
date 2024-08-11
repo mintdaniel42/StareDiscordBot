@@ -12,15 +12,15 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
-import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
+import org.mintdaniel42.starediscordbot.buttons.ApproveButton;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
-import org.mintdaniel42.starediscordbot.commands.CommandDispatcher;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.data.GroupModel;
 import org.mintdaniel42.starediscordbot.data.RequestModel;
 import org.mintdaniel42.starediscordbot.embeds.GroupEmbed;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
+import org.mintdaniel42.starediscordbot.utils.Permissions;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class GroupEditCommand implements CommandAdapter {
 						(leaderUuid = MCHelper.getUuid(databaseAdapter, leaderMapping.getAsString())) == null) {
 					groupModel = buildGroupModel(event.getOptions(), groupModel.toBuilder(), leaderUuid);
 
-					if (!CommandDispatcher.canEdit(event.getMember())) {
+					if (!Permissions.canEdit(event.getMember())) {
 						long timestamp = System.currentTimeMillis();
 						if (event.getGuild() instanceof final Guild guild) {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof final TextChannel requestChannel) {
@@ -48,7 +48,7 @@ public class GroupEditCommand implements CommandAdapter {
 										requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
 														member.getAsMention(),
 														timestamp))
-												.setComponents(ApproveChangeButton.create(timestamp))
+												.setComponents(ApproveButton.create(timestamp))
 												.addEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0, true));
 										return interactionHook.editOriginal(R.Strings.ui("the_entry_change_was_successfully_requested"));
 									} else

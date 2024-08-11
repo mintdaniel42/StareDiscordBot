@@ -1,15 +1,12 @@
 package org.mintdaniel42.starediscordbot.commands;
 
 import lombok.NonNull;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.commands.group.*;
 import org.mintdaniel42.starediscordbot.commands.misc.ApproveChangeCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.InfoCommand;
@@ -17,8 +14,8 @@ import org.mintdaniel42.starediscordbot.commands.misc.MaintenanceCommand;
 import org.mintdaniel42.starediscordbot.commands.user.UserDeleteCommand;
 import org.mintdaniel42.starediscordbot.commands.user.UserEditCommand;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
-import org.mintdaniel42.starediscordbot.utils.DCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
+import org.mintdaniel42.starediscordbot.utils.Permissions;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 public final class CommandDispatcher extends ListenerAdapter implements CommandAdapter {
@@ -64,45 +61,27 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 		else return interactionHook.editOriginal(R.Strings.ui("you_do_not_have_the_permission_to_use_this_command"));
 	}
 
-	@Contract(pure = true)
-	public static boolean canView() {
-		return !Options.isInMaintenance();
-	}
-
-	@Contract("null -> false")
-	public static boolean canEdit(@Nullable final Member member) {
-		if (Options.isInMaintenance()) return false;
-		return DCHelper.hasRole(member, Options.getEditRoleId()) || DCHelper.hasRole(member, Options.getCreateRoleId());
-	}
-
-	@Contract("null -> false")
-	public static boolean canCreate(@Nullable final Member member) {
-		if (Options.isInMaintenance()) return false;
-		return DCHelper.hasRole(member, Options.getCreateRoleId());
-	}
-
-	@Contract("null -> false")
-	public static boolean canManage(@Nullable final Member member) {
-		if (member == null) return false;
-		return member.hasPermission(Permission.ADMINISTRATOR);
-	}
-
 	@Contract("_ -> _")
 	private @NonNull CommandAdapter handleCommand(@NonNull final SlashCommandInteractionEvent event) {
 		// TODO make this a try / catch
 		return switch (event.getFullCommandName()) {
-			case String c when c.equals("approve") && canEdit(event.getMember()) -> approveChangeCommand;
-			case String c when c.equals("info") && canView() -> infoCommand;
-			case String c when c.equals("maintenance") && canManage(event.getMember()) -> maintenanceCommand;
-			case String c when c.equals("user delete") && canCreate(event.getMember()) -> userDeleteCommand;
+			case String c when c.equals("approve") && Permissions.canEdit(event.getMember()) -> approveChangeCommand;
+			case String c when c.equals("info") && Permissions.canView() -> infoCommand;
+			case String c when c.equals("maintenance") && Permissions.canManage(event.getMember()) ->
+					maintenanceCommand;
+			case String c when c.equals("user delete") && Permissions.canCreate(event.getMember()) -> userDeleteCommand;
 			case String c when c.equals("user edit") -> userEditCommand;
-			case String c when c.equals("group show") && canView() -> groupShowCommand;
+			case String c when c.equals("group show") && Permissions.canView() -> groupShowCommand;
 			case String c when c.equals("group edit") -> groupEditCommand;
-			case String c when c.equals("group create") && canCreate(event.getMember()) -> groupCreateCommand;
-			case String c when c.equals("group delete") && canCreate(event.getMember()) -> groupDeleteCommand;
-			case String c when c.equals("group user show") && canView() -> groupUserShowCommand;
-			case String c when c.equals("group user add") && canEdit(event.getMember()) -> groupUserAddCommand;
-			case String c when c.equals("group user remove") && canEdit(event.getMember()) -> groupUserRemoveCommand;
+			case String c when c.equals("group create") && Permissions.canCreate(event.getMember()) ->
+					groupCreateCommand;
+			case String c when c.equals("group delete") && Permissions.canCreate(event.getMember()) ->
+					groupDeleteCommand;
+			case String c when c.equals("group user show") && Permissions.canView() -> groupUserShowCommand;
+			case String c when c.equals("group user add") && Permissions.canEdit(event.getMember()) ->
+					groupUserAddCommand;
+			case String c when c.equals("group user remove") && Permissions.canEdit(event.getMember()) ->
+					groupUserRemoveCommand;
 			default -> this;
 		};
 	}

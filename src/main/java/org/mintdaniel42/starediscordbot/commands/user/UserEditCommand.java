@@ -10,15 +10,15 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
-import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
+import org.mintdaniel42.starediscordbot.buttons.ApproveButton;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
-import org.mintdaniel42.starediscordbot.commands.CommandDispatcher;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.data.RequestModel;
 import org.mintdaniel42.starediscordbot.data.UserModel;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
+import org.mintdaniel42.starediscordbot.utils.Permissions;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.UUID;
@@ -34,7 +34,7 @@ public class UserEditCommand implements CommandAdapter {
 				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
 					userModel = buildUserModel(event, userModel.toBuilder());
 
-					if (!CommandDispatcher.canEdit(event.getMember())) {
+					if (!Permissions.canEdit(event.getMember())) {
 						long timestamp = System.currentTimeMillis();
 						if (event.getGuild() instanceof Guild guild) {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof TextChannel requestChannel) {
@@ -43,7 +43,7 @@ public class UserEditCommand implements CommandAdapter {
 										requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
 														member.getAsMention(),
 														timestamp))
-												.setComponents(ApproveChangeButton.create(timestamp))
+												.setComponents(ApproveButton.create(timestamp))
 												.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.BASE, true))
 												.queue();
 										return interactionHook.editOriginal(R.Strings.ui("the_entry_change_was_successfully_requested"));
