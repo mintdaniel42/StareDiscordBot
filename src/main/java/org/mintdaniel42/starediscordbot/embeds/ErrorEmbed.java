@@ -29,4 +29,19 @@ public class ErrorEmbed {
 				.addField(R.Strings.ui("the_command_you_executed"), interaction.getFullCommandName() + " " + commandBuilder, false)
 				.build();
 	}
+
+	public @NonNull MessageEmbed of(@NonNull final String componentId, @NonNull final Exception exception) {
+		final var stackTraceBuilder = new StringBuilder();
+		Arrays.stream(exception.getStackTrace())
+				.limit(5)
+				.forEach(stackTraceElement -> stackTraceBuilder.append(String.format("%s:%s\n", stackTraceElement.getClassName(), stackTraceElement.getLineNumber())));
+
+		return new EmbedBuilder()
+				.setTitle(R.Strings.ui("an_impossible_error_occurred"))
+				.setColor(Options.getColorNormal())
+				.addField(R.Strings.ui("the_error"), exception.toString(), false)
+				.addField(R.Strings.ui("location_of_the_error"), stackTraceBuilder.toString(), false)
+				.addField(R.Strings.ui("the_button_you_pressed"), componentId, false)
+				.build();
+	}
 }
