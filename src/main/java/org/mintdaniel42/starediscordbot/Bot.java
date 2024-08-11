@@ -3,10 +3,7 @@ package org.mintdaniel42.starediscordbot;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -35,8 +32,6 @@ public final class Bot extends ListenerAdapter {
 						new TutorialButtons(),
 
 						new HelpCommand(),
-
-						new TutorialCommand(),
 
 						new HNSCommand(databaseAdapter),
 						new PGCommand(databaseAdapter),
@@ -79,24 +74,4 @@ public final class Bot extends ListenerAdapter {
 			throw new RuntimeException(e);
 		}
 	}
-
-	//#if dev
-	@Override
-	public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
-		if (event.getMember() instanceof Member member) {
-			log.info(R.Strings.log("command_s_invoked_by_user_s",
-					event.getFullCommandName(),
-					member.getEffectiveName()));
-		}
-	}
-
-	@Override
-	public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
-		if (event.getMember() instanceof Member member) {
-			log.info(R.Strings.log("button_s_pressed_by_user_s",
-					event.getComponentId(),
-					member.getEffectiveName()));
-		}
-	}
-	//#endif
 }

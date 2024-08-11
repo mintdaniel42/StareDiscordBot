@@ -1,6 +1,8 @@
 package org.mintdaniel42.starediscordbot.buttons;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -11,6 +13,7 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.Permissions;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+@Slf4j
 public class ButtonDispatcher extends ListenerAdapter implements ButtonAdapter {
 	@NonNull private final ButtonAdapter approveButton;
 	@NonNull private final ButtonAdapter groupButton;
@@ -22,6 +25,14 @@ public class ButtonDispatcher extends ListenerAdapter implements ButtonAdapter {
 
 	@Override
 	public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
+		//#if dev
+		if (event.getMember() instanceof Member member) {
+			log.info(R.Strings.log("button_s_pressed_by_user_s",
+					event.getComponentId(),
+					member.getEffectiveName()));
+		}
+		//#endif
+
 		event.deferReply().queue(interactionHook -> handleButton(event)
 				.handle(interactionHook, event)
 				.queue());
