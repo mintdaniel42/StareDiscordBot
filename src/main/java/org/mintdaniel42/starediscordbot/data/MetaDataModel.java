@@ -18,7 +18,8 @@ public class MetaDataModel {
 		UNKNOWN("?"),
 		V1("Apollo"),
 		V2("Ares"),
-		V2_1("Artemis");
+		V2_1("Artemis"),
+		V2_2("Athena");
 
 		@NonNull private final String title;
 	}
