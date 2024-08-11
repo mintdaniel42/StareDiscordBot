@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
+import org.mintdaniel42.starediscordbot.buttons.ButtonDispatcher;
 import org.mintdaniel42.starediscordbot.buttons.GroupButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.buttons.TutorialButtons;
@@ -45,6 +45,7 @@ public final class Bot extends ListenerAdapter {
 						new PGCommand(databaseAdapter),
 
 						new CommandDispatcher(databaseAdapter),
+						new ButtonDispatcher(databaseAdapter),
 
 						this
 				)
