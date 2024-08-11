@@ -8,9 +8,11 @@ import org.mintdaniel42.starediscordbot.utils.Permissions;
 
 public class ButtonDispatcher extends ListenerAdapter {
 	@NonNull private final ButtonAdapter approveButton;
+	@NonNull private final ButtonAdapter groupButton;
 
 	public ButtonDispatcher(@NonNull final DatabaseAdapter databaseAdapter) {
 		approveButton = new ApproveButton(databaseAdapter);
+		groupButton = new GroupButton(databaseAdapter);
 	}
 
 	@Override
@@ -25,6 +27,9 @@ public class ButtonDispatcher extends ListenerAdapter {
 			case String[] b when b.length == 2 &&
 					b[0].equals("approve") &&
 					Permissions.canEdit(event.getMember()) -> approveButton;
+			case String[] b when b.length == 2 &&
+					b[0].equals("group") &&
+					Permissions.canView() -> groupButton;
 			default -> null;
 		};
 	}

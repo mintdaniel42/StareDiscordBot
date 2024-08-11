@@ -2,31 +2,33 @@ package org.mintdaniel42.starediscordbot.buttons;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.data.GroupModel;
+import org.mintdaniel42.starediscordbot.data.UserModel;
 import org.mintdaniel42.starediscordbot.embeds.GroupEmbed;
-import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
-@Slf4j
 @RequiredArgsConstructor
-public final class GroupButton extends ListenerAdapter {
+public final class GroupButton implements ButtonAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
-	@Override
-	public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
-		String[] buttonParts = event.getComponentId().split(":");
-		if (!buttonParts[0].equals("group") || buttonParts.length != 2) return;
+	public static @NonNull Button create(@NonNull final UserModel userModel) {
+		return Button.primary(
+				String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
+				R.Strings.ui("show_group")
+		).withDisabled(userModel.getGroup() == null);
+	}
 
-		if (!Options.isInMaintenance()) {
-			if (databaseAdapter.getGroup(buttonParts[1]) instanceof GroupModel groupModel) {
-				event.deferReply().queue(interactionHook -> interactionHook.editOriginalEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
-						.setComponents(ListButtons.create(groupModel, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())))
-						.queue());
-			} else event.reply(R.Strings.ui("this_group_does_not_exist")).queue();
-		} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
+	@Override
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
+		if (databaseAdapter.getGroup(event.getComponentId().split(":")[1]) instanceof final GroupModel groupModel) {
+			return interactionHook.editOriginalEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
+					.setComponents(ListButtons.create(groupModel, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())));
+		} else return interactionHook.editOriginal(R.Strings.ui("this_group_does_not_exist"));
 	}
 }
