@@ -1,4 +1,4 @@
-package org.mintdaniel42.starediscordbot.buttons;
+package org.mintdaniel42.starediscordbot.buttons.misc;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.jetbrains.annotations.Contract;
+import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.utils.R;
 
