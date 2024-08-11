@@ -38,6 +38,11 @@ public class Options {
     @Getter private final long requestChannelId = Long.parseLong(System.getenv("REQUEST_CHANNEL_ID"));
 
     /**
+     * The ID of the channel where bug reports and other important events are logged
+     */
+    @Getter private final long logChannelId = Long.parseLong(System.getenv("LOG_CHANNEL_ID"));
+
+    /**
      * The color all embeds should have
      */
     @Getter private final int colorNormal = Integer.parseInt(System.getenv("COLOR_NORMAL"), 16);
