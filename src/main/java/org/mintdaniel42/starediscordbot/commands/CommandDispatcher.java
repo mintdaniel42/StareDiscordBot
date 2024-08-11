@@ -14,6 +14,10 @@ import org.mintdaniel42.starediscordbot.commands.hns.*;
 import org.mintdaniel42.starediscordbot.commands.misc.ApproveChangeCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.InfoCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.MaintenanceCommand;
+import org.mintdaniel42.starediscordbot.commands.pg.PGAddCommand;
+import org.mintdaniel42.starediscordbot.commands.pg.PGEditCommand;
+import org.mintdaniel42.starediscordbot.commands.pg.PGListCommand;
+import org.mintdaniel42.starediscordbot.commands.pg.PGShowCommand;
 import org.mintdaniel42.starediscordbot.commands.user.UserDeleteCommand;
 import org.mintdaniel42.starediscordbot.commands.user.UserEditCommand;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
@@ -41,6 +45,10 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 	@NonNull private final CommandAdapter hnsEditCommand;
 	@NonNull private final CommandAdapter hnsListCommand;
 	@NonNull private final CommandAdapter hnsTutorialCommand;
+	@NonNull private final CommandAdapter pgShowCommand;
+	@NonNull private final CommandAdapter pgAddCommand;
+	@NonNull private final CommandAdapter pgEditCommand;
+	@NonNull private final CommandAdapter pgListCommand;
 
 	public CommandDispatcher(@NonNull final DatabaseAdapter databaseAdapter) {
 		approveChangeCommand = new ApproveChangeCommand(databaseAdapter);
@@ -61,6 +69,10 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 		hnsEditCommand = new HNSEditCommand(databaseAdapter);
 		hnsListCommand = new HNSListCommand(databaseAdapter);
 		hnsTutorialCommand = new HNSTutorialCommand();
+		pgShowCommand = new PGShowCommand(databaseAdapter);
+		pgAddCommand = new PGAddCommand(databaseAdapter);
+		pgEditCommand = new PGEditCommand(databaseAdapter);
+		pgListCommand = new PGListCommand(databaseAdapter);
 	}
 
 	@Override
@@ -108,6 +120,10 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 			case String c when c.equals("hns edit") && Permissions.canView() -> hnsEditCommand;
 			case String c when c.equals("hns list") && Permissions.canView() -> hnsListCommand;
 			case String c when c.equals("hns tutorial") && Permissions.canView() -> hnsTutorialCommand;
+			case String c when c.equals("pg show") && Permissions.canView() -> pgShowCommand;
+			case String c when c.equals("pg add") && Permissions.canCreate(member) -> pgAddCommand;
+			case String c when c.equals("pg edit") && Permissions.canView() -> pgEditCommand;
+			case String c when c.equals("pg list") && Permissions.canView() -> pgListCommand;
 			default -> this;
 		};
 	}
