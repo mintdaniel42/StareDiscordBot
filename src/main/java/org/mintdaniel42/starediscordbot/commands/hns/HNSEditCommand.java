@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
-import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.buttons.ApproveButton;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
@@ -23,31 +22,11 @@ import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
-import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 public class HNSEditCommand implements CommandAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
-
-	// TODO eventually replace this
-	@Contract(pure = true, value = "_, _ -> new")
-	private static @NonNull HNSUserModel buildHnsModel(@NonNull final List<OptionMapping> options, @NonNull final HNSUserModel.HNSUserModelBuilder builder) {
-		for (final var optionMapping : options) {
-			switch (optionMapping.getName()) {
-				case "rating" -> builder.rating(optionMapping.getAsString());
-				case "points" -> builder.points(Math.round(optionMapping.getAsDouble()));
-				case "joined" -> builder.joined(optionMapping.getAsString());
-				case "secondary" -> builder.secondary(optionMapping.getAsBoolean());
-				case "banned" -> builder.banned(optionMapping.getAsBoolean());
-				case "cheating" -> builder.cheating(optionMapping.getAsBoolean());
-				case "top10" -> builder.top10(optionMapping.getAsString());
-				case "streak" -> builder.streak(optionMapping.getAsInt());
-				case "highest_rank" -> builder.highestRank(optionMapping.getAsString());
-			}
-		}
-		return builder.build();
-	}
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
@@ -56,7 +35,7 @@ public class HNSEditCommand implements CommandAdapter {
 			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof final UUID uuid) {
 				if (databaseAdapter.getHnsUser(uuid) instanceof HNSUserModel hnsUserModel &&
 						databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
-					hnsUserModel = buildHnsModel(event.getOptions(), hnsUserModel.toBuilder());
+					hnsUserModel = HNSUserModel.merge(event.getOptions(), hnsUserModel.toBuilder());
 					userModel = userModel.toBuilder().hnsUser(hnsUserModel).build();
 
 					if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
