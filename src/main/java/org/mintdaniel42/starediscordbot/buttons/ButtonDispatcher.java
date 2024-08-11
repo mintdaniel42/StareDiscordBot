@@ -17,10 +17,12 @@ import org.mintdaniel42.starediscordbot.utils.R;
 public class ButtonDispatcher extends ListenerAdapter implements ButtonAdapter {
 	@NonNull private final ButtonAdapter approveButton;
 	@NonNull private final ButtonAdapter groupButton;
+	@NonNull private final ButtonAdapter hnsShowButton;
 
 	public ButtonDispatcher(@NonNull final DatabaseAdapter databaseAdapter) {
 		approveButton = new ApproveButton(databaseAdapter);
 		groupButton = new GroupButton(databaseAdapter);
+		hnsShowButton = new HNSShowButton(databaseAdapter);
 	}
 
 	@Override
@@ -53,6 +55,9 @@ public class ButtonDispatcher extends ListenerAdapter implements ButtonAdapter {
 			case String[] b when b.length == 2 &&
 					b[0].equals("group") &&
 					Permissions.canView() -> groupButton;
+			case String[] b when b.length == 3 &&
+					b[0].equals("hns") &&
+					Permissions.canView() -> hnsShowButton;
 			default -> this;
 		};
 	}
