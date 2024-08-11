@@ -51,13 +51,13 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 		return switch (event.getComponentId().split(":")) {
 			case String[] b when b.length == 2 &&
 					b[0].equals("approve") &&
-					Permissions.canEdit(event.getMember()) -> approveButton;
+					Permissions.edit(event.getMember()) -> approveButton;
 			case String[] b when b.length == 2 &&
 					b[0].equals("group") &&
-					Permissions.canView() -> groupButton;
+					Permissions.view() -> groupButton;
 			case String[] b when b.length == 3 &&
 					b[0].equals("hns") &&
-					Permissions.canView() -> hnsShowButton;
+					Permissions.view() -> hnsShowButton;
 			default -> this;
 		};
 	}

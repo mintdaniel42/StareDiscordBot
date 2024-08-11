@@ -34,7 +34,7 @@ public final class UserEditCommand implements CommandAdapter {
 				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
 					userModel = buildUserModel(event, userModel.toBuilder());
 
-					if (!Permissions.canEdit(event.getMember())) {
+					if (!Permissions.edit(event.getMember())) {
 						long timestamp = System.currentTimeMillis();
 						if (event.getGuild() instanceof Guild guild) {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof TextChannel requestChannel) {

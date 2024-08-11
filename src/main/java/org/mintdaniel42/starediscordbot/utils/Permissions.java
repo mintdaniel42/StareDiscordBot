@@ -9,24 +9,24 @@ import org.jetbrains.annotations.Nullable;
 @UtilityClass
 public class Permissions {
 	@Contract(pure = true)
-	public boolean canView() {
+	public boolean view() {
 		return !Options.isInMaintenance();
 	}
 
 	@Contract("null -> false")
-	public boolean canEdit(@Nullable final Member member) {
+	public boolean edit(@Nullable final Member member) {
 		if (Options.isInMaintenance()) return false;
 		return DCHelper.hasRole(member, Options.getEditRoleId()) || DCHelper.hasRole(member, Options.getCreateRoleId());
 	}
 
 	@Contract("null -> false")
-	public boolean canCreate(@Nullable final Member member) {
+	public boolean create(@Nullable final Member member) {
 		if (Options.isInMaintenance()) return false;
 		return DCHelper.hasRole(member, Options.getCreateRoleId());
 	}
 
 	@Contract("null -> false")
-	public boolean canManage(@Nullable final Member member) {
+	public boolean manage(@Nullable final Member member) {
 		if (member == null) return false;
 		return member.hasPermission(Permission.ADMINISTRATOR);
 	}
