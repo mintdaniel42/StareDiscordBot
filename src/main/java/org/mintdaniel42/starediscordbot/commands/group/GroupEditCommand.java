@@ -10,8 +10,6 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.buttons.ApproveButton;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
@@ -23,7 +21,6 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.Permissions;
 import org.mintdaniel42.starediscordbot.utils.R;
 
-import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -36,8 +33,8 @@ public class GroupEditCommand implements CommandAdapter {
 			if (databaseAdapter.getGroup(tagMapping.getAsString()) instanceof GroupModel groupModel) {
 				UUID leaderUuid = null;
 				if (!(event.getOption("leader") instanceof final OptionMapping leaderMapping) ||
-						(leaderUuid = MCHelper.getUuid(databaseAdapter, leaderMapping.getAsString())) == null) {
-					groupModel = buildGroupModel(event.getOptions(), groupModel.toBuilder(), leaderUuid);
+						(leaderUuid = MCHelper.getUuid(databaseAdapter, leaderMapping.getAsString())) != null) {
+					groupModel = GroupModel.merge(event.getOptions(), groupModel.toBuilder(), leaderUuid);
 
 					if (!Permissions.canEdit(event.getMember())) {
 						long timestamp = System.currentTimeMillis();
@@ -64,21 +61,5 @@ public class GroupEditCommand implements CommandAdapter {
 			} else return interactionHook.editOriginal(R.Strings.ui("this_group_does_not_exist"));
 		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
 		return interactionHook.editOriginal(R.Strings.ui("an_impossible_error_occurred")); // TODO more detailed messages
-	}
-
-	// TODO rework this eventually?
-	@Contract(pure = true, value = "_, _, _ -> new")
-	private @NonNull GroupModel buildGroupModel(@NonNull final List<OptionMapping> options, @NonNull final GroupModel.GroupModelBuilder builder, @Nullable UUID leaderUuid) {
-		for (OptionMapping optionMapping : options) {
-			switch (optionMapping.getName()) {
-				case "name" -> builder.name(optionMapping.getAsString());
-				case "leader" -> {
-					if (leaderUuid != null) builder.leader(leaderUuid);
-				}
-				case "relation" -> builder.relation(GroupModel.Relation.valueOf(optionMapping.getAsString()));
-			}
-		}
-
-		return builder.build();
 	}
 }
