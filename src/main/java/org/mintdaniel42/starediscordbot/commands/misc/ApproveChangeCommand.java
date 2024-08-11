@@ -1,4 +1,4 @@
-package org.mintdaniel42.starediscordbot.commands;
+package org.mintdaniel42.starediscordbot.commands.misc;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
+import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -18,7 +19,7 @@ public final class ApproveChangeCommand implements CommandAdapter {
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
-		if (event.getOption("id") instanceof OptionMapping idMapping) {
+		if (event.getOption("id") instanceof final OptionMapping idMapping) {
 			if (databaseAdapter.mergeRequest(idMapping.getAsLong())) {
 				return interactionHook.editOriginal(R.Strings.ui("request_was_successfully_merged"));
 			} else return interactionHook.editOriginal(R.Strings.ui("request_could_not_be_merged"));
