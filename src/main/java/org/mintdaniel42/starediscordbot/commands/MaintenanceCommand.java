@@ -13,7 +13,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 
 public final class MaintenanceCommand implements CommandAdapter {
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull InteractionHook interactionHook, @NonNull SlashCommandInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("active") instanceof OptionMapping activeMapping) {
 			Options.setInMaintenance(activeMapping.getAsBoolean());
 			if (activeMapping.getAsBoolean()) {

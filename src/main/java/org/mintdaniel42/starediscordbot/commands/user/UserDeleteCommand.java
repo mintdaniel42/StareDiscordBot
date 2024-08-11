@@ -20,7 +20,7 @@ public class UserDeleteCommand implements CommandAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull InteractionHook interactionHook, @NonNull SlashCommandInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("username") instanceof OptionMapping usernameMapping) {
 			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
 				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {

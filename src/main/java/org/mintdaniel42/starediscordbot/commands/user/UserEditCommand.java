@@ -28,7 +28,7 @@ public class UserEditCommand implements CommandAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull InteractionHook interactionHook, @NonNull SlashCommandInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("username") instanceof OptionMapping usernameMapping && event.getOptions().size() >= 2) {
 			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
 				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
@@ -49,10 +49,9 @@ public class UserEditCommand implements CommandAdapter {
 										return interactionHook.editOriginal(R.Strings.ui("the_entry_change_was_successfully_requested"));
 									} else
 										return interactionHook.editOriginal(R.Strings.ui("the_entry_could_not_be_updated"));
-								} else
-									return interactionHook.editOriginal(R.Strings.ui("an_impossible_error_occurred")); // TODO more detailed messages
-							} else return interactionHook.editOriginal(R.Strings.ui("an_impossible_error_occurred"));
-						} else return interactionHook.editOriginal(R.Strings.ui("an_impossible_error_occurred"));
+								}
+							}
+						}
 					} else if (!databaseAdapter.edit(userModel)) {
 						return interactionHook.editOriginal(R.Strings.ui("the_entry_could_not_be_updated"));
 					} else return interactionHook.editOriginal(R.Strings.ui("the_entry_was_successfully_updated"))
@@ -60,6 +59,7 @@ public class UserEditCommand implements CommandAdapter {
 				} else return interactionHook.editOriginal(R.Strings.ui("this_user_entry_does_not_exist"));
 			} else return interactionHook.editOriginal(R.Strings.ui("this_username_does_not_exist"));
 		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
+		return interactionHook.editOriginal(R.Strings.ui("an_impossible_error_occurred")); // TODO more detailed messages
 	}
 
 	private @NonNull UserModel buildUserModel(@NonNull final SlashCommandInteractionEvent event, UserModel.UserModelBuilder userBuilder) {

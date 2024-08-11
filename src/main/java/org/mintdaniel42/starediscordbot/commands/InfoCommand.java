@@ -15,7 +15,7 @@ public final class InfoCommand implements CommandAdapter {
 	@NonNull final DatabaseAdapter databaseAdapter;
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull InteractionHook interactionHook, @NonNull SlashCommandInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		return interactionHook.editOriginalEmbeds(InfoEmbed.of(databaseAdapter))
 				.setComponents(ListButtons.createInfo());
 	}
