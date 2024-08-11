@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.mintdaniel42.starediscordbot.buttons.ApproveChangeButton;
+import org.mintdaniel42.starediscordbot.buttons.GroupButton;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.buttons.TutorialButtons;
 import org.mintdaniel42.starediscordbot.commands.*;
@@ -34,6 +35,7 @@ public final class Bot extends ListenerAdapter {
 						new ListButtons(databaseAdapter),
 						new ApproveChangeButton(databaseAdapter),
 						new TutorialButtons(),
+						new GroupButton(databaseAdapter),
 
 						new HelpCommand(),
 
