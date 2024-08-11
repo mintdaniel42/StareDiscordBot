@@ -3,7 +3,10 @@ package org.mintdaniel42.starediscordbot.data;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.*;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import org.jetbrains.annotations.Contract;
 
+import java.util.List;
 import java.util.UUID;
 
 @Value
@@ -23,6 +26,7 @@ public class HNSUserModel {
     @DatabaseField @Builder.Default int streak = 0;
     @DatabaseField @Builder.Default String highestRank = "❌";
 
+    @Contract(pure = true, value = "_ -> new")
     public static @NonNull HNSUserModel from(@NonNull final RequestModel requestModel) {
         return HNSUserModel.builder()
                 .uuid(requestModel.getUuid())
@@ -36,5 +40,23 @@ public class HNSUserModel {
                 .streak(requestModel.getStreak())
                 .highestRank(requestModel.getHighestRank())
                 .build();
+    }
+
+    @Contract(pure = true, value = "_, _ -> new")
+    public static @NonNull HNSUserModel merge(@NonNull final List<OptionMapping> options, @NonNull final HNSUserModelBuilder builder) {
+        for (final var optionMapping : options) {
+            switch (optionMapping.getName()) {
+                case "rating" -> builder.rating(optionMapping.getAsString());
+                case "points" -> builder.points(Math.round(optionMapping.getAsDouble()));
+                case "joined" -> builder.joined(optionMapping.getAsString());
+                case "secondary" -> builder.secondary(optionMapping.getAsBoolean());
+                case "banned" -> builder.banned(optionMapping.getAsBoolean());
+                case "cheating" -> builder.cheating(optionMapping.getAsBoolean());
+                case "top10" -> builder.top10(optionMapping.getAsString());
+                case "streak" -> builder.streak(optionMapping.getAsInt());
+                case "highest_rank" -> builder.highestRank(optionMapping.getAsString());
+            }
+        }
+        return builder.build();
     }
 }
