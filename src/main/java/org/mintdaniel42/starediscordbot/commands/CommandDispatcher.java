@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.commands.group.*;
-import org.mintdaniel42.starediscordbot.commands.hns.HNSTutorialCommand;
+import org.mintdaniel42.starediscordbot.commands.hns.*;
 import org.mintdaniel42.starediscordbot.commands.misc.ApproveChangeCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.InfoCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.MaintenanceCommand;
@@ -35,6 +35,11 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 	@NonNull private final CommandAdapter groupUserShowCommand;
 	@NonNull private final CommandAdapter groupUserAddCommand;
 	@NonNull private final CommandAdapter groupUserRemoveCommand;
+	@NonNull private final CommandAdapter hnsShowCommand;
+	@NonNull private final CommandAdapter hnsShowMoreCommand;
+	@NonNull private final CommandAdapter hnsAddCommand;
+	@NonNull private final CommandAdapter hnsEditCommand;
+	@NonNull private final CommandAdapter hnsListCommand;
 	@NonNull private final CommandAdapter hnsTutorialCommand;
 
 	public CommandDispatcher(@NonNull final DatabaseAdapter databaseAdapter) {
@@ -50,6 +55,11 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 		groupUserShowCommand = new GroupUserShowCommand(databaseAdapter);
 		groupUserAddCommand = new GroupUserAddCommand(databaseAdapter);
 		groupUserRemoveCommand = new GroupUserRemoveCommand(databaseAdapter);
+		hnsShowCommand = new HNSShowCommand(databaseAdapter);
+		hnsShowMoreCommand = new HNSShowMoreCommand(databaseAdapter);
+		hnsAddCommand = new HNSAddCommand(databaseAdapter);
+		hnsEditCommand = new HNSEditCommand(databaseAdapter);
+		hnsListCommand = new HNSListCommand(databaseAdapter);
 		hnsTutorialCommand = new HNSTutorialCommand();
 	}
 
@@ -78,24 +88,25 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 	@Contract("_ -> _")
 	private @NonNull CommandAdapter handleCommand(@NonNull final SlashCommandInteractionEvent event) {
 		// TODO make this a try / catch
+		final var member = event.getMember();
 		return switch (event.getFullCommandName()) {
-			case String c when c.equals("approve") && Permissions.canEdit(event.getMember()) -> approveChangeCommand;
+			case String c when c.equals("approve") && Permissions.canEdit(member) -> approveChangeCommand;
 			case String c when c.equals("info") && Permissions.canView() -> infoCommand;
-			case String c when c.equals("maintenance") && Permissions.canManage(event.getMember()) ->
-					maintenanceCommand;
-			case String c when c.equals("user delete") && Permissions.canCreate(event.getMember()) -> userDeleteCommand;
-			case String c when c.equals("user edit") -> userEditCommand;
+			case String c when c.equals("maintenance") && Permissions.canManage(member) -> maintenanceCommand;
+			case String c when c.equals("user delete") && Permissions.canCreate(member) -> userDeleteCommand;
+			case String c when c.equals("user edit") && Permissions.canView() -> userEditCommand;
 			case String c when c.equals("group show") && Permissions.canView() -> groupShowCommand;
-			case String c when c.equals("group edit") -> groupEditCommand;
-			case String c when c.equals("group create") && Permissions.canCreate(event.getMember()) ->
-					groupCreateCommand;
-			case String c when c.equals("group delete") && Permissions.canCreate(event.getMember()) ->
-					groupDeleteCommand;
+			case String c when c.equals("group edit") && Permissions.canView() -> groupEditCommand;
+			case String c when c.equals("group create") && Permissions.canCreate(member) -> groupCreateCommand;
+			case String c when c.equals("group delete") && Permissions.canCreate(member) -> groupDeleteCommand;
 			case String c when c.equals("group user show") && Permissions.canView() -> groupUserShowCommand;
-			case String c when c.equals("group user add") && Permissions.canEdit(event.getMember()) ->
-					groupUserAddCommand;
-			case String c when c.equals("group user remove") && Permissions.canEdit(event.getMember()) ->
-					groupUserRemoveCommand;
+			case String c when c.equals("group user add") && Permissions.canEdit(member) -> groupUserAddCommand;
+			case String c when c.equals("group user remove") && Permissions.canEdit(member) -> groupUserRemoveCommand;
+			case String c when c.equals("hns show") && Permissions.canView() -> hnsShowCommand;
+			case String c when c.equals("hns showmore") && Permissions.canView() -> hnsShowMoreCommand;
+			case String c when c.equals("hns add") && Permissions.canCreate(member) -> hnsAddCommand;
+			case String c when c.equals("hns edit") && Permissions.canView() -> hnsEditCommand;
+			case String c when c.equals("hns list") && Permissions.canView() -> hnsListCommand;
 			case String c when c.equals("hns tutorial") && Permissions.canView() -> hnsTutorialCommand;
 			default -> this;
 		};
