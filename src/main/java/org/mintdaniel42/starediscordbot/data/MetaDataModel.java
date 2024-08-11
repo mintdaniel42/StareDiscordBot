@@ -19,7 +19,10 @@ public class MetaDataModel {
 		V1("Apollo"),
 		V2("Ares"),
 		V2_1("Artemis"),
-		V2_2("Athena");
+		V2_2("Athena"),
+		V2_3("Aphrodite"),
+		V2_4("Demeter"),
+		v3("Dionysus");
 
 		@NonNull private final String title;
 	}
