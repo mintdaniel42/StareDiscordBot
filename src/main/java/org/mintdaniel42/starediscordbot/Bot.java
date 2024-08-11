@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.buttons.ButtonDispatcher;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
 import org.mintdaniel42.starediscordbot.buttons.TutorialButtons;
@@ -46,7 +47,7 @@ public final class Bot extends ListenerAdapter {
 
 		scheduler.schedule(
 				databaseAdapter::cleanDatabase,
-				Schedules.fixedDelaySchedule(Duration.ofMillis(2000))
+				Schedules.fixedDelaySchedule(Duration.ofMillis(BuildConfig.cleaningInterval))
 		);
 	}
 
