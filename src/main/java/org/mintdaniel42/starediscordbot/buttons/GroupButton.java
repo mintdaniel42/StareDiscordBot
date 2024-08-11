@@ -21,7 +21,7 @@ public final class GroupButton implements ButtonAdapter {
 		return Button.primary(
 				String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
 				R.Strings.ui("show_group")
-		).withDisabled(userModel.getGroup() == null);
+		).withEmoji(R.Emojis.group).withDisabled(userModel.getGroup() == null);
 	}
 
 	@Override

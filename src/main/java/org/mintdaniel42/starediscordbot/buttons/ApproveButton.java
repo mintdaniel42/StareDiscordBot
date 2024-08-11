@@ -18,10 +18,11 @@ public final class ApproveButton implements ButtonAdapter {
 
 	@Contract(pure = true, value = "_ -> new")
 	public static @NonNull ActionRow create(final long id) {
-		return ActionRow.of(Button.primary(
+		return ActionRow.of(Button.success(
 						"approve:%s".formatted(id),
 						R.Strings.ui("approve_this_change")
-				).withDisabled(id == -1)
+						).withEmoji(R.Emojis.approve)
+						.withDisabled(id == -1)
 		);
 	}
 

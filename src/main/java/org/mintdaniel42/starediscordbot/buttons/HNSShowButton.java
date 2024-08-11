@@ -25,7 +25,7 @@ public final class HNSShowButton implements ButtonAdapter {
 		return Button.primary(
 				"hns:%s:%s".formatted(type.name(), uuid),
 				R.Strings.ui(type == Type.more ? "more_info" : "basic_info")
-		);
+		).withEmoji(R.Emojis.information);
 	}
 
 	@Override

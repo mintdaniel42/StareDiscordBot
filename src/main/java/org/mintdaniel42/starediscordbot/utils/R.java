@@ -31,6 +31,9 @@ public class R {
 	public class Emojis {
 		public final Emoji arrowLeft = Emoji.fromUnicode("⬅");
 		public final Emoji arrowRight = Emoji.fromUnicode("➡");
+		public final Emoji information = Emoji.fromUnicode("ℹ");
+		public final Emoji group = Emoji.fromUnicode("\uD83D\uDC65");
+		public final Emoji approve = Emoji.fromUnicode("✅");
 	}
 
 	/**
