@@ -81,9 +81,11 @@ public enum CommandList {
 								.addOption(OptionType.INTEGER, "streak", R.Strings.ui("streak"))
 								.addOption(OptionType.STRING, "highest_rank", R.Strings.ui("highest_rank")),
 						new SubcommandData("list", R.Strings.ui("list_hide_n_seek_entries"))
-								.addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true),
-						new SubcommandData("tutorial", R.Strings.ui("show_the_tutorial"))
+								.addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true)
+						//#if dev
+						, new SubcommandData("tutorial", R.Strings.ui("show_the_tutorial"))
 								.addOption(OptionType.STRING, "page", R.Strings.ui("page"), false, true)
+						//#endif
 				);
 	}
 
