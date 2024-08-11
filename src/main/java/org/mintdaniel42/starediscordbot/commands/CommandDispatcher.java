@@ -7,9 +7,10 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import org.mintdaniel42.starediscordbot.commands.group.GroupShowCommand;
 import org.mintdaniel42.starediscordbot.commands.user.UserDeleteCommand;
 import org.mintdaniel42.starediscordbot.commands.user.UserEditCommand;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
@@ -23,6 +24,7 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 	@NonNull private final CommandAdapter maintenanceCommand;
 	@NonNull private final CommandAdapter userDeleteCommand;
 	@NonNull private final CommandAdapter userEditCommand;
+	@NonNull private final CommandAdapter groupShowCommand;
 
 	public CommandDispatcher(@NonNull final DatabaseAdapter databaseAdapter) {
 		approveChangeCommand = new ApproveChangeCommand(databaseAdapter);
@@ -30,6 +32,7 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 		maintenanceCommand = new MaintenanceCommand();
 		userDeleteCommand = new UserDeleteCommand(databaseAdapter);
 		userEditCommand = new UserEditCommand(databaseAdapter);
+		groupShowCommand = new GroupShowCommand(databaseAdapter);
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 	}
 
 	@Override
-	public @NonNull RestAction<Message> handle(@NonNull InteractionHook interactionHook, @NonNull SlashCommandInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull InteractionHook interactionHook, @NonNull SlashCommandInteractionEvent event) {
 		if (Options.isInMaintenance())
 			return interactionHook.editOriginal((R.Strings.ui("the_bot_is_currently_in_maintenance_mode")));
 		else return interactionHook.editOriginal(R.Strings.ui("you_do_not_have_the_permission_to_use_this_command"));
@@ -69,6 +72,7 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 		return member.hasPermission(Permission.ADMINISTRATOR);
 	}
 
+	@Contract("_ -> _")
 	private @NonNull CommandAdapter handleCommand(@NonNull final SlashCommandInteractionEvent event) {
 		// TODO make this a try / catch
 		return switch (event.getFullCommandName()) {
@@ -77,6 +81,7 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 			case String c when c.equals("maintenance") && canManage(event.getMember()) -> maintenanceCommand;
 			case String c when c.equals("user delete") && canCreate(event.getMember()) -> userDeleteCommand;
 			case String c when c.equals("user edit") -> userEditCommand;
+			case String c when c.equals("group show") -> groupShowCommand;
 			default -> this;
 		};
 	}

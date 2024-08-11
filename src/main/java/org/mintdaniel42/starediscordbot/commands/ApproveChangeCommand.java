@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -17,7 +17,7 @@ public final class ApproveChangeCommand implements CommandAdapter {
     @NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override
-	public @NonNull RestAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("id") instanceof OptionMapping idMapping) {
 			if (databaseAdapter.mergeRequest(idMapping.getAsLong())) {
 				return interactionHook.editOriginal(R.Strings.ui("request_was_successfully_merged"));

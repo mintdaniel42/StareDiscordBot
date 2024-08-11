@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.data.UserModel;
@@ -20,7 +20,7 @@ public class UserDeleteCommand implements CommandAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override
-	public @NonNull RestAction<Message> handle(@NonNull InteractionHook interactionHook, @NonNull SlashCommandInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull InteractionHook interactionHook, @NonNull SlashCommandInteractionEvent event) {
 		if (event.getOption("username") instanceof OptionMapping usernameMapping) {
 			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
 				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {

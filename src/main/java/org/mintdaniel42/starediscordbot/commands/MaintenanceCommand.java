@@ -3,16 +3,17 @@ package org.mintdaniel42.starediscordbot.commands;
 import lombok.NonNull;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 public final class MaintenanceCommand implements CommandAdapter {
 	@Override
-	public @NonNull RestAction<?> handle(@NonNull InteractionHook interactionHook, @NonNull SlashCommandInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull InteractionHook interactionHook, @NonNull SlashCommandInteractionEvent event) {
 		if (event.getOption("active") instanceof OptionMapping activeMapping) {
 			Options.setInMaintenance(activeMapping.getAsBoolean());
 			if (activeMapping.getAsBoolean()) {
