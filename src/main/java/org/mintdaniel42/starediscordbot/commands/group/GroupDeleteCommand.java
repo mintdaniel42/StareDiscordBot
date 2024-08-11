@@ -12,7 +12,7 @@ import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
-public class GroupDeleteCommand implements CommandAdapter {
+public final class GroupDeleteCommand implements CommandAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override

@@ -17,7 +17,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class GroupUserRemoveCommand implements CommandAdapter {
+public final class GroupUserRemoveCommand implements CommandAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override

@@ -14,7 +14,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.Arrays;
 import java.util.Optional;
 
-public class TutorialButtons extends ListenerAdapter {
+public final class TutorialButtons extends ListenerAdapter {
 	public static @NonNull Optional<ActionRow> create(@NonNull final TutorialModel tutorialModel) {
 		if (tutorialModel.getSimilar().length > 0) {
 			return Optional.of(ActionRow.of(Arrays.stream(tutorialModel.getSimilar())

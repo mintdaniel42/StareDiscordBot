@@ -17,7 +17,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class HNSShowButton implements ButtonAdapter {
+public final class HNSShowButton implements ButtonAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Contract(pure = true, value = "_, _ -> new")

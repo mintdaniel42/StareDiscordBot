@@ -17,7 +17,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class HNSListCommand implements CommandAdapter {
+public final class HNSListCommand implements CommandAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override

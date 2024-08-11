@@ -14,7 +14,7 @@ import org.mintdaniel42.starediscordbot.utils.Permissions;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @Slf4j
-public class ButtonDispatcher extends ListenerAdapter implements ButtonAdapter {
+public final class ButtonDispatcher extends ListenerAdapter implements ButtonAdapter {
 	@NonNull private final ButtonAdapter approveButton;
 	@NonNull private final ButtonAdapter groupButton;
 	@NonNull private final ButtonAdapter hnsShowButton;

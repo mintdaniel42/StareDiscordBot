@@ -17,7 +17,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class PGListCommand implements CommandAdapter {
+public final class PGListCommand implements CommandAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override
