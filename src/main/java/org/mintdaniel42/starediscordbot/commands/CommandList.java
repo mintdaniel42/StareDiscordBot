@@ -18,7 +18,6 @@ public enum CommandList {
 	info,
 	//#if dev
 	//$$ streak,
-	//$$ help;
 	//#else
 	;
 	//#endif
@@ -34,7 +33,6 @@ public enum CommandList {
 			case info -> Commands.slash("info", R.Strings.ui("show_bot_information"));
 			//#if dev
 			//$$ case streak -> getStreakCommand();
-			//$$ case help -> Commands.slash("help", R.Strings.ui("list_all_commands"));
 			//#endif
 		};
 	}

@@ -107,7 +107,6 @@ public final class ListButtons extends ListenerAdapter {
                         yield GroupEmbed.of(databaseAdapter, groupModel, page);
                     } else yield null;
                 }
-                default -> null;
             };
             final var actionRow = switch (embedType) {
                 case pg -> create(embedType, page, databaseAdapter.getPgPages());
@@ -117,7 +116,6 @@ public final class ListButtons extends ListenerAdapter {
                         yield create(groupModel, page, databaseAdapter.getGroupMemberPages(groupModel.getTag()));
                     } else yield null;
                 }
-                default -> null;
             };
 
             if (messageEmbed != null) {
@@ -131,7 +129,6 @@ public final class ListButtons extends ListenerAdapter {
     public enum Type {
         hns,
         pg,
-        group,
-        help
+        group
     }
 }
