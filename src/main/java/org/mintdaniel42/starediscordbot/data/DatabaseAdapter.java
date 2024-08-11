@@ -14,8 +14,6 @@ import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 
 @Slf4j
@@ -41,18 +39,19 @@ public final class DatabaseAdapter implements AutoCloseable {
         metaDataModelDao = DaoManager.createDao(connectionSource, MetaDataModel.class);
 
         prepareDatabase();
-        new Thread(this::cleanDatabase).start();
     }
 
     private void prepareDatabase() {
 	    try {
-            TableUtils.createTableIfNotExists(connectionSource, MetaDataModel.class);
-            TableUtils.createTableIfNotExists(connectionSource, HNSUserModel.class);
-            TableUtils.createTableIfNotExists(connectionSource, PGUserModel.class);
-            TableUtils.createTableIfNotExists(connectionSource, UsernameModel.class);
-            TableUtils.createTableIfNotExists(connectionSource, RequestModel.class);
-            TableUtils.createTableIfNotExists(connectionSource, GroupModel.class);
-            TableUtils.createTableIfNotExists(connectionSource, UserModel.class);
+            if (getVersion() == MetaDataModel.Version.UNKNOWN) {
+                TableUtils.createTableIfNotExists(connectionSource, MetaDataModel.class);
+                TableUtils.createTableIfNotExists(connectionSource, HNSUserModel.class);
+                TableUtils.createTableIfNotExists(connectionSource, PGUserModel.class);
+                TableUtils.createTableIfNotExists(connectionSource, UsernameModel.class);
+                TableUtils.createTableIfNotExists(connectionSource, RequestModel.class);
+                TableUtils.createTableIfNotExists(connectionSource, GroupModel.class);
+                TableUtils.createTableIfNotExists(connectionSource, UserModel.class);
+            }
 
             metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.V2_2));
         } catch (SQLException e) {
@@ -61,7 +60,7 @@ public final class DatabaseAdapter implements AutoCloseable {
 	    }
     }
 
-    private void cleanDatabase() {
+    public void cleanDatabase() {
         // perform cleaning
         try {
             var requestDeleteBuilder = requestModelDao.deleteBuilder();
@@ -102,16 +101,6 @@ public final class DatabaseAdapter implements AutoCloseable {
                 log.info(R.Strings.log("autofetched_s_usernames", fetched));
             }
         }
-
-        // reschedule
-        float next = BuildConfig.cleaningInterval - System.currentTimeMillis() % BuildConfig.cleaningInterval;
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                cleanDatabase();
-            }
-        }, Math.round(next));
-        log.info(R.Strings.log("schedule_next_database_cleaning_in_s_seconds", next / 1000));
     }
 
     public @Nullable List<HNSUserModel> getHnsUserList(int page) {

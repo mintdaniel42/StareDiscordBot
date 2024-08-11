@@ -33,6 +33,7 @@ dependencies {
     implementation(libs.lombok)
     implementation(libs.jackson.databind)
     implementation(libs.ioutils)
+    implementation(libs.wisp)
     annotationProcessor(libs.lombok)
 }
 

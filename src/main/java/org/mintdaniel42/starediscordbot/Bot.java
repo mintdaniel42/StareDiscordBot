@@ -1,5 +1,7 @@
 package org.mintdaniel42.starediscordbot;
 
+import com.coreoz.wisp.Scheduler;
+import com.coreoz.wisp.schedule.Schedules;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDABuilder;
@@ -17,6 +19,7 @@ import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+import java.time.Duration;
 import java.util.Arrays;
 
 @Slf4j
@@ -29,16 +32,22 @@ public final class Bot extends ListenerAdapter {
 		JDABuilder.createLight(Options.getToken())
 				.addEventListeners(
 						new AutoCompletionHandler(databaseAdapter),
-
-						new ListButtons(databaseAdapter),
-						new TutorialButtons(),
-
 						new CommandDispatcher(databaseAdapter),
 						new ButtonDispatcher(databaseAdapter),
+						this,
 
-						this
+						// TODO: migrate this
+						new ListButtons(databaseAdapter),
+						new TutorialButtons()
 				)
 				.build();
+
+		final var scheduler = new Scheduler();
+
+		scheduler.schedule(
+				databaseAdapter::cleanDatabase,
+				Schedules.fixedDelaySchedule(Duration.ofMillis(2000))
+		);
 	}
 
 	public static void main(@NonNull final String[] args) throws Exception {
