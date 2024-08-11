@@ -17,7 +17,6 @@ public enum CommandList {
 	approve,
 	info,
 	//#if dev
-	//$$ tutorial,
 	//$$ streak,
 	//$$ help;
 	//#else
@@ -34,7 +33,6 @@ public enum CommandList {
 			case approve -> getApproveCommand();
 			case info -> Commands.slash("info", R.Strings.ui("show_bot_information"));
 			//#if dev
-			//$$ case tutorial -> getTutorialCommand();
 			//$$ case streak -> getStreakCommand();
 			//$$ case help -> Commands.slash("help", R.Strings.ui("list_all_commands"));
 			//#endif
@@ -83,7 +81,9 @@ public enum CommandList {
 								.addOption(OptionType.INTEGER, "streak", R.Strings.ui("streak"))
 								.addOption(OptionType.STRING, "highest_rank", R.Strings.ui("highest_rank")),
 						new SubcommandData("list", R.Strings.ui("list_hide_n_seek_entries"))
-								.addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true)
+								.addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true),
+						new SubcommandData("tutorial", R.Strings.ui("show_the_tutorial"))
+								.addOption(OptionType.STRING, "page", R.Strings.ui("page"), false, true)
 				);
 	}
 

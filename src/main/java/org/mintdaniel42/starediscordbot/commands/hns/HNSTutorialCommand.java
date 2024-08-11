@@ -1,4 +1,4 @@
-package org.mintdaniel42.starediscordbot.commands.misc;
+package org.mintdaniel42.starediscordbot.commands.hns;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.Arrays;
 
 @RequiredArgsConstructor
-public final class TutorialCommand implements CommandAdapter {
+public final class HNSTutorialCommand implements CommandAdapter {
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {

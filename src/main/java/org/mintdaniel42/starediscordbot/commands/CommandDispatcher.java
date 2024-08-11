@@ -10,10 +10,10 @@ import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.commands.group.*;
+import org.mintdaniel42.starediscordbot.commands.hns.HNSTutorialCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.ApproveChangeCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.InfoCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.MaintenanceCommand;
-import org.mintdaniel42.starediscordbot.commands.misc.TutorialCommand;
 import org.mintdaniel42.starediscordbot.commands.user.UserDeleteCommand;
 import org.mintdaniel42.starediscordbot.commands.user.UserEditCommand;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
@@ -26,7 +26,6 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 	@NonNull private final CommandAdapter approveChangeCommand;
 	@NonNull private final CommandAdapter infoCommand;
 	@NonNull private final CommandAdapter maintenanceCommand;
-	@NonNull private final CommandAdapter tutorialCommand;
 	@NonNull private final CommandAdapter userDeleteCommand;
 	@NonNull private final CommandAdapter userEditCommand;
 	@NonNull private final CommandAdapter groupShowCommand;
@@ -36,12 +35,12 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 	@NonNull private final CommandAdapter groupUserShowCommand;
 	@NonNull private final CommandAdapter groupUserAddCommand;
 	@NonNull private final CommandAdapter groupUserRemoveCommand;
+	@NonNull private final CommandAdapter hnsTutorialCommand;
 
 	public CommandDispatcher(@NonNull final DatabaseAdapter databaseAdapter) {
 		approveChangeCommand = new ApproveChangeCommand(databaseAdapter);
 		infoCommand = new InfoCommand(databaseAdapter);
 		maintenanceCommand = new MaintenanceCommand();
-		tutorialCommand = new TutorialCommand();
 		userDeleteCommand = new UserDeleteCommand(databaseAdapter);
 		userEditCommand = new UserEditCommand(databaseAdapter);
 		groupShowCommand = new GroupShowCommand(databaseAdapter);
@@ -51,6 +50,7 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 		groupUserShowCommand = new GroupUserShowCommand(databaseAdapter);
 		groupUserAddCommand = new GroupUserAddCommand(databaseAdapter);
 		groupUserRemoveCommand = new GroupUserRemoveCommand(databaseAdapter);
+		hnsTutorialCommand = new HNSTutorialCommand();
 	}
 
 	@Override
@@ -83,7 +83,6 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 			case String c when c.equals("info") && Permissions.canView() -> infoCommand;
 			case String c when c.equals("maintenance") && Permissions.canManage(event.getMember()) ->
 					maintenanceCommand;
-			case String c when c.equals("tutorial") && Permissions.canView() -> tutorialCommand;
 			case String c when c.equals("user delete") && Permissions.canCreate(event.getMember()) -> userDeleteCommand;
 			case String c when c.equals("user edit") -> userEditCommand;
 			case String c when c.equals("group show") && Permissions.canView() -> groupShowCommand;
@@ -97,6 +96,7 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 					groupUserAddCommand;
 			case String c when c.equals("group user remove") && Permissions.canEdit(event.getMember()) ->
 					groupUserRemoveCommand;
+			case String c when c.equals("hns tutorial") && Permissions.canView() -> hnsTutorialCommand;
 			default -> this;
 		};
 	}
