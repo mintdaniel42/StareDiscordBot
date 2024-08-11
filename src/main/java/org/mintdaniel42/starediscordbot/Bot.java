@@ -1,7 +1,6 @@
 package org.mintdaniel42.starediscordbot;
 
 import com.coreoz.wisp.Scheduler;
-import com.coreoz.wisp.schedule.Schedules;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDABuilder;
@@ -20,7 +19,6 @@ import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
-import java.time.Duration;
 import java.util.Arrays;
 
 @Slf4j
@@ -47,7 +45,7 @@ public final class Bot extends ListenerAdapter {
 
 		scheduler.schedule(
 				databaseAdapter::cleanDatabase,
-				Schedules.fixedDelaySchedule(Duration.ofMillis(BuildConfig.cleaningInterval))
+				(timestamp, _, _) -> timestamp + BuildConfig.cleaningInterval - (timestamp % BuildConfig.cleaningInterval)
 		);
 	}
 
