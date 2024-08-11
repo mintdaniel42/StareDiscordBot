@@ -33,7 +33,6 @@ public final class Bot extends ListenerAdapter {
 						new AutoCompletionHandler(databaseAdapter),
 
 						new ListButtons(databaseAdapter),
-						new ApproveChangeButton(databaseAdapter),
 						new TutorialButtons(),
 						new GroupButton(databaseAdapter),
 
