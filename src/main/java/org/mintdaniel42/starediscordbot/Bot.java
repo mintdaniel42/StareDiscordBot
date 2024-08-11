@@ -35,9 +35,7 @@ public final class Bot extends ListenerAdapter {
 						new ApproveChangeButton(databaseAdapter),
 						new TutorialButtons(),
 
-						new MaintenanceCommand(),
 						new HelpCommand(),
-						new InfoCommand(databaseAdapter),
 
 						new TutorialCommand(),
 
@@ -45,7 +43,8 @@ public final class Bot extends ListenerAdapter {
 						new HNSCommand(databaseAdapter),
 						new PGCommand(databaseAdapter),
 						new GroupCommand(databaseAdapter),
-						new ApproveChangeCommand(databaseAdapter),
+
+						new CommandDispatcher(databaseAdapter),
 
 						this
 				)

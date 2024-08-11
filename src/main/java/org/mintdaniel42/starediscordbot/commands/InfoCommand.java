@@ -3,25 +3,18 @@ package org.mintdaniel42.starediscordbot.commands;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.mintdaniel42.starediscordbot.buttons.ListButtons;
+import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.requests.RestAction;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.embeds.InfoEmbed;
-import org.mintdaniel42.starediscordbot.utils.Options;
-import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
-public final class InfoCommand extends ListenerAdapter {
+public final class InfoCommand implements CommandAdapter {
 	@NonNull final DatabaseAdapter databaseAdapter;
 
 	@Override
-	public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-		if (event.getFullCommandName().equals("info")) {
-			if (!Options.isInMaintenance()) {
-				event.replyEmbeds(InfoEmbed.of(databaseAdapter))
-						.addComponents(ListButtons.createInfo())
-						.queue();
-			} else event.reply(R.Strings.ui("the_bot_is_currently_in_maintenance_mode")).queue();
-		}
+	public @NonNull RestAction<Void> handle(@NonNull InteractionHook interactionHook, @NonNull SlashCommandInteractionEvent event) {
+		return interactionHook.editOriginalEmbeds(InfoEmbed.of(databaseAdapter))
+				.and(interactionHook.editOriginalComponents());
 	}
 }
