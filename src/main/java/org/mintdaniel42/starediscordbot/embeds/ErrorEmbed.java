@@ -20,15 +20,15 @@ public class ErrorEmbed {
 						.append(":")
 						.append(optionMapping.getAsString()));
 
-		return build(exception, interaction.getFullCommandName() + " " + commandBuilder);
+		return build(exception, interaction.getFullCommandName() + " " + commandBuilder, false);
 	}
 
 	public @NonNull MessageEmbed of(@NonNull final String componentId, @NonNull final Exception exception) {
-		return build(exception, componentId);
+		return build(exception, componentId, true);
 	}
 
 	@Contract(pure = true)
-	private @NonNull MessageEmbed build(@NonNull final Exception exception, @NonNull final String name) {
+	private @NonNull MessageEmbed build(@NonNull final Exception exception, @NonNull final String name, final boolean button) {
 		final var stackTraceBuilder = new StringBuilder();
 		Arrays.stream(exception.getStackTrace())
 				.limit(5)
@@ -39,7 +39,7 @@ public class ErrorEmbed {
 				.setColor(Options.getColorNormal())
 				.addField(R.Strings.ui("the_error"), exception.toString(), false)
 				.addField(R.Strings.ui("location_of_the_error"), stackTraceBuilder.toString(), false)
-				.addField(R.Strings.ui("the_button_you_pressed"), name, false)
+				.addField(R.Strings.ui(button ? "the_button_that_was_pressed" : "the_command_that_was_executed"), name, false)
 				.build();
 	}
 }

@@ -2,8 +2,10 @@ package org.mintdaniel42.starediscordbot.commands;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
@@ -133,7 +135,12 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 	private record ErrorHandler(@NonNull Exception exception) implements CommandAdapter {
 		@Override
 		public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
-			return interactionHook.editOriginalEmbeds(ErrorEmbed.of(event.getInteraction(), exception));
+			if (event.getGuild() instanceof final Guild guild) {
+				if (guild.getTextChannelById(Options.getLogChannelId()) instanceof final TextChannel channel) {
+					channel.sendMessageEmbeds(ErrorEmbed.of(event.getInteraction(), exception)).queue();
+				}
+			}
+			return interactionHook.editOriginal(R.Strings.ui("an_error_occured_the_developer_has_been_notified"));
 		}
 	}
 }
