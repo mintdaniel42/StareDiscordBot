@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.Permissions;
 import org.mintdaniel42.starediscordbot.utils.R;
@@ -48,17 +49,28 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 	}
 
 	private @NonNull ButtonAdapter handleButton(@NonNull final ButtonInteractionEvent event) {
-		return switch (event.getComponentId().split(":")) {
-			case String[] b when b.length == 2 &&
-					b[0].equals("approve") &&
-					Permissions.edit(event.getMember()) -> approveButton;
-			case String[] b when b.length == 2 &&
-					b[0].equals("group") &&
-					Permissions.view() -> groupButton;
-			case String[] b when b.length == 3 &&
-					b[0].equals("hns") &&
-					Permissions.view() -> hnsShowButton;
-			default -> this;
-		};
+		try {
+			return switch (event.getComponentId().split(":")) {
+				case String[] b when b.length == 2 &&
+						b[0].equals("approve") &&
+						Permissions.edit(event.getMember()) -> approveButton;
+				case String[] b when b.length == 2 &&
+						b[0].equals("group") &&
+						Permissions.view() -> groupButton;
+				case String[] b when b.length == 3 &&
+						b[0].equals("hns") &&
+						Permissions.view() -> hnsShowButton;
+				default -> this;
+			};
+		} catch (final Exception e) {
+			return new ErrorHandler(e);
+		}
+	}
+
+	private record ErrorHandler(@NonNull Exception exception) implements ButtonAdapter {
+		@Override
+		public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
+			return interactionHook.editOriginalEmbeds(ErrorEmbed.of(event.getComponentId(), exception));
+		}
 	}
 }

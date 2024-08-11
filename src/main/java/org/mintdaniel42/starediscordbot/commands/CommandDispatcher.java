@@ -21,6 +21,7 @@ import org.mintdaniel42.starediscordbot.commands.pg.PGShowCommand;
 import org.mintdaniel42.starediscordbot.commands.user.UserDeleteCommand;
 import org.mintdaniel42.starediscordbot.commands.user.UserEditCommand;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.Permissions;
 import org.mintdaniel42.starediscordbot.utils.R;
@@ -99,32 +100,42 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 
 	@Contract("_ -> _")
 	private @NonNull CommandAdapter handleCommand(@NonNull final SlashCommandInteractionEvent event) {
-		// TODO make this a try / catch
-		final var member = event.getMember();
-		return switch (event.getFullCommandName()) {
-			case String c when c.equals("approve") && Permissions.edit(member) -> approveChangeCommand;
-			case String c when c.equals("info") && Permissions.view() -> infoCommand;
-			case String c when c.equals("maintenance") && Permissions.manage(member) -> maintenanceCommand;
-			case String c when c.equals("user delete") && Permissions.create(member) -> userDeleteCommand;
-			case String c when c.equals("user edit") && Permissions.view() -> userEditCommand;
-			case String c when c.equals("group show") && Permissions.view() -> groupShowCommand;
-			case String c when c.equals("group edit") && Permissions.view() -> groupEditCommand;
-			case String c when c.equals("group create") && Permissions.create(member) -> groupCreateCommand;
-			case String c when c.equals("group delete") && Permissions.create(member) -> groupDeleteCommand;
-			case String c when c.equals("group user show") && Permissions.view() -> groupUserShowCommand;
-			case String c when c.equals("group user add") && Permissions.edit(member) -> groupUserAddCommand;
-			case String c when c.equals("group user remove") && Permissions.edit(member) -> groupUserRemoveCommand;
-			case String c when c.equals("hns show") && Permissions.view() -> hnsShowCommand;
-			case String c when c.equals("hns showmore") && Permissions.view() -> hnsShowMoreCommand;
-			case String c when c.equals("hns add") && Permissions.create(member) -> hnsAddCommand;
-			case String c when c.equals("hns edit") && Permissions.view() -> hnsEditCommand;
-			case String c when c.equals("hns list") && Permissions.view() -> hnsListCommand;
-			case String c when c.equals("hns tutorial") && Permissions.view() -> hnsTutorialCommand;
-			case String c when c.equals("pg show") && Permissions.view() -> pgShowCommand;
-			case String c when c.equals("pg add") && Permissions.create(member) -> pgAddCommand;
-			case String c when c.equals("pg edit") && Permissions.view() -> pgEditCommand;
-			case String c when c.equals("pg list") && Permissions.view() -> pgListCommand;
-			default -> this;
-		};
+		try {
+			final var member = event.getMember();
+			return switch (event.getFullCommandName()) {
+				case String c when c.equals("approve") && Permissions.edit(member) -> approveChangeCommand;
+				case String c when c.equals("info") && Permissions.view() -> infoCommand;
+				case String c when c.equals("maintenance") && Permissions.manage(member) -> maintenanceCommand;
+				case String c when c.equals("user delete") && Permissions.create(member) -> userDeleteCommand;
+				case String c when c.equals("user edit") && Permissions.view() -> userEditCommand;
+				case String c when c.equals("group show") && Permissions.view() -> groupShowCommand;
+				case String c when c.equals("group edit") && Permissions.view() -> groupEditCommand;
+				case String c when c.equals("group create") && Permissions.create(member) -> groupCreateCommand;
+				case String c when c.equals("group delete") && Permissions.create(member) -> groupDeleteCommand;
+				case String c when c.equals("group user show") && Permissions.view() -> groupUserShowCommand;
+				case String c when c.equals("group user add") && Permissions.edit(member) -> groupUserAddCommand;
+				case String c when c.equals("group user remove") && Permissions.edit(member) -> groupUserRemoveCommand;
+				case String c when c.equals("hns show") && Permissions.view() -> hnsShowCommand;
+				case String c when c.equals("hns showmore") && Permissions.view() -> hnsShowMoreCommand;
+				case String c when c.equals("hns add") && Permissions.create(member) -> hnsAddCommand;
+				case String c when c.equals("hns edit") && Permissions.view() -> hnsEditCommand;
+				case String c when c.equals("hns list") && Permissions.view() -> hnsListCommand;
+				case String c when c.equals("hns tutorial") && Permissions.view() -> hnsTutorialCommand;
+				case String c when c.equals("pg show") && Permissions.view() -> pgShowCommand;
+				case String c when c.equals("pg add") && Permissions.create(member) -> pgAddCommand;
+				case String c when c.equals("pg edit") && Permissions.view() -> pgEditCommand;
+				case String c when c.equals("pg list") && Permissions.view() -> pgListCommand;
+				default -> this;
+			};
+		} catch (final Exception e) {
+			return new ErrorHandler(e);
+		}
+	}
+
+	private record ErrorHandler(@NonNull Exception exception) implements CommandAdapter {
+		@Override
+		public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
+			return interactionHook.editOriginalEmbeds(ErrorEmbed.of(event.getInteraction(), exception));
+		}
 	}
 }
