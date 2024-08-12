@@ -56,9 +56,15 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 		}
 		//#endif
 
-		event.deferReply().queue(interactionHook -> handleButton(event)
-				.handle(interactionHook, event)
-				.queue());
+		event.deferReply().queue(interactionHook -> {
+			try {
+				handleButton(event)
+						.handle(interactionHook, event)
+						.queue();
+			} catch (Exception e) {
+				new ErrorHandler(e).handle(interactionHook, event);
+			}
+		});
 	}
 
 	@Override
@@ -69,40 +75,36 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 	}
 
 	private @NonNull ButtonAdapter handleButton(@NonNull final ButtonInteractionEvent event) {
-		try {
-			return switch (event.getComponentId().split(":")) {
-				case String[] b when b.length == 2 &&
-						b[0].equals("approve") &&
-						Permissions.edit(event.getMember()) -> approveButton;
-				case String[] b when b.length == 2 &&
-						b[0].equals("group") &&
-						Permissions.view() -> groupButton;
-				case String[] b when b.length == 3 &&
-						b[0].equals("hns") &&
-						Permissions.view() -> hnsShowButton;
-				case String[] b when b.length == 3 &&
-						b[0].equals("tutorial") &&
-						b[2].equals("suggestion") &&
-						Permissions.view() -> tutorialSuggestionButtons;
-				case String[] b when b.length == 3 &&
-						b[0].equals("tutorial") &&
-						b[2].equals("list") &&
-						Permissions.view() -> tutorialListButtons;
-				case String[] b when b.length == 3 &&
-						b[0].equals("list") &&
-						b[1].equals("pg") &&
-						Permissions.view() -> pgListButtons;
-				case String[] b when b.length == 3 &&
-						b[0].equals("list") &&
-						b[1].equals("hns") &&
-						Permissions.view() -> hnsListButtons;
-				case String[] b when b.length == 3 &&
-						b[0].equals("group") -> groupListButtons;
-				default -> this;
-			};
-		} catch (final Exception e) {
-			return new ErrorHandler(e);
-		}
+		return switch (event.getComponentId().split(":")) {
+			case String[] b when b.length == 2 &&
+					b[0].equals("approve") &&
+					Permissions.edit(event.getMember()) -> approveButton;
+			case String[] b when b.length == 2 &&
+					b[0].equals("group") &&
+					Permissions.view() -> groupButton;
+			case String[] b when b.length == 3 &&
+					b[0].equals("hns") &&
+					Permissions.view() -> hnsShowButton;
+			case String[] b when b.length == 3 &&
+					b[0].equals("tutorial") &&
+					b[2].equals("suggestion") &&
+					Permissions.view() -> tutorialSuggestionButtons;
+			case String[] b when b.length == 3 &&
+					b[0].equals("tutorial") &&
+					b[2].equals("list") &&
+					Permissions.view() -> tutorialListButtons;
+			case String[] b when b.length == 3 &&
+					b[0].equals("list") &&
+					b[1].equals("pg") &&
+					Permissions.view() -> pgListButtons;
+			case String[] b when b.length == 3 &&
+					b[0].equals("list") &&
+					b[1].equals("hns") &&
+					Permissions.view() -> hnsListButtons;
+			case String[] b when b.length == 3 &&
+					b[0].equals("group") -> groupListButtons;
+			default -> this;
+		};
 	}
 
 	private record ErrorHandler(@NonNull Exception exception) implements ButtonAdapter {
