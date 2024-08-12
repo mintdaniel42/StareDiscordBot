@@ -103,15 +103,15 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 	@Contract(pure = true, value = "_, _ -> new")
 	private @NonNull Command.Choice[] autoCompletePage(@NonNull final String command, @NonNull final String input) {
 		return switch (command) {
-			case "hns list" -> LongStream.range(1, Math.min(databaseAdapter.getHnsPages(), 25) + 1)
-					.boxed()
-					.filter(operand -> String.valueOf(operand + 1).startsWith(input))
-					.map(page -> new Command.Choice(String.valueOf(page + 1), page))
-					.toArray(Command.Choice[]::new);
-			case "pg list" -> LongStream.range(1, Math.min(databaseAdapter.getPgPages(), 25) + 1)
+			case "hns list" -> LongStream.range(0, Math.min(databaseAdapter.getHnsPages(), 25))
 					.boxed()
 					.filter(operand -> String.valueOf(operand).startsWith(input))
-					.map(page -> new Command.Choice(String.valueOf(page + 1), page))
+					.map(page -> new Command.Choice(String.valueOf(page), page))
+					.toArray(Command.Choice[]::new);
+			case "pg list" -> LongStream.range(0, Math.min(databaseAdapter.getPgPages(), 25))
+					.boxed()
+					.filter(operand -> String.valueOf(operand).startsWith(input))
+					.map(page -> new Command.Choice(String.valueOf(page), page))
 					.toArray(Command.Choice[]::new);
 			case "tutorial" -> Arrays.stream(R.Tutorials.list())
 					.filter(tutorialModel -> tutorialModel.getTitle().contains(input) || tutorialModel.getId().contains(input))
