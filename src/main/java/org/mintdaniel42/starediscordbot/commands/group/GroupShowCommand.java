@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
-import org.mintdaniel42.starediscordbot.buttons.ListButtons;
+import org.mintdaniel42.starediscordbot.buttons.list.GroupListButtons;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.data.GroupModel;
@@ -23,7 +23,7 @@ public final class GroupShowCommand implements CommandAdapter {
 		if (event.getOption("tag") instanceof final OptionMapping tagMapping) {
 			if (databaseAdapter.getGroup(tagMapping.getAsString()) instanceof final GroupModel groupModel) {
 				return interactionHook.editOriginalEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
-						.setComponents(ListButtons.create(groupModel, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())));
+						.setComponents(GroupListButtons.create(groupModel, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())));
 			} else return interactionHook.editOriginal(R.Strings.ui("this_group_does_not_exist"));
 		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
 	}

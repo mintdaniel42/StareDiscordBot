@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
+import org.mintdaniel42.starediscordbot.buttons.list.GroupListButtons;
 import org.mintdaniel42.starediscordbot.buttons.list.HNSListButtons;
 import org.mintdaniel42.starediscordbot.buttons.list.PGListButtons;
 import org.mintdaniel42.starediscordbot.buttons.list.TutorialListButtons;
@@ -32,6 +33,7 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 	@NonNull private final ButtonAdapter tutorialListButtons;
 	@NonNull private final ButtonAdapter pgListButtons;
 	@NonNull private final ButtonAdapter hnsListButtons;
+	@NonNull private final ButtonAdapter groupListButtons;
 
 	public ButtonDispatcher(@NonNull final DatabaseAdapter databaseAdapter) {
 		approveButton = new ApproveButton(databaseAdapter);
@@ -41,6 +43,7 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 		tutorialListButtons = new TutorialListButtons();
 		pgListButtons = new PGListButtons(databaseAdapter);
 		hnsListButtons = new HNSListButtons(databaseAdapter);
+		groupListButtons = new GroupListButtons(databaseAdapter);
 	}
 
 	@Override
@@ -93,6 +96,8 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 						b[0].equals("list") &&
 						b[1].equals("hns") &&
 						Permissions.view() -> hnsListButtons;
+				case String[] b when b.length == 3 &&
+						b[0].equals("group") -> groupListButtons;
 				default -> this;
 			};
 		} catch (final Exception e) {

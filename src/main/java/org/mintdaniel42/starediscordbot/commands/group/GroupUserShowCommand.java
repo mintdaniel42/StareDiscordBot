@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
-import org.mintdaniel42.starediscordbot.buttons.ListButtons;
+import org.mintdaniel42.starediscordbot.buttons.list.GroupListButtons;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.data.GroupModel;
@@ -29,7 +29,7 @@ public final class GroupUserShowCommand implements CommandAdapter {
 				if (databaseAdapter.getUser(uuid) instanceof final UserModel userModel) {
 					if (userModel.getGroup() instanceof final GroupModel groupModel) {
 						return interactionHook.editOriginalEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
-								.setComponents(ListButtons.create(groupModel, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())));
+								.setComponents(GroupListButtons.create(groupModel, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())));
 					} else return interactionHook.editOriginal(R.Strings.ui("the_user_s_is_not_in_any_group",
 							userModel.getUsername()));
 				} else return interactionHook.editOriginal(R.Strings.ui("this_user_entry_does_not_exist"));

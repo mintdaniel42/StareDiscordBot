@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
-import org.mintdaniel42.starediscordbot.buttons.ListButtons;
+import org.mintdaniel42.starediscordbot.buttons.list.GroupListButtons;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.data.GroupModel;
 import org.mintdaniel42.starediscordbot.data.UserModel;
@@ -31,7 +31,7 @@ public final class GroupButton implements ButtonAdapter {
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
 		if (databaseAdapter.getGroup(event.getComponentId().split(":")[1]) instanceof final GroupModel groupModel) {
 			return interactionHook.editOriginalEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0))
-					.setComponents(ListButtons.create(groupModel, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())));
+					.setComponents(GroupListButtons.create(groupModel, 0, databaseAdapter.getGroupMemberPages(groupModel.getTag())));
 		} else return interactionHook.editOriginal(R.Strings.ui("this_group_does_not_exist"));
 	}
 }
