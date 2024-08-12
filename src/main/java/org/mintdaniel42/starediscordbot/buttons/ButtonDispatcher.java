@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.GroupButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.HNSShowButton;
+import org.mintdaniel42.starediscordbot.buttons.misc.TutorialButtons;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
 import org.mintdaniel42.starediscordbot.utils.Options;
@@ -24,11 +25,13 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 	@NonNull private final ButtonAdapter approveButton;
 	@NonNull private final ButtonAdapter groupButton;
 	@NonNull private final ButtonAdapter hnsShowButton;
+	@NonNull private final ButtonAdapter tutorialButtons;
 
 	public ButtonDispatcher(@NonNull final DatabaseAdapter databaseAdapter) {
 		approveButton = new ApproveButton(databaseAdapter);
 		groupButton = new GroupButton(databaseAdapter);
 		hnsShowButton = new HNSShowButton(databaseAdapter);
+		tutorialButtons = new TutorialButtons();
 	}
 
 	@Override
@@ -65,6 +68,9 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 				case String[] b when b.length == 3 &&
 						b[0].equals("hns") &&
 						Permissions.view() -> hnsShowButton;
+				case String[] b when b.length == 3 &&
+						b[0].equals("tutorial") &&
+						Permissions.view() -> tutorialButtons;
 				default -> this;
 			};
 		} catch (final Exception e) {

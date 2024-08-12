@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.buttons.ButtonDispatcher;
 import org.mintdaniel42.starediscordbot.buttons.ListButtons;
-import org.mintdaniel42.starediscordbot.buttons.TutorialButtons;
 import org.mintdaniel42.starediscordbot.commands.AutoCompletionHandler;
 import org.mintdaniel42.starediscordbot.commands.CommandDispatcher;
 import org.mintdaniel42.starediscordbot.commands.CommandList;
@@ -36,8 +35,7 @@ public final class Bot extends ListenerAdapter {
 						this,
 
 						// TODO: migrate this
-						new ListButtons(databaseAdapter),
-						new TutorialButtons()
+						new ListButtons(databaseAdapter)
 				)
 				.build();
 
