@@ -45,7 +45,7 @@ public final class GroupEditCommand implements CommandAdapter {
 										requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
 														member.getAsMention(),
 														timestamp))
-												.setComponents(ApproveButton.create(timestamp))
+												.setActionRow(ApproveButton.create(timestamp))
 												.addEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0, true));
 										return interactionHook.editOriginal(R.Strings.ui("the_entry_change_was_successfully_requested"));
 									} else

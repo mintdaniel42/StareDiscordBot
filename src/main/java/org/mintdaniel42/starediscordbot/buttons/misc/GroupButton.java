@@ -22,8 +22,9 @@ public final class GroupButton implements ButtonAdapter {
 	public static @NonNull Button create(@NonNull final UserModel userModel) {
 		return Button.primary(
 				String.format("group:%s", userModel.getGroup() != null ? userModel.getGroup().getTag() : null),
-				R.Strings.ui("show_group")
-		).withEmoji(R.Emojis.group).withDisabled(userModel.getGroup() == null);
+						R.Strings.ui("show_group"))
+				.withEmoji(R.Emojis.group)
+				.withDisabled(userModel.getGroup() == null);
 	}
 
 	@Override

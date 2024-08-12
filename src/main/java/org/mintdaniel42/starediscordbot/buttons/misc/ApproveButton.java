@@ -18,19 +18,18 @@ public final class ApproveButton implements ButtonAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Contract(pure = true, value = "_ -> new")
-	public static @NonNull ActionRow create(final long id) {
-		return ActionRow.of(Button.success(
+	public static @NonNull Button create(final long id) {
+		return Button.success(
 						"approve:%s".formatted(id),
-						R.Strings.ui("approve_this_change")
-						).withEmoji(R.Emojis.approve)
-						.withDisabled(id == -1)
-		);
+						R.Strings.ui("approve_this_change"))
+				.withEmoji(R.Emojis.approve)
+				.withDisabled(id == -1);
 	}
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
 		if (databaseAdapter.mergeRequest(Long.parseLong(event.getComponentId().split(":")[1]))) {
-			return interactionHook.editOriginalComponents(create(-1));
+			return interactionHook.editOriginalComponents(ActionRow.of(create(-1)));
 		} else return interactionHook.editOriginal(R.Strings.ui("request_could_not_be_merged"));
 	}
 }
