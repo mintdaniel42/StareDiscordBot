@@ -15,7 +15,7 @@ import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
-public class PGListButtons implements ButtonAdapter {
+public final class PGListButtons implements ButtonAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Contract(pure = true, value = "_, _ -> new")

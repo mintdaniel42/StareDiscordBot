@@ -15,7 +15,7 @@ import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
-public class HNSListButtons implements ButtonAdapter {
+public final class HNSListButtons implements ButtonAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Contract(pure = true, value = "_, _ -> new")
