@@ -1,7 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands;
 
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
@@ -15,15 +14,32 @@ import org.mintdaniel42.starediscordbot.data.RequestModel;
 import org.mintdaniel42.starediscordbot.data.UsernameModel;
 import org.mintdaniel42.starediscordbot.utils.Calculator;
 import org.mintdaniel42.starediscordbot.utils.R;
+import ru.lanwen.verbalregex.VerbalExpression;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.LongStream;
 
-@RequiredArgsConstructor
 public final class AutoCompletionHandler extends ListenerAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
+	@NonNull private final Pattern numberPattern;
+
+	public AutoCompletionHandler(@NonNull final DatabaseAdapter databaseAdapter) {
+		this.databaseAdapter = databaseAdapter;
+		numberPattern = Pattern.compile(
+				VerbalExpression.regex()
+						.maybe("-")
+						.digit()
+						.oneOrMore()
+						.maybe(VerbalExpression.regex()
+								.find(".")
+								.digit()
+								.oneOrMore())
+						.build()
+						.toString()
+		);
+	}
 
 	@Override
 	public void onCommandAutoCompleteInteraction(@NonNull final CommandAutoCompleteInteractionEvent event) {
@@ -52,7 +68,7 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 	@Contract(pure = true, value = "_ -> new")
 	private @NonNull Command.Choice[] autoCompleteDouble(@NonNull final String input) {
 		if (!input.isBlank()) {
-			final var matcher = Pattern.compile("[+-]?((\\d+(\\.\\d*)?)|(\\.\\d+))").matcher(input);
+			final var matcher = numberPattern.matcher(input);
 			final var number = matcher.find() ? Double.parseDouble(matcher.group()) : 0;
 
 			if (number <= 1_000_000) {
