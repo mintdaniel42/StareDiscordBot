@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
-import org.mintdaniel42.starediscordbot.buttons.list.TutorialListButtons;
 import org.mintdaniel42.starediscordbot.data.TutorialModel;
 import org.mintdaniel42.starediscordbot.embeds.TutorialEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
@@ -33,17 +32,9 @@ public final class TutorialSuggestionButtons implements ButtonAdapter {
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
-		final var buttonParts = event.getComponentId().split(":");
-
-		if (R.Tutorials.get(buttonParts[1]) instanceof final TutorialModel tutorialModel) {
-			if (buttonParts[2].equals("suggestion")) {
-				return interactionHook.editOriginalEmbeds(TutorialEmbed.of(tutorialModel))
-						.setComponents(TutorialSuggestionButtons.create(tutorialModel));
-			} else {
-				return interactionHook.editOriginalEmbeds(TutorialEmbed.of(tutorialModel))
-						.setComponents(TutorialListButtons.create(tutorialModel),
-								TutorialSuggestionButtons.create(tutorialModel));
-			}
+		if (R.Tutorials.get(event.getComponentId().split(":")[1]) instanceof final TutorialModel tutorialModel) {
+			return interactionHook.editOriginalEmbeds(TutorialEmbed.of(tutorialModel))
+					.setComponents(TutorialSuggestionButtons.create(tutorialModel));
 		} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
 	}
 }

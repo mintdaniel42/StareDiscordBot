@@ -7,8 +7,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
-import org.mintdaniel42.starediscordbot.buttons.ListButtons;
-import org.mintdaniel42.starediscordbot.buttons.misc.TutorialButtons;
+import org.mintdaniel42.starediscordbot.buttons.list.TutorialListButtons;
 import org.mintdaniel42.starediscordbot.buttons.misc.TutorialSuggestionButtons;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
 import org.mintdaniel42.starediscordbot.data.TutorialModel;
@@ -34,8 +33,8 @@ public final class HNSTutorialCommand implements CommandAdapter {
 			if (tutorialModelOptional.isPresent()) {
 				final var tutorialModel = tutorialModelOptional.get();
 				return interactionHook.editOriginalEmbeds(TutorialEmbed.of(tutorialModel))
-						.setComponents(ListButtons.createTutorial(tutorialModel),
-								TutorialButtons.create(tutorialModel));
+						.setComponents(TutorialListButtons.create(tutorialModel),
+								TutorialSuggestionButtons.create(tutorialModel));
 			} else return interactionHook.editOriginal(R.Strings.ui("no_entries_available"));
 		}
 	}
