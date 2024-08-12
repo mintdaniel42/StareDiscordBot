@@ -26,11 +26,11 @@ public final class PGListCommand implements CommandAdapter {
 		if (event.getOption("page") instanceof final OptionMapping pageMapping) {
 			page = pageMapping.getAsInt();
 		} else page = 0;
-		if (databaseAdapter.getPgUserList(page) instanceof final List<PGUserModel> entries && !entries.isEmpty()) {
-			if (databaseAdapter.getPgPages() > page && page >= 0) {
+		if (databaseAdapter.getPgPages() > page && page >= 0) {
+			if (databaseAdapter.getPgUserList(page) instanceof final List<PGUserModel> entries && !entries.isEmpty()) {
 				return interactionHook.editOriginalEmbeds(ListEmbed.createPgList(databaseAdapter, entries, page))
 						.setComponents(PGListButtons.create(page, databaseAdapter.getPgPages()));
-			} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
-		} else return interactionHook.editOriginal(R.Strings.ui("no_entries_available"));
+			} else return interactionHook.editOriginal(R.Strings.ui("no_entries_available"));
+		} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
 	}
 }

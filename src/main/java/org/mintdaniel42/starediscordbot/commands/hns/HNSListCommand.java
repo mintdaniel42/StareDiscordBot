@@ -26,11 +26,11 @@ public final class HNSListCommand implements CommandAdapter {
 		if (event.getOption("page") instanceof final OptionMapping pageMapping) {
 			page = pageMapping.getAsInt();
 		} else page = 0;
-		if (databaseAdapter.getHnsUserList(page) instanceof final List<HNSUserModel> entries && !entries.isEmpty()) {
-			if (databaseAdapter.getHnsPages() > page && page >= 0) {
+		if (databaseAdapter.getHnsPages() > page && page >= 0) {
+			if (databaseAdapter.getHnsUserList(page) instanceof final List<HNSUserModel> entries && !entries.isEmpty()) {
 				return interactionHook.editOriginalEmbeds(ListEmbed.createHnsList(databaseAdapter, entries, page))
 						.setComponents(HNSListButtons.create(page, databaseAdapter.getHnsPages()));
-			} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
-		} else return interactionHook.editOriginal(R.Strings.ui("no_entries_available"));
+			} else return interactionHook.editOriginal(R.Strings.ui("no_entries_available"));
+		} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
 	}
 }
