@@ -53,7 +53,7 @@ public final class DatabaseAdapter implements AutoCloseable {
                 TableUtils.createTableIfNotExists(connectionSource, UserModel.class);
             }
 
-            metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.V2_2));
+            metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.V2_3));
         } catch (SQLException e) {
             log.error(R.Strings.log("could_not_prepare_database"), e);
             throw new RuntimeException(e);
