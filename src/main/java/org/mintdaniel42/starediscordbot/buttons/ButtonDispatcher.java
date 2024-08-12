@@ -56,7 +56,7 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 		}
 		//#endif
 
-		event.deferReply().queue(interactionHook -> {
+		event.deferEdit().queue(interactionHook -> {
 			try {
 				handleButton(event)
 						.handle(interactionHook, event)
