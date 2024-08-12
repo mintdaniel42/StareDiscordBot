@@ -161,11 +161,6 @@ public enum CommandList {
 	}
 
 	//#if dev
-	private @NonNull CommandData getTutorialCommand() {
-		return Commands.slash("tutorial", R.Strings.ui("show_the_tutorial"))
-				.addOption(OptionType.STRING, "page", R.Strings.ui("page"), false, true);
-	}
-
 	private @NonNull CommandData getStreakCommand() {
 		return Commands.slash("streak", R.Strings.ui("manage_the_streak_of_a_user"))
 				.addSubcommands(
