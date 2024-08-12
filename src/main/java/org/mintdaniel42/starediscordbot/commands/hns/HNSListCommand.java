@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
-import org.mintdaniel42.starediscordbot.buttons.ListButtons;
+import org.mintdaniel42.starediscordbot.buttons.list.HNSListButtons;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.data.HNSUserModel;
@@ -29,7 +29,7 @@ public final class HNSListCommand implements CommandAdapter {
 		if (databaseAdapter.getHnsUserList(page) instanceof final List<HNSUserModel> entries && !entries.isEmpty()) {
 			if (databaseAdapter.getHnsPages() > page && page >= 0) {
 				return interactionHook.editOriginalEmbeds(ListEmbed.createHnsList(databaseAdapter, entries, page))
-						.setComponents(ListButtons.create(ListButtons.Type.hns, page, databaseAdapter.getHnsPages()));
+						.setComponents(HNSListButtons.create(page, databaseAdapter.getHnsPages()));
 			} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
 		} else return interactionHook.editOriginal(R.Strings.ui("no_entries_available"));
 	}
