@@ -84,25 +84,24 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 
 	@Contract(pure = true, value = "_, _ -> new")
 	private @NonNull Command.Choice[] autoCompletePage(@NonNull final String command, @NonNull final String input) {
-		if (command.equals("hns list")) {
-			return LongStream.range(1, Math.min(databaseAdapter.getHnsPages(), 25) + 1)
+		return switch (command) {
+			case "hns list" -> LongStream.range(1, Math.min(databaseAdapter.getHnsPages(), 25) + 1)
 					.boxed()
 					.filter(operand -> String.valueOf(operand).startsWith(input))
 					.map(page -> new Command.Choice(String.valueOf(page), page))
 					.toArray(Command.Choice[]::new);
-		} else if (command.equals("pg list")) {
-			return LongStream.range(1, Math.min(databaseAdapter.getPgPages(), 25) + 1)
+			case "pg list" -> LongStream.range(1, Math.min(databaseAdapter.getPgPages(), 25) + 1)
 					.boxed()
 					.filter(operand -> String.valueOf(operand).startsWith(input))
 					.map(page -> new Command.Choice(String.valueOf(page), page))
 					.toArray(Command.Choice[]::new);
-		} else if (command.equals("tutorial")) {
-			return Arrays.stream(R.Tutorials.list())
+			case "tutorial" -> Arrays.stream(R.Tutorials.list())
 					.filter(tutorialModel -> tutorialModel.getTitle().contains(input) || tutorialModel.getId().contains(input))
 					.limit(25)
 					.map(tutorialModel -> new Command.Choice(tutorialModel.getTitle() + tutorialModel.getPriority(), tutorialModel.getId()))
 					.toArray(Command.Choice[]::new);
-		} else return new Command.Choice[0];
+			default -> new Command.Choice[0];
+		};
 	}
 
 	@Contract(pure = true, value = "_ -> new")
