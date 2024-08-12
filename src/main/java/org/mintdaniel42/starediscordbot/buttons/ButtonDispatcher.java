@@ -15,7 +15,7 @@ import org.mintdaniel42.starediscordbot.buttons.list.PGListButtons;
 import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.GroupButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.HNSShowButton;
-import org.mintdaniel42.starediscordbot.buttons.misc.TutorialButtons;
+import org.mintdaniel42.starediscordbot.buttons.misc.TutorialSuggestionButtons;
 import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
 import org.mintdaniel42.starediscordbot.utils.Options;
@@ -27,7 +27,7 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 	@NonNull private final ButtonAdapter approveButton;
 	@NonNull private final ButtonAdapter groupButton;
 	@NonNull private final ButtonAdapter hnsShowButton;
-	@NonNull private final ButtonAdapter tutorialButtons;
+	@NonNull private final ButtonAdapter tutorialSuggestionButtons;
 	@NonNull private final ButtonAdapter pgListButtons;
 	@NonNull private final ButtonAdapter hnsListButtons;
 
@@ -35,7 +35,7 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 		approveButton = new ApproveButton(databaseAdapter);
 		groupButton = new GroupButton(databaseAdapter);
 		hnsShowButton = new HNSShowButton(databaseAdapter);
-		tutorialButtons = new TutorialButtons();
+		tutorialSuggestionButtons = new TutorialSuggestionButtons();
 		pgListButtons = new PGListButtons(databaseAdapter);
 		hnsListButtons = new HNSListButtons(databaseAdapter);
 	}
@@ -76,7 +76,7 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 						Permissions.view() -> hnsShowButton;
 				case String[] b when b.length == 3 &&
 						b[0].equals("tutorial") &&
-						Permissions.view() -> tutorialButtons;
+						Permissions.view() -> tutorialSuggestionButtons;
 				case String[] b when b.length == 3 &&
 						b[0].equals("list") &&
 						b[1].equals("pg") &&
