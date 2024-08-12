@@ -11,6 +11,7 @@ jcp = "7.1.2"
 jackson-databind = "2.17.2"
 ioutils = "2.16.1"
 wisp = "2.3.0"
+verbalexpressions = "1.8"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
@@ -25,6 +26,7 @@ lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson-databind" }
 ioutils = { module = "commons-io:commons-io", version.ref = "ioutils" }
 wisp = { module = "com.coreoz:wisp", version.ref = "wisp" }
+verbalexpressions = { module = "ru.lanwen.verbalregex:java-verbal-expressions", version.ref = "verbalexpressions" }
 
 [plugins]
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
