@@ -15,9 +15,9 @@ public enum CommandList {
 	group,
 	maintenance,
 	approve,
-	info,
+	info
 	//#if dev
-	//$$ streak,
+	//$$ , streak;
 	//#else
 	;
 	//#endif
