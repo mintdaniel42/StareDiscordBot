@@ -1,6 +1,7 @@
 package org.mintdaniel42.starediscordbot.buttons;
 
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -24,27 +25,10 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.Permissions;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+@RequiredArgsConstructor
 @Slf4j
 public final class ButtonDispatcher extends ListenerAdapter implements ButtonAdapter {
-	@NonNull private final ButtonAdapter approveButton;
-	@NonNull private final ButtonAdapter groupButton;
-	@NonNull private final ButtonAdapter hnsShowButton;
-	@NonNull private final ButtonAdapter tutorialSuggestionButtons;
-	@NonNull private final ButtonAdapter tutorialListButtons;
-	@NonNull private final ButtonAdapter pgListButtons;
-	@NonNull private final ButtonAdapter hnsListButtons;
-	@NonNull private final ButtonAdapter groupListButtons;
-
-	public ButtonDispatcher(@NonNull final DatabaseAdapter databaseAdapter) {
-		approveButton = new ApproveButton(databaseAdapter);
-		groupButton = new GroupButton(databaseAdapter);
-		hnsShowButton = new HNSShowButton(databaseAdapter);
-		tutorialSuggestionButtons = new TutorialSuggestionButtons();
-		tutorialListButtons = new TutorialListButtons();
-		pgListButtons = new PGListButtons(databaseAdapter);
-		hnsListButtons = new HNSListButtons(databaseAdapter);
-		groupListButtons = new GroupListButtons(databaseAdapter);
-	}
+	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override
 	public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
@@ -76,33 +60,21 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 
 	private @NonNull ButtonAdapter handleButton(@NonNull final ButtonInteractionEvent event) {
 		return switch (event.getComponentId().split(":")) {
-			case String[] b when b.length == 2 &&
-					b[0].equals("approve") &&
-					Permissions.edit(event.getMember()) -> approveButton;
-			case String[] b when b.length == 2 &&
-					b[0].equals("group") &&
-					Permissions.view() -> groupButton;
-			case String[] b when b.length == 3 &&
-					b[0].equals("hns") &&
-					Permissions.view() -> hnsShowButton;
-			case String[] b when b.length == 3 &&
-					b[0].equals("tutorial") &&
-					b[2].equals("suggestion") &&
-					Permissions.view() -> tutorialSuggestionButtons;
-			case String[] b when b.length == 3 &&
-					b[0].equals("tutorial") &&
-					b[2].equals("list") &&
-					Permissions.view() -> tutorialListButtons;
-			case String[] b when b.length == 3 &&
-					b[0].equals("list") &&
-					b[1].equals("pg") &&
-					Permissions.view() -> pgListButtons;
-			case String[] b when b.length == 3 &&
-					b[0].equals("list") &&
-					b[1].equals("hns") &&
-					Permissions.view() -> hnsListButtons;
-			case String[] b when b.length == 3 &&
-					b[0].equals("group") -> groupListButtons;
+			case String[] b when b.length == 2 && b[0].equals("approve") && Permissions.edit(event.getMember()) ->
+					new ApproveButton(databaseAdapter);
+			case String[] b when b.length == 2 && b[0].equals("group") && Permissions.view() ->
+					new GroupButton(databaseAdapter);
+			case String[] b when b.length == 3 && b[0].equals("hns") && Permissions.view() ->
+					new HNSShowButton(databaseAdapter);
+			case String[] b when b.length == 3 && b[0].equals("tutorial") && b[2].equals("suggestion") && Permissions.view() ->
+					new TutorialSuggestionButtons();
+			case String[] b when b.length == 3 && b[0].equals("tutorial") && b[2].equals("list") && Permissions.view() ->
+					new TutorialListButtons();
+			case String[] b when b.length == 3 && b[0].equals("list") && b[1].equals("pg") && Permissions.view() ->
+					new PGListButtons(databaseAdapter);
+			case String[] b when b.length == 3 && b[0].equals("list") && b[1].equals("hns") && Permissions.view() ->
+					new HNSListButtons(databaseAdapter);
+			case String[] b when b.length == 3 && b[0].equals("group") -> new GroupListButtons(databaseAdapter);
 			default -> this;
 		};
 	}
