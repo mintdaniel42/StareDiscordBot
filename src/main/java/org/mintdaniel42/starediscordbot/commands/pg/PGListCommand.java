@@ -24,7 +24,7 @@ public final class PGListCommand implements CommandAdapter {
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		final int page;
 		if (event.getOption("page") instanceof final OptionMapping pageMapping) {
-			page = pageMapping.getAsInt();
+			page = pageMapping.getAsInt() - 1;
 		} else page = 0;
 		if (databaseAdapter.getPgPages() > page && page >= 0) {
 			if (databaseAdapter.getPgUserList(page) instanceof final List<PGUserModel> entries && !entries.isEmpty()) {
