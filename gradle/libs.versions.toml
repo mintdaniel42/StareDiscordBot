@@ -9,7 +9,7 @@ lombok = "1.18.34"
 buildConfig = "5.4.0"
 jcp = "7.1.2"
 jackson-databind = "2.17.2"
-ioutils = "2.5"
+ioutils = "2.16.1"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
