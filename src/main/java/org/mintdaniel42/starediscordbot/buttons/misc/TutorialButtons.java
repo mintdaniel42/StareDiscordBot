@@ -33,7 +33,7 @@ public final class TutorialButtons implements ButtonAdapter {
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
-		String[] buttonParts = event.getComponentId().split(":");
+		final var buttonParts = event.getComponentId().split(":");
 
 		if (R.Tutorials.get(buttonParts[1]) instanceof final TutorialModel tutorialModel) {
 			if (buttonParts[2].equals("suggestion")) {

@@ -31,8 +31,7 @@ public final class HNSShowButton implements ButtonAdapter {
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
-		String[] buttonParts = event.getComponentId().split(":");
-
+		final var buttonParts = event.getComponentId().split(":");
 		final var current = Type.valueOf(buttonParts[1]);
 		final var uuid = UUID.fromString(buttonParts[2]);
 
