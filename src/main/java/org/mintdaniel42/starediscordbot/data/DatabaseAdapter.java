@@ -71,6 +71,14 @@ public final class DatabaseAdapter implements AutoCloseable {
             usernameDeleteBuilder.where().le("lastupdated", System.currentTimeMillis() - BuildConfig.maxUsernameAge);
             usernameDeleteBuilder.delete();
 
+            var invalidHnsDeleteBuilder = hnsUserModelDao.deleteBuilder();
+            invalidHnsDeleteBuilder.where().isNull("uuid");
+            invalidHnsDeleteBuilder.delete();
+
+            var invalidPgDeleteBuilder = pgUserModelDao.deleteBuilder();
+            invalidPgDeleteBuilder.where().isNull("uuid");
+            invalidPgDeleteBuilder.delete();
+
         } catch (SQLException e) {
             log.error(R.Strings.log("could_not_clean_database"), e);
         }
