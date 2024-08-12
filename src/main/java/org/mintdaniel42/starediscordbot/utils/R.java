@@ -13,6 +13,7 @@ import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.data.TutorialModel;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -88,7 +89,7 @@ public class R {
 						.filter(Objects::nonNull)
 						.sorted()
 						.toArray(TutorialModel[]::new);
-			} catch (IOException | IllegalArgumentException | NullPointerException _) {
+			} catch (UncheckedIOException | IllegalArgumentException | NullPointerException _) {
 				return new TutorialModel[0];
 			}
 		}
