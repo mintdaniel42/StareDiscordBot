@@ -1,7 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands;
 
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
@@ -15,15 +14,33 @@ import org.mintdaniel42.starediscordbot.data.RequestModel;
 import org.mintdaniel42.starediscordbot.data.UsernameModel;
 import org.mintdaniel42.starediscordbot.utils.Calculator;
 import org.mintdaniel42.starediscordbot.utils.R;
+import ru.lanwen.verbalregex.VerbalExpression;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.LongStream;
 
-@RequiredArgsConstructor
 public final class AutoCompletionHandler extends ListenerAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
+	@NonNull private final Pattern numberPattern;
+
+	public AutoCompletionHandler(@NonNull final DatabaseAdapter databaseAdapter) {
+		this.databaseAdapter = databaseAdapter;
+		numberPattern = Pattern.compile(
+				VerbalExpression.regex()
+						.maybe("-")
+						.digit()
+						.oneOrMore()
+						.maybe(VerbalExpression.regex()
+								.find(".")
+								.or(",")
+								.digit()
+								.oneOrMore())
+						.build()
+						.toString()
+		);
+	}
 
 	@Override
 	public void onCommandAutoCompleteInteraction(@NonNull final CommandAutoCompleteInteractionEvent event) {
@@ -52,7 +69,8 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 	@Contract(pure = true, value = "_ -> new")
 	private @NonNull Command.Choice[] autoCompleteDouble(@NonNull final String input) {
 		if (!input.isBlank()) {
-			final var matcher = Pattern.compile("[+-]?((\\d+(\\.\\d*)?)|(\\.\\d+))").matcher(input);
+			final var matcher = numberPattern.matcher(input);
+
 			final var number = matcher.find() ? Double.parseDouble(matcher.group()) : 0;
 
 			if (number <= 1_000_000) {
@@ -84,25 +102,24 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 
 	@Contract(pure = true, value = "_, _ -> new")
 	private @NonNull Command.Choice[] autoCompletePage(@NonNull final String command, @NonNull final String input) {
-		if (command.equals("hns list")) {
-			return LongStream.range(1, Math.min(databaseAdapter.getHnsPages(), 25) + 1)
+		return switch (command) {
+			case "hns list" -> LongStream.range(1, Math.min(databaseAdapter.getHnsPages(), 25) + 1)
 					.boxed()
 					.filter(operand -> String.valueOf(operand + 1).startsWith(input))
 					.map(page -> new Command.Choice(String.valueOf(page + 1), page))
 					.toArray(Command.Choice[]::new);
-		} else if (command.equals("pg list")) {
-			return LongStream.range(1, Math.min(databaseAdapter.getPgPages(), 25) + 1)
+			case "pg list" -> LongStream.range(1, Math.min(databaseAdapter.getPgPages(), 25) + 1)
 					.boxed()
 					.filter(operand -> String.valueOf(operand).startsWith(input))
 					.map(page -> new Command.Choice(String.valueOf(page + 1), page))
 					.toArray(Command.Choice[]::new);
-		} else if (command.equals("tutorial")) {
-			return Arrays.stream(R.Tutorials.list())
+			case "tutorial" -> Arrays.stream(R.Tutorials.list())
 					.filter(tutorialModel -> tutorialModel.getTitle().contains(input) || tutorialModel.getId().contains(input))
 					.limit(25)
 					.map(tutorialModel -> new Command.Choice(tutorialModel.getTitle() + tutorialModel.getPriority(), tutorialModel.getId()))
 					.toArray(Command.Choice[]::new);
-		} else return new Command.Choice[0];
+			default -> new Command.Choice[0];
+		};
 	}
 
 	@Contract(pure = true, value = "_ -> new")
