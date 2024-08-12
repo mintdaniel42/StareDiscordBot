@@ -60,7 +60,7 @@ public final class DatabaseAdapter implements AutoCloseable {
 	    }
     }
 
-    public void cleanDatabase() {
+    public synchronized void cleanDatabase() {
         // perform cleaning
         try {
             var requestDeleteBuilder = requestModelDao.deleteBuilder();
