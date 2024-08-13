@@ -1,6 +1,7 @@
 name: Build & Upload GitHub Package
 
 on:
+  workflow_dispatch:
   release:
     types: [ published ]
 
