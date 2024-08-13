@@ -50,9 +50,11 @@ public final class GroupEditCommand implements CommandAdapter {
 										return interactionHook.editOriginal(R.Strings.ui("the_entry_change_was_successfully_requested"));
 									} else
 										return interactionHook.editOriginal(R.Strings.ui("the_entry_could_not_be_updated"));
-								}
-							}
-						}
+								} else
+									return interactionHook.editOriginal(R.Strings.ui("the_user_requesting_a_change_could_not_be_found"));
+							} else
+								return interactionHook.editOriginal(R.Strings.ui("the_request_channel_could_not_be_found"));
+						} else return interactionHook.editOriginal(R.Strings.ui("the_guild_could_not_be_found"));
 					} else if (!databaseAdapter.edit(groupModel)) {
 						return interactionHook.editOriginal(R.Strings.ui("the_entry_could_not_be_updated"));
 					} else return interactionHook.editOriginal(R.Strings.ui("the_entry_was_successfully_updated"))
@@ -60,6 +62,5 @@ public final class GroupEditCommand implements CommandAdapter {
 				} else return interactionHook.editOriginal(R.Strings.ui("this_username_does_not_exist"));
 			} else return interactionHook.editOriginal(R.Strings.ui("this_group_does_not_exist"));
 		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
-		return interactionHook.editOriginal(R.Strings.ui("an_impossible_error_occurred")); // TODO more detailed messages
 	}
 }
