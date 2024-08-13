@@ -108,7 +108,7 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 					channel.sendMessageEmbeds(ErrorEmbed.of(event.getInteraction(), exception)).queue();
 				}
 			}
-			return interactionHook.editOriginal(R.Strings.ui("an_error_occured_the_developer_has_been_notified"));
+			return interactionHook.editOriginal(R.Strings.ui("an_error_occurred_the_developer_has_been_notified"));
 		}
 	}
 }
