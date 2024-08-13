@@ -1,3 +1,5 @@
+[![CodeQL](https://github.com/mintdaniel42/StareDiscordBot/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/mintdaniel42/StareDiscordBot/actions/workflows/github-code-scanning/codeql)
+
 # Welcome to the Stare / Prinzessinnen Discord Bot project!
 
 Before you start, ensure you have the following:
