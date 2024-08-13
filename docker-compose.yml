@@ -4,7 +4,7 @@ services:
   bot:
     container_name: stare-bot
     restart: always
-    image: mintdaniel42/prncsdiscordbot:latest
+    image: ghcr.io/mintdaniel42/starediscordbot:master
     volumes:
       - ./.data:/usr/src/app/.data
     env_file:
