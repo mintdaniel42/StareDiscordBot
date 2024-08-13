@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 
 /**
- * Implementing this interface is equivalent to implement the logic for a command.
+ * Implementing this interface is equivalent to implementing the logic for a command.
  * It has to be registered in {@link CommandDispatcher}
  */
 @FunctionalInterface
