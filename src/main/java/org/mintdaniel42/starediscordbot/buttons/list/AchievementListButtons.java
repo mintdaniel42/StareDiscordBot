@@ -19,7 +19,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class AchievementListButtons implements ButtonAdapter {
+public final class AchievementListButtons implements ButtonAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Contract(pure = true, value = "_, _, _, _ -> new")
@@ -49,7 +49,7 @@ public class AchievementListButtons implements ButtonAdapter {
 		} else type = null;
 		if (databaseAdapter.getAchievements(type, points) instanceof final List<AchievementModel> achievementModels) {
 			if (page < achievementModels.size()) {
-				return interactionHook.editOriginalEmbeds(AchievementEmbed.of(achievementModels.get(page)))
+				return interactionHook.editOriginalEmbeds(AchievementEmbed.of(achievementModels.get(page), page + 1, achievementModels.size()))
 						.setComponents(AchievementListButtons.create(type, points, page, achievementModels.size()));
 			} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
 		} else return interactionHook.editOriginal(R.Strings.ui("no_entries_available"));

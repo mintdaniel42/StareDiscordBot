@@ -17,7 +17,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class AchievementsListCommand implements CommandAdapter {
+public final class AchievementsListCommand implements CommandAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override
@@ -38,7 +38,7 @@ public class AchievementsListCommand implements CommandAdapter {
 			System.out.println(page);
 			System.out.println(achievementModels.size());
 			if (page <= achievementModels.size()) {
-				return interactionHook.editOriginalEmbeds(AchievementEmbed.of(achievementModels.get(page - 1)))
+				return interactionHook.editOriginalEmbeds(AchievementEmbed.of(achievementModels.get(page - 1), page, achievementModels.size()))
 						.setComponents(AchievementListButtons.create(type, points, page - 1, achievementModels.size()));
 			} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
 		} else return interactionHook.editOriginal(R.Strings.ui("no_entries_available"));

@@ -16,7 +16,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class AchievementsAddCommand implements CommandAdapter {
+public final class AchievementsAddCommand implements CommandAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override
@@ -40,7 +40,7 @@ public class AchievementsAddCommand implements CommandAdapter {
 				case SUCCESS -> R.Strings.ui("the_achievement_was_successfully_created");
 				case DUPLICATE -> R.Strings.ui("this_achievement_already_exists");
 				case ERROR -> R.Strings.ui("the_achievement_could_not_be_added");
-			}).setEmbeds(AchievementEmbed.of(model));
+			}).setEmbeds(AchievementEmbed.of(model, 0, 1));
 		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
 	}
 }
