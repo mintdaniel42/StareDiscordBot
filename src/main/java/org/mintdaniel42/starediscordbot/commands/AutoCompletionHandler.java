@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.LongStream;
 
+// TODO: add autocomplete for achievements
 public final class AutoCompletionHandler extends ListenerAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 	@NonNull private final Pattern numberPattern;
