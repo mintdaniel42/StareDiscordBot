@@ -46,7 +46,8 @@ public final class GroupEditCommand implements CommandAdapter {
 														member.getAsMention(),
 														timestamp))
 												.setActionRow(ApproveButton.create(timestamp))
-												.addEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0, true));
+												.addEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0, true))
+												.queue();
 										return interactionHook.editOriginal(R.Strings.ui("the_entry_change_was_successfully_requested"));
 									} else
 										return interactionHook.editOriginal(R.Strings.ui("the_entry_could_not_be_updated"));

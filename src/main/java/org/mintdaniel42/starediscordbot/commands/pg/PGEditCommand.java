@@ -48,7 +48,8 @@ public final class PGEditCommand implements CommandAdapter {
 														member.getAsMention(),
 														timestamp))
 												.setActionRow(ApproveButton.create(timestamp))
-												.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG, true));
+												.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG, true))
+												.queue();
 										return interactionHook.editOriginal(R.Strings.ui("the_entry_change_was_successfully_requested"));
 									} else
 										return interactionHook.editOriginal(R.Strings.ui("the_entry_could_not_be_updated"));
