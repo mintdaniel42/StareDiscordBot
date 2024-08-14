@@ -19,7 +19,8 @@ public class AchievementModel {
 	@DatabaseField int points;
 
 	public enum Type {
-		afk,
-		spelling
+		riddle,
+		normal,
+		longterm
 	}
 }
