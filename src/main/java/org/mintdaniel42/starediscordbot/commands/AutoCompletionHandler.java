@@ -111,10 +111,10 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 					.filter(operand -> String.valueOf(operand).startsWith(input))
 					.map(page -> new Command.Choice(String.valueOf(page), page))
 					.toArray(Command.Choice[]::new);
-			case "tutorial" -> Arrays.stream(R.Tutorials.list())
+			case "hns tutorial" -> Arrays.stream(R.Tutorials.list())
 					.filter(tutorialModel -> tutorialModel.getTitle().contains(input) || tutorialModel.getId().contains(input))
 					.limit(25)
-					.map(tutorialModel -> new Command.Choice(tutorialModel.getTitle() + tutorialModel.getPriority(), tutorialModel.getId()))
+					.map(tutorialModel -> new Command.Choice(tutorialModel.getTitle(), tutorialModel.getId()))
 					.toArray(Command.Choice[]::new);
 			default -> new Command.Choice[0];
 		};
