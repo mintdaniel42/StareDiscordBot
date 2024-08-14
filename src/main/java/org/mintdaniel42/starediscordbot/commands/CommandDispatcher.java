@@ -14,6 +14,8 @@ import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.commands.group.*;
 import org.mintdaniel42.starediscordbot.commands.hns.*;
+import org.mintdaniel42.starediscordbot.commands.hns.achievements.AchievementsAddCommand;
+import org.mintdaniel42.starediscordbot.commands.hns.achievements.AchievementsListCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.ApproveChangeCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.InfoCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.MaintenanceCommand;
@@ -91,6 +93,10 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 			case String c when c.equals("hns edit") && Permissions.view() -> new HNSEditCommand(databaseAdapter);
 			case String c when c.equals("hns list") && Permissions.view() -> new HNSListCommand(databaseAdapter);
 			case String c when c.equals("hns tutorial") && Permissions.view() -> new HNSTutorialCommand();
+			case String c when c.equals("hns achievements add") && Permissions.view() ->
+					new AchievementsAddCommand(databaseAdapter);
+			case String c when c.equals("hns achievements list") && Permissions.view() ->
+					new AchievementsListCommand(databaseAdapter);
 			case String c when c.equals("pg show") && Permissions.view() -> new PGShowCommand(databaseAdapter);
 			case String c when c.equals("pg add") && Permissions.create(event.getMember()) ->
 					new PGAddCommand(databaseAdapter);

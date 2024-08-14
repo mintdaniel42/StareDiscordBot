@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.*;
+import org.mintdaniel42.starediscordbot.data.AchievementModel;
 import org.mintdaniel42.starediscordbot.data.GroupModel;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -83,8 +84,30 @@ public enum CommandList {
 						//#if dev
 						, new SubcommandData("tutorial", R.Strings.ui("show_the_tutorial"))
 								.addOption(OptionType.STRING, "page", R.Strings.ui("page"), false, true)
-						//#endif
+				)
+				.addSubcommandGroups(
+						new SubcommandGroupData("achievements", R.Strings.ui("achievements_related_commands"))
+								.addSubcommands(
+										new SubcommandData("add", R.Strings.ui("add_an_achievement"))
+												.addOption(OptionType.STRING, "name", R.Strings.ui("achievement_name"), true)
+												.addOption(OptionType.STRING, "description", R.Strings.ui("achievement_description"), true)
+												.addOptions(new OptionData(OptionType.STRING, "type", R.Strings.ui("achievement_type"), true)
+														.addChoice(AchievementModel.Type.riddle.name(), R.Strings.ui("riddle"))
+														.addChoice(AchievementModel.Type.normal.name(), R.Strings.ui("normal"))
+														.addChoice(AchievementModel.Type.longterm.name(), R.Strings.ui("longterm")))
+												.addOption(OptionType.STRING, "points", R.Strings.ui("achievement_points"), true),
+										new SubcommandData("list", R.Strings.ui("show_achievements"))
+												.addOption(OptionType.STRING, "points", R.Strings.ui("filter_by_achievement_points"), true)
+												.addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true)
+												.addOptions(new OptionData(OptionType.STRING, "type", R.Strings.ui("filter_by_achievement_type"))
+														.addChoice(AchievementModel.Type.riddle.name(), R.Strings.ui("riddle"))
+														.addChoice(AchievementModel.Type.normal.name(), R.Strings.ui("normal"))
+														.addChoice(AchievementModel.Type.longterm.name(), R.Strings.ui("longterm")))
+								)
 				);
+		//#else
+		//$$ );
+		//#endif
 	}
 
 	private @NonNull CommandData getPgCommand() {
