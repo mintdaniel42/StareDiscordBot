@@ -416,13 +416,14 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     /**
      * @param achievementModel the {@link AchievementModel} to be added
-     * @return {@code true} if it was added, {@code false} otherwise
+     * @return a status code
      */
-    public boolean addAchievement(@NonNull AchievementModel achievementModel) {
+    public Status addAchievement(@NonNull AchievementModel achievementModel) {
         try {
-            return achievementModelDao.createIfNotExists(achievementModel).equals(achievementModel);
+            if (achievementModelDao.idExists(achievementModel.getUuid())) return Status.DUPLICATE;
+            else return achievementModelDao.create(achievementModel) == 1 ? Status.SUCCESS : Status.ERROR;
         } catch (SQLException _) {
-            return false;
+            return Status.ERROR;
         }
     }
 
