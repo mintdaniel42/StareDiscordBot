@@ -19,24 +19,26 @@ import java.util.UUID;
 @Slf4j
 public final class DatabaseAdapter implements AutoCloseable {
     @NonNull private final ConnectionSource connectionSource;
+    private final Dao<MetaDataModel, Integer> metaDataModelDao;
     private final Dao<HNSUserModel, UUID> hnsUserModelDao;
     private final Dao<PGUserModel, UUID> pgUserModelDao;
     private final Dao<RequestModel, Long> requestModelDao;
     private final Dao<UsernameModel, UUID> usernameModelDao;
     private final Dao<UserModel, UUID> userModelDao;
     private final Dao<GroupModel, String> groupModelDao;
-    private final Dao<MetaDataModel, Integer> metaDataModelDao;
+    private final Dao<AchievementModel, UUID> achievementModelDao;
 
     public DatabaseAdapter(@NonNull String jdbcUrl) throws Exception {
         connectionSource = new JdbcPooledConnectionSource(jdbcUrl);
 
+        metaDataModelDao = DaoManager.createDao(connectionSource, MetaDataModel.class);
         hnsUserModelDao = DaoManager.createDao(connectionSource, HNSUserModel.class);
         pgUserModelDao = DaoManager.createDao(connectionSource, PGUserModel.class);
         requestModelDao = DaoManager.createDao(connectionSource, RequestModel.class);
         usernameModelDao = DaoManager.createDao(connectionSource, UsernameModel.class);
         userModelDao = DaoManager.createDao(connectionSource, UserModel.class);
         groupModelDao = DaoManager.createDao(connectionSource, GroupModel.class);
-        metaDataModelDao = DaoManager.createDao(connectionSource, MetaDataModel.class);
+        achievementModelDao = DaoManager.createDao(connectionSource, AchievementModel.class);
 
         prepareDatabase();
     }
@@ -51,6 +53,9 @@ public final class DatabaseAdapter implements AutoCloseable {
                 TableUtils.createTableIfNotExists(connectionSource, RequestModel.class);
                 TableUtils.createTableIfNotExists(connectionSource, GroupModel.class);
                 TableUtils.createTableIfNotExists(connectionSource, UserModel.class);
+            }
+            if (getVersion() == MetaDataModel.Version.V2_3) {
+                TableUtils.createTableIfNotExists(connectionSource, AchievementModel.class);
             }
 
             metaDataModelDao.createOrUpdate(new MetaDataModel(MetaDataModel.Version.V2_3));
@@ -111,7 +116,7 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
-    public @Nullable List<HNSUserModel> getHnsUserList(int page) {
+    public @Nullable List<HNSUserModel> getHnsUserList(final int page) {
         try {
             return hnsUserModelDao.queryBuilder()
                     .orderByNullsLast("points", false)
@@ -125,7 +130,7 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
-    public @Nullable List<PGUserModel> getPgUserList(int page) {
+    public @Nullable List<PGUserModel> getPgUserList(final int page) {
         try {
             return pgUserModelDao.queryBuilder()
                     .orderByNullsLast("points", false)
@@ -147,7 +152,7 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
-    public @Nullable List<UsernameModel> getUsernames(@NonNull String having) {
+    public @Nullable List<UsernameModel> getUsernames(@NonNull final String having) {
         try {
             return usernameModelDao.queryBuilder().where().like("username", "%" + having + "%").query();
         } catch (SQLException _) {
@@ -168,7 +173,34 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
-    public @Nullable HNSUserModel getHnsUser(@NonNull UUID uuid) {
+    public @Nullable List<AchievementModel> getAchievements(@Nullable final AchievementModel.Type type, final int points) {
+        try {
+            if (type == null) return achievementModelDao.queryBuilder()
+                    .where()
+                    .eq("points", points)
+                    .query();
+            else return achievementModelDao.queryBuilder()
+                    .where()
+                    .eq("type", type)
+                    .eq("points", points)
+                    .query();
+        } catch (SQLException _) {
+            return null;
+        }
+    }
+
+    public @NonNull MetaDataModel.Version getVersion() {
+        try {
+            if (metaDataModelDao.queryForFirst() instanceof MetaDataModel metaDataModel) {
+                return metaDataModel.getVersion();
+            }
+            return MetaDataModel.Version.UNKNOWN;
+        } catch (SQLException _) {
+            return MetaDataModel.Version.UNKNOWN;
+        }
+    }
+
+    public @Nullable HNSUserModel getHnsUser(@NonNull final UUID uuid) {
         try {
             return hnsUserModelDao.queryBuilder().where().eq("uuid", uuid).queryForFirst();
         } catch (SQLException _) {
@@ -176,7 +208,7 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
-    public @Nullable PGUserModel getPgUser(@NonNull UUID uuid) {
+    public @Nullable PGUserModel getPgUser(@NonNull final UUID uuid) {
         try {
             return pgUserModelDao.queryBuilder().where().eq("uuid", uuid).queryForFirst();
         } catch (SQLException _) {
@@ -184,7 +216,7 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
-    public @Nullable GroupModel getGroup(@NonNull String tag) {
+    public @Nullable GroupModel getGroup(@NonNull final String tag) {
         try {
             return groupModelDao.queryBuilder()
                     .where()
@@ -208,7 +240,7 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
-    public @Nullable UserModel getUser(@NonNull UUID uuid) {
+    public @Nullable UserModel getUser(@NonNull final UUID uuid) {
         try {
             final var userModel = userModelDao.queryBuilder()
                     .where()
@@ -229,7 +261,7 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
-    public @Nullable UsernameModel getUsernameModel(@NonNull UUID uuid) {
+    public @Nullable UsernameModel getUsernameModel(@NonNull final UUID uuid) {
         try {
             return usernameModelDao.queryForId(uuid);
         } catch (SQLException _) {
@@ -237,22 +269,11 @@ public final class DatabaseAdapter implements AutoCloseable {
         }
     }
 
-    public @Nullable UsernameModel getUsernameModel(@NonNull String username) {
+    public @Nullable UsernameModel getUsernameModel(@NonNull final String username) {
         try {
             return usernameModelDao.queryBuilder().where().eq("username", username).queryForFirst();
         } catch (SQLException _) {
             return null;
-        }
-    }
-
-    public @NonNull MetaDataModel.Version getVersion() {
-        try {
-            if (metaDataModelDao.queryForFirst() instanceof MetaDataModel metaDataModel) {
-                return metaDataModel.getVersion();
-            }
-            return MetaDataModel.Version.UNKNOWN;
-        } catch (SQLException _) {
-            return MetaDataModel.Version.UNKNOWN;
         }
     }
 
@@ -388,6 +409,18 @@ public final class DatabaseAdapter implements AutoCloseable {
             if (userModel.getPgUser() != null) addPgUser(userModel.getPgUser());
             if (userModel.getHnsUser() != null) addHnsUser(userModel.getHnsUser());
             return userModelDao.createIfNotExists(userModel).equals(userModel);
+        } catch (SQLException _) {
+            return false;
+        }
+    }
+
+    /**
+     * @param achievementModel the {@link AchievementModel} to be added
+     * @return {@code true} if it was added, {@code false} otherwise
+     */
+    public boolean addAchievement(@NonNull AchievementModel achievementModel) {
+        try {
+            return achievementModelDao.createIfNotExists(achievementModel).equals(achievementModel);
         } catch (SQLException _) {
             return false;
         }
