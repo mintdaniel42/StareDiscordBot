@@ -603,4 +603,10 @@ public final class DatabaseAdapter implements AutoCloseable {
     public void close() throws Exception{
         connectionSource.close();
     }
+
+    public enum Status {
+        SUCCESS,
+        DUPLICATE,
+        ERROR
+	}
 }
