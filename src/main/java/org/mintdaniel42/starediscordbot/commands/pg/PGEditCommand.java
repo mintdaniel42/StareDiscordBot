@@ -43,7 +43,7 @@ public final class PGEditCommand implements CommandAdapter {
 						if (event.getGuild() instanceof Guild guild) {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof TextChannel requestChannel) {
 								if (event.getMember() instanceof Member member) {
-									if (databaseAdapter.addRequest(RequestModel.from(timestamp, pgUserModel))) {
+									if (databaseAdapter.addRequest(RequestModel.from(timestamp, pgUserModel)).equals(DatabaseAdapter.Status.SUCCESS)) { // TODO replace with switch case
 										requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
 														member.getAsMention(),
 														timestamp))
@@ -57,7 +57,7 @@ public final class PGEditCommand implements CommandAdapter {
 							} else
 								return interactionHook.editOriginal(R.Strings.ui("the_request_channel_could_not_be_found"));
 						} else return interactionHook.editOriginal(R.Strings.ui("the_guild_could_not_be_found"));
-					} else if (!databaseAdapter.edit(pgUserModel)) {
+					} else if (!databaseAdapter.edit(pgUserModel).equals(DatabaseAdapter.Status.SUCCESS)) {
 						return interactionHook.editOriginal(R.Strings.ui("the_entry_could_not_be_updated"));
 					} else return interactionHook.editOriginal(R.Strings.ui("the_entry_was_successfully_updated"))
 							.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.PG));

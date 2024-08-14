@@ -41,7 +41,7 @@ public final class GroupEditCommand implements CommandAdapter {
 						if (event.getGuild() instanceof final Guild guild) {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof final TextChannel requestChannel) {
 								if (event.getMember() instanceof final Member member) {
-									if (databaseAdapter.addRequest(RequestModel.from(timestamp, groupModel))) {
+									if (databaseAdapter.addRequest(RequestModel.from(timestamp, groupModel)).equals(DatabaseAdapter.Status.SUCCESS)) { // TODO: replace with switch case to cover all cases
 										requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
 														member.getAsMention(),
 														timestamp))
@@ -55,7 +55,7 @@ public final class GroupEditCommand implements CommandAdapter {
 							} else
 								return interactionHook.editOriginal(R.Strings.ui("the_request_channel_could_not_be_found"));
 						} else return interactionHook.editOriginal(R.Strings.ui("the_guild_could_not_be_found"));
-					} else if (!databaseAdapter.edit(groupModel)) {
+					} else if (!databaseAdapter.edit(groupModel).equals(DatabaseAdapter.Status.SUCCESS)) {
 						return interactionHook.editOriginal(R.Strings.ui("the_entry_could_not_be_updated"));
 					} else return interactionHook.editOriginal(R.Strings.ui("the_entry_was_successfully_updated"))
 							.setEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0));

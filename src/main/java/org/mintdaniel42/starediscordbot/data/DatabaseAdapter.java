@@ -359,64 +359,65 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     /**
      * @param hnsUserModel the {@link HNSUserModel} to be added
-     * @return {@code true} if it was added, {@code false} otherwise
+     * @return {@link Status}code enum that says if the action was successful
      */
-    public boolean addHnsUser(@NonNull HNSUserModel hnsUserModel) {
+    public Status addHnsUser(@NonNull HNSUserModel hnsUserModel) {
         try {
             if (!userModelDao.idExists(hnsUserModel.getUuid())) userModelDao.create(UserModel.builder()
                     .uuid(hnsUserModel.getUuid())
                     .build());
-            return hnsUserModelDao.createIfNotExists(hnsUserModel).equals(hnsUserModel);
+            return hnsUserModelDao.createIfNotExists(hnsUserModel).equals(hnsUserModel) ? Status.SUCCESS : Status.DUPLICATE;
         } catch (SQLException _) {
-            return false;
+            return Status.SUCCESS;
         }
     }
 
     /**
      * @param pgUserModel the {@link PGUserModel} to be added
-     * @return {@code true} if it was added, {@code false} otherwise
+     * @return {@link Status}code enum that says if the action was successful
      */
-    public boolean addPgUser(@NonNull PGUserModel pgUserModel) {
+    public Status addPgUser(@NonNull PGUserModel pgUserModel) {
         try {
             if (!userModelDao.idExists(pgUserModel.getUuid())) userModelDao.create(UserModel.builder()
                     .uuid(pgUserModel.getUuid())
                     .build());
-            return pgUserModelDao.createIfNotExists(pgUserModel).equals(pgUserModel);
+            return pgUserModelDao.createIfNotExists(pgUserModel).equals(pgUserModel) ? Status.SUCCESS : Status.DUPLICATE;
         } catch (SQLException _) {
-            return false;
+            return Status.ERROR;
         }
     }
 
     /**
      * @param groupModel the {@link GroupModel} to be added
-     * @return {@code true} if it was added, {@code false} otherwise
+     * @return {@link Status}code enum that says if the action was successful
      */
-    public boolean addGroup(@NonNull GroupModel groupModel) {
+    public Status addGroup(@NonNull GroupModel groupModel) {
         try {
-            return groupModelDao.createIfNotExists(groupModel).equals(groupModel);
+            return groupModelDao.createIfNotExists(groupModel).equals(groupModel) ? Status.SUCCESS : Status.DUPLICATE;
         } catch (SQLException _) {
-            return false;
+            return Status.ERROR;
         }
     }
 
+
     /**
+     * Add a {@link UserModel}
      * @param userModel the {@link UserModel} to be added
-     * @return {@code true} if it was added, {@code false} otherwise
+     * @return {@link Status}code enum that says if the action was successful
      */
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean addUser(@NonNull UserModel userModel) {
+    public Status addUser(@NonNull UserModel userModel) {
         try {
             if (userModel.getPgUser() != null) addPgUser(userModel.getPgUser());
             if (userModel.getHnsUser() != null) addHnsUser(userModel.getHnsUser());
-            return userModelDao.createIfNotExists(userModel).equals(userModel);
+            return userModelDao.createIfNotExists(userModel).equals(userModel) ? Status.SUCCESS : Status.DUPLICATE;
         } catch (SQLException _) {
-            return false;
+            return Status.ERROR;
         }
     }
 
     /**
      * @param achievementModel the {@link AchievementModel} to be added
-     * @return a status code
+     * @return {@link Status}code enum that says if the action was successful
      */
     public Status addAchievement(@NonNull AchievementModel achievementModel) {
         try {
@@ -454,45 +455,14 @@ public final class DatabaseAdapter implements AutoCloseable {
     }
 
     /**
-     * Checks if a group exists
-     * @param tag the group tag to check for if it exists
-     * @return {@code true} if it exists, {@code false} otherwise
-     */
-    public boolean hasGroup(@NonNull String tag) {
-        try {
-            return groupModelDao.idExists(tag);
-        } catch (SQLException _) {
-            return false;
-        }
-    }
-
-    /**
-     * Checks if a user is in a group
-     * @param uuid the Minecraft UUID of the user to check for
-     * @return {@code true} if the given user is in a group, {@code false} otherwise
-     */
-    public boolean hasGroupFor(@NonNull UUID uuid) {
-        try {
-            return userModelDao.idExists(uuid) && userModelDao.queryBuilder()
-                    .where()
-                    .idEq(uuid)
-                    .and()
-                    .isNotNull("group_id")
-                    .countOf() != 0;
-        } catch (SQLException _) {
-            return false;
-        }
-    }
-
-    /**
      * @param requestModel the {@link RequestModel} to be added
-     * @return {@code true} if it was added, {@code false} otherwise
+     * @return {@link Status}code enum that says if the action was successful
      */
-    public boolean addRequest(@NonNull RequestModel requestModel) {
+    public Status addRequest(@NonNull RequestModel requestModel) {
         try {
-            return requestModelDao.createIfNotExists(requestModel).equals(requestModel);
+            return requestModelDao.createIfNotExists(requestModel).equals(requestModel) ? Status.SUCCESS : Status.DUPLICATE;
         } catch (SQLException _) {
-            return false;
+            return Status.ERROR;
         }
     }
 
@@ -500,28 +470,29 @@ public final class DatabaseAdapter implements AutoCloseable {
      * Attempts to replace the current model of type {@code T} with a new one
      * @param model the new model. This has to be one of:
      *              {@link HNSUserModel}, {@link PGUserModel}, {@link GroupModel} or {@link UserModel}
-     * @return {@code true} if it could be edited, {@code false} otherwise
+     * @return {@link Status}code enum that says if the action was successful
      */
-    public <T> boolean edit(@NonNull T model) {
+    public <T> Status edit(@NonNull T model) {
         try {
             return switch(model) {
-                case HNSUserModel hnsUserModel -> hnsUserModelDao.update(hnsUserModel) != 0;
-                case PGUserModel pgUserModel -> pgUserModelDao.update(pgUserModel) != 0;
-                case GroupModel groupModel -> groupModelDao.update(groupModel) != 0;
-                case UserModel userModel -> userModelDao.update(userModel) != 0;
-                default -> false;
+                case HNSUserModel hnsUserModel ->
+                        hnsUserModelDao.update(hnsUserModel) != 0 ? Status.SUCCESS : Status.ERROR;
+                case PGUserModel pgUserModel -> pgUserModelDao.update(pgUserModel) != 0 ? Status.SUCCESS : Status.ERROR;
+                case GroupModel groupModel -> groupModelDao.update(groupModel) != 0 ? Status.SUCCESS : Status.ERROR;
+                case UserModel userModel -> userModelDao.update(userModel) != 0 ? Status.SUCCESS : Status.ERROR;
+                default -> Status.ERROR;
             };
         } catch (SQLException _) {
-            return false;
+            return Status.ERROR;
         }
     }
 
     /**
      * Attempts to delete all user data including username cache
      * @param uuid the Minecraft user UUID
-     * @return {@code true} if everything could be deleted, {@code false} otherwise
+     * @return {@link Status}code enum that says if the action was successful
      */
-    public boolean deleteUser(@NonNull UUID uuid) {
+    public Status deleteUser(@NonNull UUID uuid) {
         try {
             byte sum = 0;
             if (!hnsUserModelDao.idExists(uuid)) sum++;
@@ -531,22 +502,9 @@ public final class DatabaseAdapter implements AutoCloseable {
             if (!usernameModelDao.idExists(uuid)) sum++;
             else sum += (byte) usernameModelDao.deleteById(uuid);
             sum += (byte) userModelDao.deleteById(uuid);
-            return sum == 4;
+            return sum == 4 ? Status.SUCCESS : Status.ERROR;
         } catch (SQLException _) {
-            return false;
-        }
-    }
-
-    /**
-     * Attempts to delete the request of the provided id from the database
-     * @param id id of the request
-     * @return {@code true} if it could be deleted, {@code false} otherwise
-     */
-    public boolean deleteRequest(final long id) {
-        try {
-            return requestModelDao.deleteById(id) == 1;
-        } catch (SQLException _) {
-            return false;
+            return Status.ERROR;
         }
     }
 
@@ -554,46 +512,43 @@ public final class DatabaseAdapter implements AutoCloseable {
      * Attempts to delete a group
      *
      * @param tag the group tag of the group to delete
-     * @return {@code true} if it could be deleted, {@code false} otherwise
+     * @return {@link Status}code enum that says if the action was successful
      */
-    public boolean deleteGroup(String tag) {
+    public Status deleteGroup(String tag) {
         try {
             final var updateBuilder = userModelDao.updateBuilder();
             updateBuilder
                     .where()
                     .eq("group_id", tag);
             updateBuilder.updateColumnValue("group_id", null).update();
-            return groupModelDao.deleteById(tag) == 1;
+            return groupModelDao.deleteById(tag) == 1 ? Status.SUCCESS : Status.ERROR;
         } catch (SQLException _) {
-            return false;
+            return Status.ERROR;
         }
     }
 
     /**
      * Attempts to merge the request of the provided id into the database
      * @param id id of the request
-     * @return {@code true} if request could be merged, {@code false} otherwise
+     * @return {@link Status}code enum that says if the action was successful
      */
-    public boolean mergeRequest(long id) {
+    public Status mergeRequest(long id) {
         try {
-            if (!requestModelDao.idExists(id)) return false;
+            if (!requestModelDao.idExists(id)) return Status.ERROR;
             RequestModel requestModel = requestModelDao.queryForId(id);
-            switch (requestModel.getDatabase()) {
-                case HNS -> {
-                    return (hnsUserModelDao.update(HNSUserModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1);
-                } case PG -> {
-                    return (pgUserModelDao.update(PGUserModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1);
-                } case USER -> {
-                    return (userModelDao.update(UserModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1);
-                } case GROUP -> {
-                    return (groupModelDao.update(GroupModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1);
-                } default -> {
-                    return false;
-                }
-            }
+            return switch (requestModel.getDatabase()) {
+                case HNS ->
+                        (hnsUserModelDao.update(HNSUserModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1) ? Status.SUCCESS : Status.ERROR;
+                case PG ->
+                        (pgUserModelDao.update(PGUserModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1) ? Status.SUCCESS : Status.ERROR;
+                case USER ->
+                        (userModelDao.update(UserModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1) ? Status.SUCCESS : Status.ERROR;
+                case GROUP ->
+                        (groupModelDao.update(GroupModel.from(requestModel)) == 1) && (requestModelDao.deleteById(id) == 1) ? Status.SUCCESS : Status.ERROR;
+            };
         } catch (SQLException e) {
             log.error(R.Strings.log("could_not_merge_request"), e);
-            return false;
+            return Status.ERROR;
         }
     }
 

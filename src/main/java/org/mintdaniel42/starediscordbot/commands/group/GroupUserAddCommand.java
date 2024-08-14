@@ -29,7 +29,8 @@ public final class GroupUserAddCommand implements CommandAdapter {
 					if (databaseAdapter.getGroup(tagMapping.getAsString()) instanceof final GroupModel groupModel &&
 							databaseAdapter.edit(userModel.toBuilder()
 									.group(groupModel)
-									.build())) {
+											.build())
+									.equals(DatabaseAdapter.Status.SUCCESS)) {
 						return interactionHook.editOriginal(R.Strings.ui("the_user_s_was_added_to_the_group_s",
 								MCHelper.getUsername(databaseAdapter, uuid),
 								groupModel.getName()));

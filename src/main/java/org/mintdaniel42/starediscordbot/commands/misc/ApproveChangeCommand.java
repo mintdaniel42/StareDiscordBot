@@ -20,7 +20,7 @@ public final class ApproveChangeCommand implements CommandAdapter {
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("id") instanceof final OptionMapping idMapping) {
-			if (databaseAdapter.mergeRequest(idMapping.getAsLong())) {
+			if (databaseAdapter.mergeRequest(idMapping.getAsLong()).equals(DatabaseAdapter.Status.SUCCESS)) {
 				return interactionHook.editOriginal(R.Strings.ui("request_was_successfully_merged"));
 			} else return interactionHook.editOriginal(R.Strings.ui("request_could_not_be_merged"));
 		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));

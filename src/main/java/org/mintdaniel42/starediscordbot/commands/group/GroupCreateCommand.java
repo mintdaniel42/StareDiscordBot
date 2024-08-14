@@ -26,21 +26,21 @@ public final class GroupCreateCommand implements CommandAdapter {
 				event.getOption("name") instanceof final OptionMapping nameMapping &&
 				event.getOption("leader") instanceof final OptionMapping leaderMapping &&
 				event.getOption("relation") instanceof final OptionMapping relationMapping) {
-			if (!databaseAdapter.hasGroup(tagMapping.getAsString())) {
-				if (MCHelper.getUuid(databaseAdapter, leaderMapping.getAsString()) instanceof final UUID uuid) {
-					GroupModel.GroupModelBuilder builder = GroupModel.builder();
-					builder.tag(tagMapping.getAsString());
-					builder.name(nameMapping.getAsString());
-					builder.leader(uuid);
-					builder.relation(GroupModel.Relation.valueOf(relationMapping.getAsString()));
+			if (MCHelper.getUuid(databaseAdapter, leaderMapping.getAsString()) instanceof final UUID uuid) {
+				GroupModel.GroupModelBuilder builder = GroupModel.builder();
+				builder.tag(tagMapping.getAsString());
+				builder.name(nameMapping.getAsString());
+				builder.leader(uuid);
+				builder.relation(GroupModel.Relation.valueOf(relationMapping.getAsString()));
 
-					GroupModel groupModel = builder.build();
-					if (databaseAdapter.addGroup(groupModel)) {
-						return interactionHook.editOriginal(R.Strings.ui("the_group_was_successfully_created"))
-								.setEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0));
-					} else return interactionHook.editOriginal(R.Strings.ui("the_group_could_not_be_created"));
-				} else return interactionHook.editOriginal(R.Strings.ui("this_username_does_not_exist"));
-			} else return interactionHook.editOriginal(R.Strings.ui("this_group_already_exists"));
+				GroupModel groupModel = builder.build();
+
+				return interactionHook.editOriginal(switch (databaseAdapter.addGroup(groupModel)) {
+					case SUCCESS -> R.Strings.ui("the_group_was_successfully_created");
+					case DUPLICATE -> R.Strings.ui("this_group_already_exists");
+					case ERROR -> R.Strings.ui("the_group_could_not_be_created");
+				}).setEmbeds(GroupEmbed.of(databaseAdapter, groupModel, 0));
+			} else return interactionHook.editOriginal(R.Strings.ui("this_username_does_not_exist"));
 		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
 	}
 }

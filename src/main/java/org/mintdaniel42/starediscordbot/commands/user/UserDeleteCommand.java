@@ -24,7 +24,7 @@ public final class UserDeleteCommand implements CommandAdapter {
 		if (event.getOption("username") instanceof OptionMapping usernameMapping) {
 			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
 				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
-					if (databaseAdapter.deleteUser(uuid)) {
+					if (databaseAdapter.deleteUser(uuid).equals(DatabaseAdapter.Status.SUCCESS)) {
 						return interactionHook.editOriginal(R.Strings.ui("the_user_s_was_successfully_deleted",
 								userModel.getUsername()));
 					} else return interactionHook.editOriginal(R.Strings.ui("the_user_s_could_not_be_deleted",

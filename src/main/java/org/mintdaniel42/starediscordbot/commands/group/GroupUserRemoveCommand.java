@@ -28,7 +28,8 @@ public final class GroupUserRemoveCommand implements CommandAdapter {
 					if (userModel.getGroup() instanceof final GroupModel groupModel &&
 							databaseAdapter.edit(userModel.toBuilder()
 									.group(null)
-									.build())) {
+											.build())
+									.equals(DatabaseAdapter.Status.SUCCESS)) {
 						return interactionHook.editOriginal(R.Strings.ui("the_user_s_was_removed_from_the_group_s",
 								MCHelper.getUsername(databaseAdapter, uuid),
 								groupModel.getName()));

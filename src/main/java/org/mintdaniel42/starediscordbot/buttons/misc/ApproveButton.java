@@ -28,7 +28,7 @@ public final class ApproveButton implements ButtonAdapter {
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
-		if (databaseAdapter.mergeRequest(Long.parseLong(event.getComponentId().split(":")[1]))) {
+		if (databaseAdapter.mergeRequest(Long.parseLong(event.getComponentId().split(":")[1])).equals(DatabaseAdapter.Status.SUCCESS)) {
 			return interactionHook.editOriginalComponents(ActionRow.of(create(-1)));
 		} else return interactionHook.editOriginal(R.Strings.ui("request_could_not_be_merged"));
 	}
