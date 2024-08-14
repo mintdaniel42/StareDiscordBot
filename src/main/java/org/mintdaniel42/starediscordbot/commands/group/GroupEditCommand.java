@@ -41,7 +41,7 @@ public final class GroupEditCommand implements CommandAdapter {
 						if (event.getGuild() instanceof final Guild guild) {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof final TextChannel requestChannel) {
 								if (event.getMember() instanceof final Member member) {
-									if (databaseAdapter.addRequest(RequestModel.from(timestamp, groupModel)).equals(DatabaseAdapter.Status.SUCCESS)) { // TODO: replace with switch case to cover all cases
+									if (databaseAdapter.addRequest(RequestModel.from(timestamp, groupModel)).equals(DatabaseAdapter.Status.SUCCESS)) {
 										requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
 														member.getAsMention(),
 														timestamp))

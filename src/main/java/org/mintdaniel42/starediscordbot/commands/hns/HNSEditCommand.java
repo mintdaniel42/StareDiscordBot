@@ -43,7 +43,7 @@ public final class HNSEditCommand implements CommandAdapter {
 						if (event.getGuild() instanceof Guild guild) {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof TextChannel requestChannel) {
 								if (event.getMember() instanceof Member member) {
-									if (databaseAdapter.addRequest(RequestModel.from(timestamp, hnsUserModel)).equals(DatabaseAdapter.Status.SUCCESS)) { // TODO replace with switch case
+									if (databaseAdapter.addRequest(RequestModel.from(timestamp, hnsUserModel)).equals(DatabaseAdapter.Status.SUCCESS)) {
 										requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
 														member.getAsMention(),
 														timestamp))
