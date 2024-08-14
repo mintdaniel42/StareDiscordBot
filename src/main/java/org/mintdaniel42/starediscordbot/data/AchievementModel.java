@@ -2,14 +2,14 @@ package org.mintdaniel42.starediscordbot.data;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import lombok.Builder;
-import lombok.NonNull;
-import lombok.Value;
+import lombok.*;
 
 import java.util.UUID;
 
+@AllArgsConstructor
 @Builder
 @DatabaseTable(tableName = "achievements")
+@NoArgsConstructor(force = true)
 @Value
 public class AchievementModel {
 	@NonNull @DatabaseField(id = true, generatedId = true) UUID uuid;
