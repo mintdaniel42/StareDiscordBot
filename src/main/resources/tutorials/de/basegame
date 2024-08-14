@@ -1,0 +1,9 @@
+{
+  "priority": 1,
+  "title": "Das Spiel ''**Hide'N'Seek**''",
+  "description": "In HideNSeek gibt es zwei Rollen, die man auswählen kann: **Hider** und **Seeker**. Jede dieser Rollen hat ein unterschiedliches Spielziel. Während sich die Hider als verschiedene Blöcke verstecken und versuchen, nicht gefunden zu werden, liegt das Ziel der Seeker darin, alle Hider aufzuspüren. Hider können durch das Benutzen von Sounds und Sticheleien Punkte verdienen, während die Seeker Punkte dafür bekommen, Hider zu entdecken und zu töten. Nachdem ein Hider aufgedeckt und getötet wurde wird dieser auch ein Seeker.",
+  "color": 9109643,
+  "thumbnailUrl": null,
+  "imageUrl": nulL,
+  "similar": ["role_seeker", "role_hider"]
+}
