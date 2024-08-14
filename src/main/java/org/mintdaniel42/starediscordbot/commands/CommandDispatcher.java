@@ -16,6 +16,7 @@ import org.mintdaniel42.starediscordbot.commands.group.*;
 import org.mintdaniel42.starediscordbot.commands.hns.*;
 import org.mintdaniel42.starediscordbot.commands.hns.achievements.AchievementsAddCommand;
 import org.mintdaniel42.starediscordbot.commands.hns.achievements.AchievementsListCommand;
+import org.mintdaniel42.starediscordbot.commands.hns.maps.MapsAddCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.ApproveChangeCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.InfoCommand;
 import org.mintdaniel42.starediscordbot.commands.misc.MaintenanceCommand;
@@ -97,6 +98,8 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 					new AchievementsAddCommand(databaseAdapter);
 			case String c when c.equals("hns achievements list") && Permissions.view() ->
 					new AchievementsListCommand(databaseAdapter);
+			case String c when c.equals("hns maps add") && Permissions.create(event.getMember()) ->
+					new MapsAddCommand(databaseAdapter);
 			case String c when c.equals("pg show") && Permissions.view() -> new PGShowCommand(databaseAdapter);
 			case String c when c.equals("pg add") && Permissions.create(event.getMember()) ->
 					new PGAddCommand(databaseAdapter);

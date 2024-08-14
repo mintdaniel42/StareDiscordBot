@@ -104,7 +104,22 @@ public enum CommandList {
 														.addChoice(AchievementModel.Type.normal.name(), R.Strings.ui("normal"))
 														.addChoice(AchievementModel.Type.longterm.name(), R.Strings.ui("longterm")))
 								)
-				);
+				)
+				.addSubcommandGroups(
+						new SubcommandGroupData("maps", R.Strings.ui("maps_related_command"))
+								.addSubcommands(
+										new SubcommandData("add", R.Strings.ui("add_a_map"))
+												.addOption(OptionType.STRING, "name", R.Strings.ui("the_maps_name"), true)
+												.addOption(OptionType.STRING, "builder", R.Strings.ui("the_builders_names"), true, true)
+												.addOption(OptionType.STRING, "release", R.Strings.ui("the_maps_release_date"), true)
+												.addOption(OptionType.ATTACHMENT, "picture", R.Strings.ui("a_picture_of_the_map"), true)
+												.addOptions(new OptionData(OptionType.STRING, "difficulty", R.Strings.ui("the_maps_difficulty"), true)
+														.addChoice("easy", "easy")
+														.addChoice("medium", "medium")
+														.addChoice("hard", "hard")
+														.addChoice("ultra", "ultra")
+												)
+								));
 		//#else
 		//$$ );
 		//#endif
