@@ -19,12 +19,15 @@ import java.util.Objects;
 public final class TutorialSuggestionButtons implements ButtonAdapter {
 	public static @NonNull ActionRow create(@NonNull final TutorialModel tutorialModel) {
 		if (tutorialModel.getSimilar().length > 0) {
-			return ActionRow.of(Arrays.stream(tutorialModel.getSimilar())
+			final var buttons = Arrays.stream(tutorialModel.getSimilar())
 					.map(R.Tutorials::get)
 					.filter(Objects::nonNull)
+					.limit(5)
 					.map(similar -> Button.secondary("tutorial:%s:suggestion".formatted(similar.getId()), similar.getTitle()))
-					.toArray(ItemComponent[]::new));
-		} else return ActionRow.of(Button.secondary(
+					.toArray(ItemComponent[]::new);
+			if (buttons.length > 0) return ActionRow.of(buttons);
+		}
+		return ActionRow.of(Button.secondary(
 				"disabled",
 				R.Strings.ui("no_suggestions_available")
 		).withDisabled(true));
