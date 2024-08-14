@@ -175,15 +175,22 @@ public final class DatabaseAdapter implements AutoCloseable {
 
     public @Nullable List<AchievementModel> getAchievements(@Nullable final AchievementModel.Type type, final int points) {
         try {
-            if (type == null) return achievementModelDao.queryBuilder()
+            final var builder = achievementModelDao.queryBuilder();
+            if (type != null && points >= 0) return achievementModelDao.queryBuilder()
+                    .where()
+                    .eq("type", type)
+                    .and()
+                    .eq("points", points)
+                    .query();
+            else if (type != null) return achievementModelDao.queryBuilder()
+                    .where()
+                    .eq("type", type)
+                    .query();
+            else if (points >= 0) return achievementModelDao.queryBuilder()
                     .where()
                     .eq("points", points)
                     .query();
-            final var builder = achievementModelDao.queryBuilder()
-                    .where()
-                    .eq("type", type);
-            if (points >= 0) builder.eq("points", points);
-            return builder.query();
+            else return achievementModelDao.queryForAll();
         } catch (SQLException _) {
             return null;
         }
