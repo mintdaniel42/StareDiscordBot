@@ -11,10 +11,7 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
-import org.mintdaniel42.starediscordbot.buttons.list.GroupListButtons;
-import org.mintdaniel42.starediscordbot.buttons.list.HNSListButtons;
-import org.mintdaniel42.starediscordbot.buttons.list.PGListButtons;
-import org.mintdaniel42.starediscordbot.buttons.list.TutorialListButtons;
+import org.mintdaniel42.starediscordbot.buttons.list.*;
 import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.GroupButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.HNSShowButton;
@@ -74,7 +71,10 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 					new PGListButtons(databaseAdapter);
 			case String[] b when b.length == 3 && b[0].equals("list") && b[1].equals("hns") && Permissions.view() ->
 					new HNSListButtons(databaseAdapter);
-			case String[] b when b.length == 3 && b[0].equals("group") -> new GroupListButtons(databaseAdapter);
+			case String[] b when b.length == 3 && b[0].equals("group") && Permissions.view() ->
+					new GroupListButtons(databaseAdapter);
+			case String[] b when b.length == 4 && b[0].equals("achievement") && Permissions.view() ->
+					new AchievementListButtons(databaseAdapter);
 			default -> this;
 		};
 	}

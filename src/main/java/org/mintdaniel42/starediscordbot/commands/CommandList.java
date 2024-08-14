@@ -97,7 +97,7 @@ public enum CommandList {
 														.addChoice(AchievementModel.Type.longterm.name(), R.Strings.ui("longterm")))
 												.addOption(OptionType.STRING, "points", R.Strings.ui("achievement_points"), true),
 										new SubcommandData("list", R.Strings.ui("show_achievements"))
-												.addOption(OptionType.STRING, "points", R.Strings.ui("filter_by_achievement_points"), true)
+												.addOption(OptionType.STRING, "points", R.Strings.ui("filter_by_achievement_points"), false)
 												.addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true)
 												.addOptions(new OptionData(OptionType.STRING, "type", R.Strings.ui("filter_by_achievement_type"))
 														.addChoice(AchievementModel.Type.riddle.name(), R.Strings.ui("riddle"))
