@@ -35,7 +35,9 @@ dependencies {
     implementation(libs.ioutils)
     implementation(libs.wisp)
     implementation(libs.verbalexpressions)
+    implementation(libs.doma.core)
     annotationProcessor(libs.lombok)
+    annotationProcessor(libs.doma.processor)
 }
 
 group = 'org.mintdaniel42.starediscordbot'
