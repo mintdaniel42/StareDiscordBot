@@ -179,11 +179,11 @@ public final class DatabaseAdapter implements AutoCloseable {
                     .where()
                     .eq("points", points)
                     .query();
-            else return achievementModelDao.queryBuilder()
+            final var builder = achievementModelDao.queryBuilder()
                     .where()
-                    .eq("type", type)
-                    .eq("points", points)
-                    .query();
+                    .eq("type", type);
+            if (points >= 0) builder.eq("points", points);
+            return builder.query();
         } catch (SQLException _) {
             return null;
         }
