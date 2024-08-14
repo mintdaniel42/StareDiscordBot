@@ -13,6 +13,8 @@ import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
 import org.mintdaniel42.starediscordbot.embeds.AchievementEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 public class AchievementAddCommand implements CommandAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
@@ -25,6 +27,9 @@ public class AchievementAddCommand implements CommandAdapter {
 				event.getOption("points") instanceof final OptionMapping pointsMapping) {
 
 			final var model = AchievementModel.builder()
+					.uuid(UUID.nameUUIDFromBytes(nameMapping.getAsString()
+							.toLowerCase()
+							.getBytes()))
 					.name(nameMapping.getAsString())
 					.description(descriptionMapping.getAsString())
 					.type(AchievementModel.Type.valueOf(typeMapping.getAsString()))

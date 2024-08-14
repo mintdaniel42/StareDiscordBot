@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor(force = true)
 @Value
 public class AchievementModel {
-	@NonNull @DatabaseField(generatedId = true) UUID uuid;
+	@NonNull @DatabaseField(id = true) UUID uuid;
 	@NonNull @DatabaseField String name;
 	@NonNull @DatabaseField String description;
 	@NonNull @DatabaseField Type type;
