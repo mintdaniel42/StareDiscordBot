@@ -88,6 +88,7 @@ public class R {
 			try {
 				return IOUtils.readLines(Objects.requireNonNull(Tutorials.class.getClassLoader().getResourceAsStream(prefix)), StandardCharsets.UTF_8)
 						.stream()
+						.filter(s -> s.charAt(0) == '.')
 						.map(s -> get(s.substring(0, s.length() - 5)))
 						.filter(Objects::nonNull)
 						.sorted()
