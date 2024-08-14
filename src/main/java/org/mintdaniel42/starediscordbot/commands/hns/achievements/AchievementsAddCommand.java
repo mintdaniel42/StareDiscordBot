@@ -16,7 +16,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class AchievementAddCommand implements CommandAdapter {
+public class AchievementsAddCommand implements CommandAdapter {
 	@NonNull private final DatabaseAdapter databaseAdapter;
 
 	@Override
