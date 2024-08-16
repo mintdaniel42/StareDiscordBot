@@ -9,16 +9,15 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.buttons.list.HNSListButtons;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
-import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
-import org.mintdaniel42.starediscordbot.data.HNSUserModel;
+import org.mintdaniel42.starediscordbot.data.repository.HNSUserRepository;
+import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 public final class HNSListCommand implements CommandAdapter {
-	@NonNull private final DatabaseAdapter databaseAdapter;
+	@NonNull private final HNSUserRepository hnsUserRepository;
+	@NonNull private final UsernameRepository usernameRepository;
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
@@ -26,11 +25,11 @@ public final class HNSListCommand implements CommandAdapter {
 		if (event.getOption("page") instanceof final OptionMapping pageMapping) {
 			page = pageMapping.getAsInt() - 1;
 		} else page = 0;
-		if (databaseAdapter.getHnsPages() > page && page >= 0) {
-			if (databaseAdapter.getHnsUserList(page) instanceof final List<HNSUserModel> entries && !entries.isEmpty()) {
-				return interactionHook.editOriginalEmbeds(ListEmbed.createHnsList(databaseAdapter, entries, page))
-						.setComponents(HNSListButtons.create(page, databaseAdapter.getHnsPages()));
-			} else return interactionHook.editOriginal(R.Strings.ui("no_entries_available"));
+		final var pageCount = hnsUserRepository.countPages();
+		final var entries = hnsUserRepository.selectByPage(page);
+		if (pageCount > page && page >= 0) {
+			return interactionHook.editOriginalEmbeds(ListEmbed.createHnsList(usernameRepository, entries, page, pageCount))
+					.setComponents(HNSListButtons.create(page, pageCount));
 		} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
 	}
 }

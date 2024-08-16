@@ -16,7 +16,7 @@ import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.GroupButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.HNSShowButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.TutorialSuggestionButtons;
-import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.data.Database;
 import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.Permissions;
@@ -25,7 +25,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 @RequiredArgsConstructor
 @Slf4j
 public final class ButtonDispatcher extends ListenerAdapter implements ButtonAdapter {
-	@NonNull private final DatabaseAdapter databaseAdapter;
+	@NonNull private final Database database;
 
 	@Override
 	public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
@@ -58,23 +58,23 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 	private @NonNull ButtonAdapter handleButton(@NonNull final ButtonInteractionEvent event) {
 		return switch (event.getComponentId().split(":")) {
 			case String[] b when b.length == 2 && b[0].equals("approve") && Permissions.edit(event.getMember()) ->
-					new ApproveButton(databaseAdapter);
+					new ApproveButton(database);
 			case String[] b when b.length == 2 && b[0].equals("group") && Permissions.view() ->
-					new GroupButton(databaseAdapter);
+					new GroupButton(database.getGroupRepository(), database.getHnsUserRepository(), database.getUserRepository(), database.getUsernameRepository());
 			case String[] b when b.length == 3 && b[0].equals("hns") && Permissions.view() ->
-					new HNSShowButton(databaseAdapter);
+					new HNSShowButton(database.getHnsUserRepository(), database.getUserRepository(), database.getUsernameRepository(), database.getGroupRepository());
 			case String[] b when b.length == 3 && b[0].equals("tutorial") && b[2].equals("suggestion") && Permissions.view() ->
 					new TutorialSuggestionButtons();
 			case String[] b when b.length == 3 && b[0].equals("tutorial") && b[2].equals("list") && Permissions.view() ->
 					new TutorialListButtons();
 			case String[] b when b.length == 3 && b[0].equals("list") && b[1].equals("pg") && Permissions.view() ->
-					new PGListButtons(databaseAdapter);
+					new PGListButtons(database.getPgUserRepository(), database.getUsernameRepository());
 			case String[] b when b.length == 3 && b[0].equals("list") && b[1].equals("hns") && Permissions.view() ->
-					new HNSListButtons(databaseAdapter);
+					new HNSListButtons(database.getHnsUserRepository(), database.getUsernameRepository());
 			case String[] b when b.length == 3 && b[0].equals("group") && Permissions.view() ->
-					new GroupListButtons(databaseAdapter);
+					new GroupListButtons(database.getGroupRepository(), database.getHnsUserRepository(), database.getUserRepository(), database.getUsernameRepository());
 			case String[] b when b.length == 4 && b[0].equals("achievement") && Permissions.view() ->
-					new AchievementListButtons(databaseAdapter);
+					new AchievementListButtons(database.getAchievementRepository());
 			default -> this;
 		};
 	}

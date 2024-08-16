@@ -10,16 +10,22 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
-import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
-import org.mintdaniel42.starediscordbot.data.UserModel;
-import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
+import org.mintdaniel42.starediscordbot.data.repository.GroupRepository;
+import org.mintdaniel42.starediscordbot.data.repository.HNSUserRepository;
+import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
+import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
+import org.mintdaniel42.starediscordbot.embeds.user.hns.HNSBasicUserEmbed;
+import org.mintdaniel42.starediscordbot.embeds.user.hns.HNSMoreUserEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.UUID;
 
 @RequiredArgsConstructor
 public final class HNSShowButton implements ButtonAdapter {
-	@NonNull private final DatabaseAdapter databaseAdapter;
+	@NonNull private final HNSUserRepository hnsUserRepository;
+	@NonNull private final UserRepository userRepository;
+	@NonNull private final UsernameRepository usernameRepository;
+	@NonNull private final GroupRepository groupRepository;
 
 	@Contract(pure = true, value = "_, _ -> new")
 	public static @NonNull Button create(@NonNull final Type type, @NonNull final UUID uuid) {
@@ -34,10 +40,20 @@ public final class HNSShowButton implements ButtonAdapter {
 		final var buttonParts = event.getComponentId().split(":");
 		final var current = Type.valueOf(buttonParts[1]);
 		final var uuid = UUID.fromString(buttonParts[2]);
-
-		if (databaseAdapter.getUser(uuid) instanceof UserModel userModel && userModel.getHnsUser() != null) {
-			return interactionHook.editOriginalEmbeds(UserEmbed.of(userModel, current == Type.more ? UserEmbed.Type.HNS_MORE : UserEmbed.Type.HNS))
-					.setComponents(ActionRow.of(HNSShowButton.create(current == Type.basic ? Type.more : Type.basic, uuid), GroupButton.create(userModel)));
+		final var hnsUserOptional = hnsUserRepository.selectByUUID(uuid);
+		final var usernameOptional = usernameRepository.selectByUUID(uuid);
+		final var userOptional = userRepository.selectByUUID(uuid);
+		if (hnsUserOptional.isPresent() && userOptional.isPresent() && usernameOptional.isPresent()) {
+			final var groupOptional = groupRepository.selectByTag(userOptional.get().getGroupTag());
+			final var embed = current == Type.basic ?
+					HNSBasicUserEmbed.of(hnsUserOptional.get(), userOptional.get(), usernameOptional.get(), false) :
+					HNSMoreUserEmbed.of(hnsUserOptional.get(), userOptional.get(), groupOptional.orElse(null), usernameOptional.get(), false);
+			return interactionHook.editOriginalEmbeds(embed)
+					.setComponents(ActionRow.of(
+							HNSShowButton.create(current == Type.basic ? Type.more : Type.basic, uuid),
+							groupOptional.map(GroupButton::create)
+									.orElseGet(GroupButton::disabled))
+					);
 		} else return interactionHook.editOriginal(R.Strings.ui("this_username_or_entry_does_not_exist"));
 	}
 

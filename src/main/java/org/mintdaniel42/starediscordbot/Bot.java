@@ -6,7 +6,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
-import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
@@ -14,7 +13,8 @@ import org.mintdaniel42.starediscordbot.buttons.ButtonDispatcher;
 import org.mintdaniel42.starediscordbot.commands.AutoCompletionHandler;
 import org.mintdaniel42.starediscordbot.commands.CommandDispatcher;
 import org.mintdaniel42.starediscordbot.commands.CommandList;
-import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.data.Database;
+import org.mintdaniel42.starediscordbot.data.DatabaseConfig;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -23,34 +23,35 @@ import java.util.Arrays;
 
 @Slf4j
 public final class Bot extends ListenerAdapter {
-	@NonNull private final DatabaseAdapter databaseAdapter;
+	public Bot(@NonNull final Database database) {
 
-	public Bot(@NonNull final DatabaseAdapter databaseAdapter) {
-		this.databaseAdapter = databaseAdapter;
+		database.getHnsUserRepository().selectByPage(0);
 
 		JDABuilder.createLight(Options.getToken())
 				.addEventListeners(
-						new AutoCompletionHandler(databaseAdapter),
-						new CommandDispatcher(databaseAdapter),
-						new ButtonDispatcher(databaseAdapter),
+						new AutoCompletionHandler(database),
+						new CommandDispatcher(database),
+						new ButtonDispatcher(database),
 						this
 				)
 				.build();
 
+		database.prepareDatabase();
+
 		final var scheduler = new Scheduler();
 
 		scheduler.schedule(
-				databaseAdapter::cleanDatabase,
+				database::cleanDatabase,
 				Schedules.afterInitialDelay((timestamp, _, _) -> timestamp + BuildConfig.cleaningInterval - (timestamp % BuildConfig.cleaningInterval),
 						Duration.ZERO)
 		);
 	}
 
-	public static void main(@NonNull final String[] args) throws Exception {
+	public static void main(@NonNull final String[] args) {
 		//#if dev
 		log.info(R.Strings.log("running_in_dev_mode"));
 		//#endif
-		new Bot(new DatabaseAdapter(Options.getJdbcUrl()));
+		new Bot(new Database(new DatabaseConfig()));
 	}
 
 	@Override
@@ -64,16 +65,6 @@ public final class Bot extends ListenerAdapter {
 							.map(CommandList::get)
 							.toArray(CommandData[]::new))
 					.queue();
-		}
-	}
-
-	@Override
-	public void onShutdown(@NonNull final ShutdownEvent event) {
-		try {
-			databaseAdapter.close();
-		} catch (Exception e) {
-			log.error(R.Strings.log("could_not_close_database"), e);
-			throw new RuntimeException(e);
 		}
 	}
 }

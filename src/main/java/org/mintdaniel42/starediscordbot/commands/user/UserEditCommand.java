@@ -12,39 +12,45 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
-import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
-import org.mintdaniel42.starediscordbot.data.RequestModel;
-import org.mintdaniel42.starediscordbot.data.UserModel;
+import org.mintdaniel42.starediscordbot.data.entity.RequestEntity;
+import org.mintdaniel42.starediscordbot.data.entity.UserEntity;
+import org.mintdaniel42.starediscordbot.data.repository.GroupRepository;
+import org.mintdaniel42.starediscordbot.data.repository.RequestRepository;
+import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
+import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
-import org.mintdaniel42.starediscordbot.utils.MCHelper;
-import org.mintdaniel42.starediscordbot.utils.Options;
-import org.mintdaniel42.starediscordbot.utils.Permissions;
-import org.mintdaniel42.starediscordbot.utils.R;
+import org.mintdaniel42.starediscordbot.utils.*;
 
 import java.util.UUID;
 
 @RequiredArgsConstructor
 public final class UserEditCommand implements CommandAdapter {
-	@NonNull private final DatabaseAdapter databaseAdapter;
+	@NonNull private final UserRepository userRepository;
+	@NonNull private final RequestRepository requestRepository;
+	@NonNull private final GroupRepository groupRepository;
+	@NonNull private final UsernameRepository usernameRepository;
+
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("username") instanceof OptionMapping usernameMapping && event.getOptions().size() >= 2) {
-			if (MCHelper.getUuid(databaseAdapter, usernameMapping.getAsString()) instanceof UUID uuid) {
-				if (databaseAdapter.getUser(uuid) instanceof UserModel userModel) {
-					userModel = buildUserModel(event, userModel.toBuilder());
-
-					if (!Permissions.edit(event.getMember())) {
+			if (MCHelper.getUuid(usernameRepository, usernameMapping.getAsString()) instanceof UUID uuid) {
+				final var userOptional = userRepository.selectByUUID(uuid);
+				final var usernameOptional = usernameRepository.selectByUUID(uuid);
+				if (userOptional.isPresent() && usernameOptional.isPresent()) {
+					final var user = UserEntity.merge(event.getOptions(), userOptional.get().toBuilder());
+					final var groupOptional = groupRepository.selectByTag(user.getGroupTag());
+					if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
 						long timestamp = System.currentTimeMillis();
 						if (event.getGuild() instanceof Guild guild) {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof TextChannel requestChannel) {
 								if (event.getMember() instanceof Member member) {
-									if (databaseAdapter.addRequest(RequestModel.from(timestamp, userModel)).equals(DatabaseAdapter.Status.SUCCESS)) {
+									if (requestRepository.insert(RequestEntity.from(timestamp, user)).equals(Status.SUCCESS)) {
 										requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
 														member.getAsMention(),
 														timestamp))
 												.setActionRow(ApproveButton.create(timestamp))
-												.addEmbeds(UserEmbed.of(userModel, UserEmbed.Type.BASE, true))
+												.addEmbeds(UserEmbed.of(user, groupOptional.orElse(null), usernameOptional.get(), true))
 												.queue();
 										return interactionHook.editOriginal(R.Strings.ui("the_entry_change_was_successfully_requested"));
 									} else
@@ -54,23 +60,12 @@ public final class UserEditCommand implements CommandAdapter {
 							} else
 								return interactionHook.editOriginal(R.Strings.ui("the_request_channel_could_not_be_found"));
 						} else return interactionHook.editOriginal(R.Strings.ui("the_guild_could_not_be_found"));
-					} else if (!databaseAdapter.edit(userModel).equals(DatabaseAdapter.Status.SUCCESS)) {
+					} else if (!userRepository.update(user).equals(Status.SUCCESS)) {
 						return interactionHook.editOriginal(R.Strings.ui("the_entry_could_not_be_updated"));
 					} else return interactionHook.editOriginal(R.Strings.ui("the_entry_was_successfully_updated"))
-							.setEmbeds(UserEmbed.of(userModel, UserEmbed.Type.BASE));
+							.setEmbeds(UserEmbed.of(user, groupOptional.orElse(null), usernameOptional.get(), true));
 				} else return interactionHook.editOriginal(R.Strings.ui("this_user_entry_does_not_exist"));
 			} else return interactionHook.editOriginal(R.Strings.ui("this_username_does_not_exist"));
 		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
-	}
-
-	private @NonNull UserModel buildUserModel(@NonNull final SlashCommandInteractionEvent event, UserModel.UserModelBuilder userBuilder) {
-		for (OptionMapping optionMapping : event.getOptions()) {
-			switch (optionMapping.getName()) {
-				case "discord" -> userBuilder.discord(optionMapping.getAsLong());
-				case "note" -> userBuilder.note(optionMapping.getAsString());
-			}
-		}
-
-		return userBuilder.build();
 	}
 }
