@@ -24,11 +24,19 @@ public final class RequestRepository {
 	}
 
 	public @NonNull Optional<RequestEntity> selectById(final long id) {
-		return Optional.empty();
+		return entityQl.from(requestMeta)
+				.where(w -> w.eq(requestMeta.timestamp, id))
+				.fetchOptional();
 	}
 
 	public @NonNull Status insert(@NonNull final RequestEntity request) {
-		return Status.ERROR;
+		if (entityQl.from(requestMeta)
+				.where(w -> w.eq(requestMeta.timestamp, request.getTimestamp()))
+				.fetchOptional()
+				.isPresent()) return Status.DUPLICATE;
+		return entityQl.insert(requestMeta, request)
+				.execute()
+				.getCount() == 1 ? Status.SUCCESS : Status.ERROR;
 	}
 
 	public @NonNull Status deleteById(final long id) {
