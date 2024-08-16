@@ -7,7 +7,7 @@ slf4j = "2.0.16"
 lombok = "1.18.34"
 buildConfig = "5.4.0"
 jcp = "7.1.2"
-jackson-databind = "2.17.2"
+avaje-jsonb = "2.1"
 ioutils = "2.16.1"
 wisp = "2.4.0"
 verbalexpressions = "1.8"
@@ -22,7 +22,8 @@ slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 jcp = { module = "com.igormaznitsa:jcp", version.ref = "jcp" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
-jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson-databind" }
+avaje-jsonb = { module = "io.avaje:avaje-jsonb", version.ref = "avaje-jsonb" }
+avaje-jsonb-generator = { module = "io.avaje:avaje-jsonb-generator", version.ref = "avaje-jsonb" }
 ioutils = { module = "commons-io:commons-io", version.ref = "ioutils" }
 wisp = { module = "com.coreoz:wisp", version.ref = "wisp" }
 verbalexpressions = { module = "ru.lanwen.verbalregex:java-verbal-expressions", version.ref = "verbalexpressions" }
