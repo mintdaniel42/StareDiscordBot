@@ -24,7 +24,7 @@ public final class AchievementRepository {
 			return entityQl.from(achievementMeta)
 					.where(w -> {
 						w.eq(achievementMeta.type, type);
-						w.and(() -> {w.eq(achievementMeta.points, points);});
+						w.and(() -> w.eq(achievementMeta.points, points));
 					})
 					.fetch();
 		} else if (type != null) {
