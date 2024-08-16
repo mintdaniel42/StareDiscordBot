@@ -87,7 +87,7 @@ buildConfig {
         buildConfigField(long, "maxRequestAge", TimeUnit.DAYS.toMillis(2))
         buildConfigField(long, "maxUsernameAge", TimeUnit.DAYS.toMillis(5))
 
-        buildConfigField(byte, "entriesPerPage", 10)
+        buildConfigField(int, "entriesPerPage", 10)
 
         buildConfigField(boolean, "autoFetch", true)
     }
