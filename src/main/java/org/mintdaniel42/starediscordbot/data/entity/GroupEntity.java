@@ -1,6 +1,5 @@
 package org.mintdaniel42.starediscordbot.data.entity;
 
-import com.j256.ormlite.field.DatabaseField;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -8,6 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.seasar.doma.Entity;
+import org.seasar.doma.Id;
 import org.seasar.doma.Metamodel;
 import org.seasar.doma.Table;
 
@@ -19,10 +19,10 @@ import java.util.UUID;
 @Table(name = "groups")
 @Value
 public class GroupEntity {
-	@NonNull @DatabaseField(id = true) String tag;
-	@NonNull @DatabaseField String name;
-	@NonNull @DatabaseField UUID leader;
-	@NonNull @DatabaseField Relation relation;
+	@NonNull @Id String tag;
+	@NonNull String name;
+	@NonNull UUID leader;
+	@NonNull Relation relation;
 
 	public static @NonNull GroupEntity from(@NonNull final RequestEntity request) {
 		return GroupEntity.builder()

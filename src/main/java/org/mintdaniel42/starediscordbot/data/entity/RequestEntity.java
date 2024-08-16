@@ -4,10 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+import org.seasar.doma.*;
 
 import java.util.UUID;
 
@@ -16,7 +13,7 @@ import java.util.UUID;
 @Table(name = "users")
 @Value
 public class RequestEntity {
-	long timestamp;
+	@Id long timestamp;
 	UUID uuid;
 	String rating;
 	String joined;
