@@ -25,7 +25,6 @@ repositories {
 
 dependencies {
     implementation(libs.jda)
-    implementation(libs.ormlite)
     implementation(libs.bundles.jdbc.all)
     implementation(libs.json)
     implementation(libs.slf4j.api)

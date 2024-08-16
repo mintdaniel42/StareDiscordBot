@@ -1,6 +1,5 @@
 [versions]
 jda = "5.0.2"
-ormlite = "6.1"
 jdbc-sqlite = "3.46.0.1"
 jdbc-mariadb = "3.4.1"
 json = "20240303"
@@ -16,7 +15,6 @@ doma = "2.62.0"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
-ormlite = { module = "com.j256.ormlite:ormlite-jdbc", version.ref = "ormlite" }
 jdbc-sqlite = { module = "org.xerial:sqlite-jdbc", version.ref = "jdbc-sqlite" }
 jdbc-mariadb = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = "jdbc-mariadb" }
 json = { module = "org.json:json", version.ref = "json" }
