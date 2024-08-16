@@ -24,9 +24,6 @@ import java.util.Arrays;
 @Slf4j
 public final class Bot extends ListenerAdapter {
 	public Bot(@NonNull final Database database) {
-
-		database.getHnsUserRepository().selectByPage(0);
-
 		JDABuilder.createLight(Options.getToken())
 				.addEventListeners(
 						new AutoCompletionHandler(database),
