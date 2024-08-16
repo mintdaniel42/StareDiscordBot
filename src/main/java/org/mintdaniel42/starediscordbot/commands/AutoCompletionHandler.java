@@ -8,26 +8,23 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
-import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
-import org.mintdaniel42.starediscordbot.data.GroupModel;
-import org.mintdaniel42.starediscordbot.data.RequestModel;
-import org.mintdaniel42.starediscordbot.data.UsernameModel;
+import org.mintdaniel42.starediscordbot.data.Database;
+import org.mintdaniel42.starediscordbot.data.entity.RequestEntity;
 import org.mintdaniel42.starediscordbot.utils.Calculator;
 import org.mintdaniel42.starediscordbot.utils.R;
 import ru.lanwen.verbalregex.VerbalExpression;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.LongStream;
 
 // TODO: add autocomplete for achievements
 public final class AutoCompletionHandler extends ListenerAdapter {
-	@NonNull private final DatabaseAdapter databaseAdapter;
+	@NonNull private final Database database;
 	@NonNull private final Pattern numberPattern;
 
-	public AutoCompletionHandler(@NonNull final DatabaseAdapter databaseAdapter) {
-		this.databaseAdapter = databaseAdapter;
+	public AutoCompletionHandler(@NonNull final Database database) {
+		this.database = database;
 		numberPattern = Pattern.compile(
 				VerbalExpression.regex()
 						.maybe("-")
@@ -58,12 +55,12 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 
 	@Contract(pure = true, value = "_ -> new")
 	private @NonNull Command.Choice[] autoCompleteUsername(@NonNull final String input) {
-		if (databaseAdapter.getUsernames(input) instanceof List<UsernameModel> usernames) {
-			return usernames.stream()
-					.limit(25)
-					.map(usernameModel -> new Command.Choice(usernameModel.getUsername(), usernameModel.getUsername()))
-					.toArray(Command.Choice[]::new);
-		} else return new Command.Choice[0];
+		return database.getUsernameRepository()
+				.selectByUsernameLike(input)
+				.stream()
+				.limit(25)
+				.map(username -> new Command.Choice(username.getUsername(), username.getUsername()))
+				.toArray(Command.Choice[]::new);
 	}
 
 	@Contract(pure = true, value = "_ -> new")
@@ -89,25 +86,25 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 
 	@Contract(pure = true, value = "_ -> new")
 	private @NonNull Command.Choice[] autoCompleteId(@NonNull final String input) {
-		if (databaseAdapter.getPendingRequests() instanceof List<RequestModel> requestModels) {
-			return requestModels.stream()
-					.map(RequestModel::getTimestamp)
-					.filter(timestamp -> String.valueOf(timestamp).startsWith(input))
-					.limit(25)
-					.map(timestamp -> new Command.Choice(String.valueOf(timestamp), timestamp))
-					.toArray(Command.Choice[]::new);
-		} else return new Command.Choice[0];
+		return database.getRequestRepository()
+				.selectAll()
+				.stream()
+				.map(RequestEntity::getTimestamp)
+				.filter(timestamp -> String.valueOf(timestamp).startsWith(input))
+				.limit(25)
+				.map(timestamp -> new Command.Choice(String.valueOf(timestamp), timestamp))
+				.toArray(Command.Choice[]::new);
 	}
 
 	@Contract(pure = true, value = "_, _ -> new")
 	private @NonNull Command.Choice[] autoCompletePage(@NonNull final String command, @NonNull final String input) {
 		return switch (command) {
-			case "hns list" -> LongStream.range(1, Math.min(databaseAdapter.getHnsPages(), 25) + 1)
+			case "hns list" -> LongStream.range(1, Math.min(database.getHnsUserRepository().countPages(), 25) + 1)
 					.boxed()
 					.filter(operand -> String.valueOf(operand).startsWith(input))
 					.map(page -> new Command.Choice(String.valueOf(page), page))
 					.toArray(Command.Choice[]::new);
-			case "pg list" -> LongStream.range(1, Math.min(databaseAdapter.getPgPages(), 25) + 1)
+			case "pg list" -> LongStream.range(1, Math.min(database.getPgUserRepository().countPages(), 25) + 1)
 					.boxed()
 					.filter(operand -> String.valueOf(operand).startsWith(input))
 					.map(page -> new Command.Choice(String.valueOf(page), page))
@@ -123,12 +120,12 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 
 	@Contract(pure = true, value = "_ -> new")
 	private @NonNull Command.Choice[] autoCompleteTag(@NonNull final String input) {
-		if (databaseAdapter.getGroups(input.toLowerCase(BuildConfig.locale)) instanceof List<GroupModel> groupModels) {
-			return groupModels.stream()
-					.limit(25)
-					.map(groupModel -> new Command.Choice(groupModel.getName(), groupModel.getTag()))
-					.toArray(Command.Choice[]::new);
-		} else return new Command.Choice[0];
+		return database.getGroupRepository()
+				.selectByTagLike(input.toLowerCase(BuildConfig.locale))
+				.stream()
+				.limit(25)
+				.map(groupModel -> new Command.Choice(groupModel.getName(), groupModel.getTag()))
+				.toArray(Command.Choice[]::new);
 	}
 
 	@Contract(pure = true, value = "_, _ -> new")

@@ -8,8 +8,8 @@ import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
-import org.mintdaniel42.starediscordbot.data.AchievementModel;
-import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.data.entity.AchievementEntity;
+import org.mintdaniel42.starediscordbot.data.repository.AchievementRepository;
 import org.mintdaniel42.starediscordbot.embeds.AchievementEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 public final class AchievementsAddCommand implements CommandAdapter {
-	@NonNull private final DatabaseAdapter databaseAdapter;
+	@NonNull private final AchievementRepository achievementRepository;
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
@@ -26,21 +26,21 @@ public final class AchievementsAddCommand implements CommandAdapter {
 				event.getOption("type") instanceof final OptionMapping typeMapping &&
 				event.getOption("points") instanceof final OptionMapping pointsMapping) {
 
-			final var model = AchievementModel.builder()
+			final var achievement = AchievementEntity.builder()
 					.uuid(UUID.nameUUIDFromBytes(nameMapping.getAsString()
 							.toLowerCase()
 							.getBytes()))
 					.name(nameMapping.getAsString())
 					.description(descriptionMapping.getAsString())
-					.type(AchievementModel.Type.valueOf(typeMapping.getAsString()))
+					.type(AchievementEntity.Type.valueOf(typeMapping.getAsString()))
 					.points(pointsMapping.getAsInt())
 					.build();
 
-			return interactionHook.editOriginal(switch (databaseAdapter.addAchievement(model)) {
+			return interactionHook.editOriginal(switch (achievementRepository.insert(achievement)) {
 				case SUCCESS -> R.Strings.ui("the_achievement_was_successfully_created");
 				case DUPLICATE -> R.Strings.ui("this_achievement_already_exists");
 				case ERROR -> R.Strings.ui("the_achievement_could_not_be_added");
-			}).setEmbeds(AchievementEmbed.of(model, 0, 1));
+			}).setEmbeds(AchievementEmbed.of(achievement, 0, 1));
 		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
 	}
 }

@@ -15,6 +15,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.UUID;
 
 public final class TutorialSuggestionButtons implements ButtonAdapter {
 	public static @NonNull ActionRow create(@NonNull final TutorialModel tutorialModel) {
@@ -28,7 +29,7 @@ public final class TutorialSuggestionButtons implements ButtonAdapter {
 			if (buttons.length > 0) return ActionRow.of(buttons);
 		}
 		return ActionRow.of(Button.secondary(
-				"disabled",
+				UUID.randomUUID().toString(),
 				R.Strings.ui("no_suggestions_available")
 		).withDisabled(true));
 	}

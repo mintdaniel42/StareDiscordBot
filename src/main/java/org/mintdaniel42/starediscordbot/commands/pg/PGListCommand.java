@@ -9,8 +9,9 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.buttons.list.PGListButtons;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
-import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
-import org.mintdaniel42.starediscordbot.data.PGUserModel;
+import org.mintdaniel42.starediscordbot.data.entity.PGUserEntity;
+import org.mintdaniel42.starediscordbot.data.repository.PGUserRepository;
+import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -18,7 +19,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public final class PGListCommand implements CommandAdapter {
-	@NonNull private final DatabaseAdapter databaseAdapter;
+	@NonNull private final PGUserRepository pgUserRepository;
+	@NonNull private final UsernameRepository usernameRepository;
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
@@ -26,11 +28,11 @@ public final class PGListCommand implements CommandAdapter {
 		if (event.getOption("page") instanceof final OptionMapping pageMapping) {
 			page = pageMapping.getAsInt() - 1;
 		} else page = 0;
-		if (databaseAdapter.getPgPages() > page && page >= 0) {
-			if (databaseAdapter.getPgUserList(page) instanceof final List<PGUserModel> entries && !entries.isEmpty()) {
-				return interactionHook.editOriginalEmbeds(ListEmbed.createPgList(databaseAdapter, entries, page))
-						.setComponents(PGListButtons.create(page, databaseAdapter.getPgPages()));
-			} else return interactionHook.editOriginal(R.Strings.ui("no_entries_available"));
+		final var pageCount = pgUserRepository.countPages();
+		if (pageCount > page && page >= 0) {
+			List<PGUserEntity> entries = pgUserRepository.selectByPage(page);
+			return interactionHook.editOriginalEmbeds(ListEmbed.createPgList(usernameRepository, entries, page, pageCount))
+					.setComponents(PGListButtons.create(page, pageCount));
 		} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
 	}
 }
