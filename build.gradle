@@ -66,6 +66,7 @@ tasks.preprocess.outputs.upToDateWhen {
 tasks.compileJava {
     dependsOn preprocess
     source = preprocess.target
+    options.compilerArgs = ['-Adoma.domain.converters=org.mintdaniel42.starediscordbot.data.domain.DomainConvertersProvider']
 }
 
 tasks.jar {
