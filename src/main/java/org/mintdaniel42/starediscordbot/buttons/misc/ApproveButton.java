@@ -10,12 +10,13 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
-import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.data.Database;
 import org.mintdaniel42.starediscordbot.utils.R;
+import org.mintdaniel42.starediscordbot.utils.Status;
 
 @RequiredArgsConstructor
 public final class ApproveButton implements ButtonAdapter {
-	@NonNull private final DatabaseAdapter databaseAdapter;
+	@NonNull private final Database database;
 
 	@Contract(pure = true, value = "_ -> new")
 	public static @NonNull Button create(final long id) {
@@ -28,7 +29,7 @@ public final class ApproveButton implements ButtonAdapter {
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
-		if (databaseAdapter.mergeRequest(Long.parseLong(event.getComponentId().split(":")[1])).equals(DatabaseAdapter.Status.SUCCESS)) {
+		if (database.mergeRequest(Long.parseLong(event.getComponentId().split(":")[1])).equals(Status.SUCCESS)) {
 			return interactionHook.editOriginalComponents(ActionRow.of(create(-1)));
 		} else return interactionHook.editOriginal(R.Strings.ui("request_could_not_be_merged"));
 	}

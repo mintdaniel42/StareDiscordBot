@@ -11,19 +11,17 @@ import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
-import org.mintdaniel42.starediscordbot.data.AchievementModel;
-import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.data.entity.AchievementEntity;
+import org.mintdaniel42.starediscordbot.data.repository.AchievementRepository;
 import org.mintdaniel42.starediscordbot.embeds.AchievementEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 public final class AchievementListButtons implements ButtonAdapter {
-	@NonNull private final DatabaseAdapter databaseAdapter;
+	@NonNull private final AchievementRepository achievementRepository;
 
 	@Contract(pure = true, value = "_, _, _, _ -> new")
-	public static @NonNull ActionRow create(@Nullable final AchievementModel.Type type, final int points, final int page, final long maxPages) {
+	public static @NonNull ActionRow create(@Nullable final AchievementEntity.Type type, final int points, final int page, final long maxPages) {
 		return ActionRow.of(
 				Button.primary(
 								"achievement:%s:%s:%s".formatted(type, points, page - 1),
@@ -41,17 +39,16 @@ public final class AchievementListButtons implements ButtonAdapter {
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
 		final var buttonParts = event.getComponentId().split(":");
-		final AchievementModel.Type type;
+		final AchievementEntity.Type type;
 		final int points = Integer.parseInt(buttonParts[2]);
 		final int page = Integer.parseInt(buttonParts[3]);
 		if (!buttonParts[1].equals("null") && !buttonParts[1].isBlank()) {
-			type = AchievementModel.Type.valueOf(buttonParts[1]);
+			type = AchievementEntity.Type.valueOf(buttonParts[1]);
 		} else type = null;
-		if (databaseAdapter.getAchievements(type, points) instanceof final List<AchievementModel> achievementModels) {
-			if (page < achievementModels.size()) {
-				return interactionHook.editOriginalEmbeds(AchievementEmbed.of(achievementModels.get(page), page + 1, achievementModels.size()))
-						.setComponents(AchievementListButtons.create(type, points, page, achievementModels.size()));
-			} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
-		} else return interactionHook.editOriginal(R.Strings.ui("no_entries_available"));
+		final var achievements = achievementRepository.selectByTypeAndPoints(type, points);
+		if (page < achievements.size()) {
+			return interactionHook.editOriginalEmbeds(AchievementEmbed.of(achievements.get(page), page + 1, achievements.size()))
+					.setComponents(AchievementListButtons.create(type, points, page, achievements.size()));
+		} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
 	}
 }

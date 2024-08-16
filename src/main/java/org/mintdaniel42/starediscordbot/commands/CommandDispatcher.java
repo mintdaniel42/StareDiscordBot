@@ -26,7 +26,7 @@ import org.mintdaniel42.starediscordbot.commands.pg.PGListCommand;
 import org.mintdaniel42.starediscordbot.commands.pg.PGShowCommand;
 import org.mintdaniel42.starediscordbot.commands.user.UserDeleteCommand;
 import org.mintdaniel42.starediscordbot.commands.user.UserEditCommand;
-import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.data.Database;
 import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.Permissions;
@@ -35,7 +35,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 @RequiredArgsConstructor
 @Slf4j
 public final class CommandDispatcher extends ListenerAdapter implements CommandAdapter {
-	@NonNull private final DatabaseAdapter databaseAdapter;
+	@NonNull private final Database database;
 
 	@Override
 	public void onSlashCommandInteraction(@NonNull final SlashCommandInteractionEvent event) {
@@ -67,44 +67,54 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 	private @NonNull CommandAdapter handleCommand(@NonNull final SlashCommandInteractionEvent event) {
 		return switch (event.getFullCommandName()) {
 			case String c when c.equals("approve") && Permissions.edit(event.getMember()) ->
-					new ApproveChangeCommand(databaseAdapter);
-			case String c when c.equals("info") && Permissions.view() -> new InfoCommand(databaseAdapter);
+					new ApproveChangeCommand(database);
+			case String c when c.equals("info") && Permissions.view() ->
+					new InfoCommand(database.getMetaDataRepository(), database.getHnsUserRepository(), database.getUsernameRepository());
 			case String c when c.equals("maintenance") && Permissions.manage(event.getMember()) ->
 					new MaintenanceCommand();
 			case String c when c.equals("user delete") && Permissions.create(event.getMember()) ->
-					new UserDeleteCommand(databaseAdapter);
-			case String c when c.equals("user edit") && Permissions.view() -> new UserEditCommand(databaseAdapter);
-			case String c when c.equals("group show") && Permissions.view() -> new GroupShowCommand(databaseAdapter);
-			case String c when c.equals("group edit") && Permissions.view() -> new GroupEditCommand(databaseAdapter);
+					new UserDeleteCommand(database, database.getUsernameRepository());
+			case String c when c.equals("user edit") && Permissions.view() ->
+					new UserEditCommand(database.getUserRepository(), database.getRequestRepository(), database.getGroupRepository(), database.getUsernameRepository());
+			case String c when c.equals("group show") && Permissions.view() ->
+					new GroupShowCommand(database.getGroupRepository(), database.getHnsUserRepository(), database.getUserRepository(), database.getUsernameRepository());
+			case String c when c.equals("group edit") && Permissions.view() ->
+					new GroupEditCommand(database.getGroupRepository(), database.getHnsUserRepository(), database.getUserRepository(), database.getRequestRepository(), database.getUsernameRepository());
 			case String c when c.equals("group create") && Permissions.create(event.getMember()) ->
-					new GroupCreateCommand(databaseAdapter);
+					new GroupCreateCommand(database.getGroupRepository(), database.getHnsUserRepository(), database.getUserRepository(), database.getUsernameRepository());
 			case String c when c.equals("group delete") && Permissions.create(event.getMember()) ->
-					new GroupDeleteCommand(databaseAdapter);
+					new GroupDeleteCommand(database.getGroupRepository());
 			case String c when c.equals("group user show") && Permissions.view() ->
-					new GroupUserShowCommand(databaseAdapter);
+					new GroupUserShowCommand(database.getGroupRepository(), database.getHnsUserRepository(), database.getUserRepository(), database.getUsernameRepository());
 			case String c when c.equals("group user add") && Permissions.edit(event.getMember()) ->
-					new GroupUserAddCommand(databaseAdapter);
+					new GroupUserAddCommand(database.getGroupRepository(), database.getUserRepository(), database.getUsernameRepository());
 			case String c when c.equals("group user remove") && Permissions.edit(event.getMember()) ->
-					new GroupUserRemoveCommand(databaseAdapter);
-			case String c when c.equals("hns show") && Permissions.view() -> new HNSShowCommand(databaseAdapter);
+					new GroupUserRemoveCommand(database.getGroupRepository(), database.getUserRepository(), database.getUsernameRepository());
+			case String c when c.equals("hns show") && Permissions.view() ->
+					new HNSShowCommand(database.getHnsUserRepository(), database.getUserRepository(), database.getUsernameRepository(), database.getGroupRepository());
 			case String c when c.equals("hns showmore") && Permissions.view() ->
-					new HNSShowMoreCommand(databaseAdapter);
+					new HNSShowMoreCommand(database.getHnsUserRepository(), database.getUserRepository(), database.getUsernameRepository(), database.getGroupRepository());
 			case String c when c.equals("hns add") && Permissions.create(event.getMember()) ->
-					new HNSAddCommand(databaseAdapter);
-			case String c when c.equals("hns edit") && Permissions.view() -> new HNSEditCommand(databaseAdapter);
-			case String c when c.equals("hns list") && Permissions.view() -> new HNSListCommand(databaseAdapter);
+					new HNSAddCommand(database.getHnsUserRepository(), database.getUserRepository(), database.getUsernameRepository());
+			case String c when c.equals("hns edit") && Permissions.view() ->
+					new HNSEditCommand(database.getHnsUserRepository(), database.getRequestRepository(), database.getUsernameRepository());
+			case String c when c.equals("hns list") && Permissions.view() ->
+					new HNSListCommand(database.getHnsUserRepository(), database.getUsernameRepository());
 			case String c when c.equals("hns tutorial") && Permissions.view() -> new HNSTutorialCommand();
 			case String c when c.equals("hns achievements add") && Permissions.view() ->
-					new AchievementsAddCommand(databaseAdapter);
+					new AchievementsAddCommand(database.getAchievementRepository());
 			case String c when c.equals("hns achievements list") && Permissions.view() ->
-					new AchievementsListCommand(databaseAdapter);
+					new AchievementsListCommand(database.getAchievementRepository());
 			case String c when c.equals("hns maps add") && Permissions.create(event.getMember()) ->
-					new MapsAddCommand(databaseAdapter);
-			case String c when c.equals("pg show") && Permissions.view() -> new PGShowCommand(databaseAdapter);
+					new MapsAddCommand(database.getMapRepository());
+			case String c when c.equals("pg show") && Permissions.view() ->
+					new PGShowCommand(database.getPgUserRepository(), database.getUserRepository(), database.getUsernameRepository(), database.getGroupRepository());
 			case String c when c.equals("pg add") && Permissions.create(event.getMember()) ->
-					new PGAddCommand(databaseAdapter);
-			case String c when c.equals("pg edit") && Permissions.view() -> new PGEditCommand(databaseAdapter);
-			case String c when c.equals("pg list") && Permissions.view() -> new PGListCommand(databaseAdapter);
+					new PGAddCommand(database.getPgUserRepository(), database.getUserRepository(), database.getUsernameRepository());
+			case String c when c.equals("pg edit") && Permissions.view() ->
+					new PGEditCommand(database.getPgUserRepository(), database.getRequestRepository(), database.getUsernameRepository());
+			case String c when c.equals("pg list") && Permissions.view() ->
+					new PGListCommand(database.getPgUserRepository(), database.getUsernameRepository());
 			default -> this;
 		};
 	}

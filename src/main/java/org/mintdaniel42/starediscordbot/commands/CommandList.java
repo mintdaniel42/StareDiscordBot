@@ -5,8 +5,8 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.*;
-import org.mintdaniel42.starediscordbot.data.AchievementModel;
-import org.mintdaniel42.starediscordbot.data.GroupModel;
+import org.mintdaniel42.starediscordbot.data.entity.AchievementEntity;
+import org.mintdaniel42.starediscordbot.data.entity.GroupEntity;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 public enum CommandList {
@@ -92,17 +92,17 @@ public enum CommandList {
 												.addOption(OptionType.STRING, "name", R.Strings.ui("achievement_name"), true)
 												.addOption(OptionType.STRING, "description", R.Strings.ui("achievement_description"), true)
 												.addOptions(new OptionData(OptionType.STRING, "type", R.Strings.ui("achievement_type"), true)
-														.addChoice(AchievementModel.Type.riddle.name(), R.Strings.ui("riddle"))
-														.addChoice(AchievementModel.Type.normal.name(), R.Strings.ui("normal"))
-														.addChoice(AchievementModel.Type.longterm.name(), R.Strings.ui("longterm")))
+														.addChoice(AchievementEntity.Type.riddle.name(), R.Strings.ui("riddle"))
+														.addChoice(AchievementEntity.Type.normal.name(), R.Strings.ui("normal"))
+														.addChoice(AchievementEntity.Type.longterm.name(), R.Strings.ui("longterm")))
 												.addOption(OptionType.STRING, "points", R.Strings.ui("achievement_points"), true),
 										new SubcommandData("list", R.Strings.ui("show_achievements"))
 												.addOption(OptionType.STRING, "points", R.Strings.ui("filter_by_achievement_points"), false)
 												.addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true)
 												.addOptions(new OptionData(OptionType.STRING, "type", R.Strings.ui("filter_by_achievement_type"))
-														.addChoice(AchievementModel.Type.riddle.name(), R.Strings.ui("riddle"))
-														.addChoice(AchievementModel.Type.normal.name(), R.Strings.ui("normal"))
-														.addChoice(AchievementModel.Type.longterm.name(), R.Strings.ui("longterm")))
+														.addChoice(AchievementEntity.Type.riddle.name(), R.Strings.ui("riddle"))
+														.addChoice(AchievementEntity.Type.normal.name(), R.Strings.ui("normal"))
+														.addChoice(AchievementEntity.Type.longterm.name(), R.Strings.ui("longterm")))
 								)
 				)
 				.addSubcommandGroups(
@@ -171,17 +171,17 @@ public enum CommandList {
 								.addOption(OptionType.STRING, "name", R.Strings.ui("group_name"), true)
 								.addOption(OptionType.STRING, "leader", R.Strings.ui("group_leader"), true, true)
 								.addOptions(new OptionData(OptionType.STRING, "relation", R.Strings.ui("group_relation"), true)
-										.addChoice(R.Strings.ui("enemy"), GroupModel.Relation.enemy.name())
-										.addChoice(R.Strings.ui("neutral"), GroupModel.Relation.neutral.name())
-										.addChoice(R.Strings.ui("ally"), GroupModel.Relation.ally.name())),
+										.addChoice(R.Strings.ui("enemy"), GroupEntity.Relation.enemy.name())
+										.addChoice(R.Strings.ui("neutral"), GroupEntity.Relation.neutral.name())
+										.addChoice(R.Strings.ui("ally"), GroupEntity.Relation.ally.name())),
 						new SubcommandData("edit", R.Strings.ui("edit_group"))
 								.addOption(OptionType.STRING, "tag", R.Strings.ui("group_tag"), true, true)
 								.addOption(OptionType.STRING, "name", R.Strings.ui("group_name"))
 								.addOption(OptionType.STRING, "leader", R.Strings.ui("group_leader"), false, true)
 								.addOptions(new OptionData(OptionType.STRING, "relation", R.Strings.ui("group_relation"))
-										.addChoice(R.Strings.ui("enemy"), GroupModel.Relation.enemy.name())
-										.addChoice(R.Strings.ui("neutral"), GroupModel.Relation.neutral.name())
-										.addChoice(R.Strings.ui("ally"), GroupModel.Relation.ally.name())),
+										.addChoice(R.Strings.ui("enemy"), GroupEntity.Relation.enemy.name())
+										.addChoice(R.Strings.ui("neutral"), GroupEntity.Relation.neutral.name())
+										.addChoice(R.Strings.ui("ally"), GroupEntity.Relation.ally.name())),
 						new SubcommandData("delete", R.Strings.ui("delete_group"))
 								.addOption(OptionType.STRING, "tag", R.Strings.ui("group_tag"), true, true)
 				);

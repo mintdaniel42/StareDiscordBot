@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.data.entity.MetaDataEntity;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -13,14 +13,14 @@ import java.util.concurrent.TimeUnit;
 
 @UtilityClass
 public class InfoEmbed {
-	public MessageEmbed of(@NonNull final DatabaseAdapter databaseAdapter) {
+	public MessageEmbed of(@NonNull final MetaDataEntity.Version version, final int usernameCount, final int hnsCount, final int pgCount) {
 		return new EmbedBuilder()
 				.setColor(Options.getColorNormal())
-				.addField(R.Strings.ui("version"), "%s - \"%s\"".formatted(databaseAdapter.getVersion().name().replace('_', '.'), databaseAdapter.getVersion().getTitle()), false)
+				.addField(R.Strings.ui("version"), "%s - \"%s\"".formatted(version.name().replace('_', '.'), version.getTitle()), false)
 				.addField(R.Strings.ui("uptime"), getUptime(), false)
-				.addField(R.Strings.ui("count_of_stored_usernames"), String.valueOf(databaseAdapter.getUsernameCount()), false)
-				.addField(R.Strings.ui("hide_n_seek_entry_count"), String.valueOf(databaseAdapter.getHnsCount()), false)
-				.addField(R.Strings.ui("partygames_entry_count"), String.valueOf(databaseAdapter.getPgCount()), false)
+				.addField(R.Strings.ui("count_of_stored_usernames"), String.valueOf(usernameCount), false)
+				.addField(R.Strings.ui("hide_n_seek_entry_count"), String.valueOf(hnsCount), false)
+				.addField(R.Strings.ui("partygames_entry_count"), String.valueOf(pgCount), false)
 				.build();
 	}
 

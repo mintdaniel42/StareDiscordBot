@@ -8,12 +8,12 @@ import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
-import org.mintdaniel42.starediscordbot.data.DatabaseAdapter;
+import org.mintdaniel42.starediscordbot.data.repository.MapRepository;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
 public final class MapsAddCommand implements CommandAdapter {
-	@NonNull private final DatabaseAdapter databaseAdapter;
+	@NonNull private final MapRepository mapRepository;
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
