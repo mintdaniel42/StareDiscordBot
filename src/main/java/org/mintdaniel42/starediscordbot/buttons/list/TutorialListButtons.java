@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
 import org.mintdaniel42.starediscordbot.buttons.misc.TutorialSuggestionButtons;
-import org.mintdaniel42.starediscordbot.data.TutorialModel;
+import org.mintdaniel42.starediscordbot.data.entity.TutorialEntity;
 import org.mintdaniel42.starediscordbot.embeds.TutorialEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -18,12 +18,12 @@ import java.util.Arrays;
 
 public final class TutorialListButtons implements ButtonAdapter {
 	@Contract(pure = true, value = "_ -> new")
-	public static @NonNull ActionRow create(@NonNull final TutorialModel tutorialModel) {
+	public static @NonNull ActionRow create(@NonNull final TutorialEntity tutorialEntity) {
 		final var tutorialList = Arrays.asList(R.Tutorials.list());
 		final var index = tutorialList.stream()
 				.sorted()
 				.toList()
-				.indexOf(tutorialModel);
+				.indexOf(tutorialEntity);
 		return ActionRow.of(
 				Button.primary(
 								"%s:%s:list".formatted("tutorial", tutorialList.get(index > 0 ? index - 1 : 0).getId()),
@@ -40,10 +40,10 @@ public final class TutorialListButtons implements ButtonAdapter {
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
-		if (R.Tutorials.get(event.getComponentId().split(":")[1]) instanceof final TutorialModel tutorialModel) {
-			return interactionHook.editOriginalEmbeds(TutorialEmbed.of(tutorialModel))
-					.setComponents(TutorialListButtons.create(tutorialModel),
-							TutorialSuggestionButtons.create(tutorialModel));
+		if (R.Tutorials.get(event.getComponentId().split(":")[1]) instanceof final TutorialEntity tutorialEntity) {
+			return interactionHook.editOriginalEmbeds(TutorialEmbed.of(tutorialEntity))
+					.setComponents(TutorialListButtons.create(tutorialEntity),
+							TutorialSuggestionButtons.create(tutorialEntity));
 		} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
 	}
 }

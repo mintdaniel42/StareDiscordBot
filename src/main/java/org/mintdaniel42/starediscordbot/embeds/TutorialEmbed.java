@@ -4,17 +4,17 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import org.mintdaniel42.starediscordbot.data.TutorialModel;
+import org.mintdaniel42.starediscordbot.data.entity.TutorialEntity;
 
 @UtilityClass
 public class TutorialEmbed {
-	public static @NonNull MessageEmbed of(@NonNull final TutorialModel tutorialModel) {
+	public static @NonNull MessageEmbed of(@NonNull final TutorialEntity tutorialEntity) {
 		return new EmbedBuilder()
-				.setTitle(tutorialModel.getTitle())
-				.setDescription(tutorialModel.getDescription())
-				.setColor(tutorialModel.getColor())
-				.setThumbnail(tutorialModel.getThumbnailUrl())
-				.setImage(tutorialModel.getImageUrl())
+				.setTitle(tutorialEntity.getTitle())
+				.setDescription(tutorialEntity.getDescription())
+				.setColor(tutorialEntity.getColor())
+				.setThumbnail(tutorialEntity.getThumbnailUrl())
+				.setImage(tutorialEntity.getImageUrl())
 				.build();
 	}
 }

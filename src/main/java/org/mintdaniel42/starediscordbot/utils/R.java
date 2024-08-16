@@ -1,6 +1,7 @@
 package org.mintdaniel42.starediscordbot.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.avaje.jsonb.JsonType;
+import io.avaje.jsonb.Jsonb;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
@@ -10,7 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.PropertyKey;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
-import org.mintdaniel42.starediscordbot.data.TutorialModel;
+import org.mintdaniel42.starediscordbot.data.entity.TutorialEntity;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -23,8 +24,6 @@ import java.util.ResourceBundle;
  */
 @UtilityClass
 public class R {
-	private final ObjectMapper objectMapper = new ObjectMapper();
-
 	/**
 	 * This utility class holds different emojis
 	 */
@@ -78,13 +77,16 @@ public class R {
 	@UtilityClass
 	public class Tutorials {
 		private final String prefix = "tutorials/de/"; // TODO: replace this
-		@Getter(lazy = true) @Accessors(fluent = true) @NonNull private final TutorialModel[] list = loadTutorials();
+		private final JsonType<TutorialEntity> tutorialType = Jsonb.builder()
+				.build()
+				.type(TutorialEntity.class);
+		@Getter(lazy = true) @Accessors(fluent = true) @NonNull private final TutorialEntity[] list = loadTutorials();
 
 		/**
 		 * Get all tutorial ids in the {@code tutorials/de} directory
 		 * @return array of all tutorial ids
 		 */
-		private @NonNull TutorialModel[] loadTutorials() {
+		private @NonNull TutorialEntity[] loadTutorials() {
 			try {
 				return IOUtils.readLines(Objects.requireNonNull(Tutorials.class.getClassLoader().getResourceAsStream(prefix)), StandardCharsets.UTF_8)
 						.stream()
@@ -92,9 +94,9 @@ public class R {
 						.map(s -> get(s.substring(0, s.length() - 5)))
 						.filter(Objects::nonNull)
 						.sorted()
-						.toArray(TutorialModel[]::new);
+						.toArray(TutorialEntity[]::new);
 			} catch (UncheckedIOException | IllegalArgumentException | NullPointerException _) {
-				return new TutorialModel[0];
+				return new TutorialEntity[0];
 			}
 		}
 
@@ -104,9 +106,9 @@ public class R {
 		 * @param id the tutorial id
 		 * @return the model of the tutorial
 		 */
-		public @Nullable TutorialModel get(@NonNull final String id) {
+		public @Nullable TutorialEntity get(@NonNull final String id) {
 			try (var inputStream = R.Tutorials.class.getClassLoader().getResourceAsStream(prefix + id + ".json")) {
-				return objectMapper.readValue(inputStream, TutorialModel.class)
+				return tutorialType.fromJson(inputStream)
 						.toBuilder()
 						.id(id)
 						.build();
