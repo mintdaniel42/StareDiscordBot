@@ -38,7 +38,7 @@ public final class HNSEditCommand implements CommandAdapter {
 				if (hnsUserOptional.isPresent() && usernameOptional.isPresent()) {
 					final var hnsUser = HNSUserEntity.merge(event.getOptions(), hnsUserOptional.get().toBuilder());
 
-					if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
+					if (!Permission.hasP2(event.getMember())) {
 						long timestamp = System.currentTimeMillis();
 						if (event.getGuild() instanceof Guild guild) {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof TextChannel requestChannel) {

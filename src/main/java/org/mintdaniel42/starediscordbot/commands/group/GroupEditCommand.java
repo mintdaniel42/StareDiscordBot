@@ -38,7 +38,7 @@ public final class GroupEditCommand implements CommandAdapter {
 						(leaderUuid = MCHelper.getUuid(usernameRepository, leaderMapping.getAsString())) != null) {
 					final var group = GroupEntity.merge(event.getOptions(), groupOptional.get().toBuilder(), leaderUuid);
 
-					if (!Permissions.edit(event.getMember())) {
+					if (!Permission.hasP2(event.getMember())) {
 						long timestamp = System.currentTimeMillis();
 						if (event.getGuild() instanceof final Guild guild) {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof final TextChannel requestChannel) {
