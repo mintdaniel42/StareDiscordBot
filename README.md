@@ -1,4 +1,5 @@
 [![CodeQL](https://github.com/mintdaniel42/StareDiscordBot/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/mintdaniel42/StareDiscordBot/actions/workflows/github-code-scanning/codeql)
+[![CodeCount](https://tokei.rs/b1/github/mintdaniel42/StareDiscordBot)](https://github.com/mintdaniel42/StareDiscordBot/)
 
 # Welcome to the Stare / Prinzessinnen Discord Bot project!
 
