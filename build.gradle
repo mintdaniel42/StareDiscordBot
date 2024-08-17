@@ -35,6 +35,7 @@ dependencies {
     implementation(libs.wisp)
     implementation(libs.verbalexpressions)
     implementation(libs.doma.core)
+    implementation(libs.bucket4j)
     annotationProcessor(libs.lombok)
     annotationProcessor(libs.doma.processor)
     annotationProcessor(libs.avaje.jsonb.generator)

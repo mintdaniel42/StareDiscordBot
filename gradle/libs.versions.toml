@@ -12,6 +12,7 @@ ioutils = "2.16.1"
 wisp = "2.4.0"
 verbalexpressions = "1.8"
 doma = "2.62.0"
+bucket4j = "8.13.1"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
@@ -29,6 +30,7 @@ wisp = { module = "com.coreoz:wisp", version.ref = "wisp" }
 verbalexpressions = { module = "ru.lanwen.verbalregex:java-verbal-expressions", version.ref = "verbalexpressions" }
 doma-core = { module = "org.seasar.doma:doma-core", version.ref = "doma" }
 doma-processor = { module = "org.seasar.doma:doma-processor", version.ref = "doma" }
+bucket4j = { module = "com.bucket4j:bucket4j_jdk17-core", version.ref = "bucket4j" }
 
 [plugins]
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
