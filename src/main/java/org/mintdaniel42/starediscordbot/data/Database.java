@@ -2,10 +2,8 @@ package org.mintdaniel42.starediscordbot.data;
 
 import lombok.Getter;
 import lombok.NonNull;
-import org.mintdaniel42.starediscordbot.data.entity.GroupEntity;
-import org.mintdaniel42.starediscordbot.data.entity.HNSUserEntity;
-import org.mintdaniel42.starediscordbot.data.entity.PGUserEntity;
-import org.mintdaniel42.starediscordbot.data.entity.UserEntity;
+import org.mintdaniel42.starediscordbot.data.dao.*;
+import org.mintdaniel42.starediscordbot.data.entity.*;
 import org.mintdaniel42.starediscordbot.data.repository.*;
 import org.mintdaniel42.starediscordbot.utils.Status;
 import org.seasar.doma.jdbc.Config;
@@ -59,8 +57,15 @@ public final class Database {
 		} else return Status.ERROR;
 	}
 
-	// TODO
 	public void prepareDatabase() {
+		new AchievementDaoImpl(config).createTable();
+		new GroupDaoImpl(config).createTable();
+		new HNSUserDaoImpl(config).createTable();
+		new MetaDataDaoImpl(config).createTable();
+		new PGUserDaoImpl(config).createTable();
+		new UserDaoImpl(config).createTable();
+		new UsernameDaoImpl(config).createTable();
+		metaDataRepository.insertOrUpdate(new MetaDataEntity(0, MetaDataEntity.Version.UNKNOWN));
 	}
 
 	// TODO
