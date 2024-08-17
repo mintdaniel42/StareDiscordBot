@@ -17,7 +17,7 @@ import java.util.UUID;
 public class SpotEntity {
 	@NonNull @Id UUID uuid;
 	@NonNull UUID mapUUID;
-	UUID finder;
+	UUID finderUUID;
 	@NonNull String blockId;
 	@NonNull String rating;
 	@NonNull String videolink;
