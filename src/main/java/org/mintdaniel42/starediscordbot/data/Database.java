@@ -20,6 +20,7 @@ public final class Database {
 	@NonNull private final MetaDataRepository metaDataRepository;
 	@NonNull private final PGUserRepository pgUserRepository;
 	@NonNull private final RequestRepository requestRepository;
+	@NonNull private final SpotRepository spotRepository;
 	@NonNull private final UsernameRepository usernameRepository;
 	@NonNull private final UserRepository userRepository;
 
@@ -32,6 +33,7 @@ public final class Database {
 		metaDataRepository = new MetaDataRepository(config);
 		pgUserRepository = new PGUserRepository(config);
 		requestRepository = new RequestRepository(config);
+		spotRepository = new SpotRepository(config);
 		usernameRepository = new UsernameRepository(config);
 		userRepository = new UserRepository(config);
 	}
