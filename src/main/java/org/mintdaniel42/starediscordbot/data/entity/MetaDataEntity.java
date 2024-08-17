@@ -9,7 +9,7 @@ import org.seasar.doma.Metamodel;
 import org.seasar.doma.Table;
 
 @Entity(immutable = true, metamodel = @Metamodel(suffix = "Meta"))
-@Table(name = "meta")
+@Table(name = "metadata")
 public record MetaDataEntity(@Id int id, @NonNull Version version) {
 	@Getter
 	@RequiredArgsConstructor
