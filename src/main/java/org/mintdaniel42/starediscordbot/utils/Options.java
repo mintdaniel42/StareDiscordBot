@@ -26,11 +26,16 @@ public class Options {
     /**
      * The ID of the role which allows to edit entries of groups & users
      */
-    @Getter private final long editRoleId = Long.parseLong(System.getenv("EDIT_ROLE_ID"));
+    @Getter private final long p2Id = Long.parseLong(System.getenv("P2_ROLE_ID"));
+
+    /**
+     * Additional role (currently) only used for spot token-bucket mechanism
+     */
+    @Getter private final long p3Id = Long.parseLong(System.getenv("P3_ROLE_ID"));
     /**
      * The ID of the role which allows to create & edit entries of groups & users
      */
-    @Getter private final long createRoleId = Long.parseLong(System.getenv("CREATE_ROLE_ID"));
+    @Getter private final long p4Id = Long.parseLong(System.getenv("P4_ROLE_ID"));
     /**
      * The ID of the channel where edit requests are sent to in case someone without
      * sufficient permission tries to do so

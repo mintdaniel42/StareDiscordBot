@@ -38,7 +38,7 @@ public final class PGEditCommand implements CommandAdapter {
 				if (pgUserOptional.isPresent() && usernameOptional.isPresent()) {
 					final var pgUser = PGUserEntity.merge(event.getOptions(), pgUserOptional.get().toBuilder());
 
-					if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
+					if (!Permission.hasP2(event.getMember())) {
 						long timestamp = System.currentTimeMillis();
 						if (event.getGuild() instanceof Guild guild) {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof TextChannel requestChannel) {

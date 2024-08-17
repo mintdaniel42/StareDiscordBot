@@ -40,7 +40,7 @@ public final class UserEditCommand implements CommandAdapter {
 				if (userOptional.isPresent() && usernameOptional.isPresent()) {
 					final var user = UserEntity.merge(event.getOptions(), userOptional.get().toBuilder());
 					final var groupOptional = groupRepository.selectByTag(user.getGroupTag());
-					if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
+					if (!Permission.hasP2(event.getMember())) {
 						long timestamp = System.currentTimeMillis();
 						if (event.getGuild() instanceof Guild guild) {
 							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof TextChannel requestChannel) {
