@@ -3,7 +3,6 @@ package org.mintdaniel42.starediscordbot.data.repository;
 import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.data.entity.MetaDataEntity;
 import org.mintdaniel42.starediscordbot.data.entity.MetaDataEntityMeta;
-import org.mintdaniel42.starediscordbot.utils.Status;
 import org.seasar.doma.jdbc.Config;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
@@ -21,9 +20,13 @@ public final class MetaDataRepository {
 				.fetchOne();
 	}
 
-	public Status update(@NonNull final MetaDataEntity metaData) {
-		return entityQl.update(metaDataMeta, metaData)
-				.execute()
-				.getCount() == 1 ? Status.SUCCESS : Status.ERROR;
+	public void insertOrUpdate(@NonNull final MetaDataEntity metaData) {
+		if (entityQl.from(metaDataMeta)
+				.where(w -> w.eq(metaDataMeta.id, metaData.id()))
+				.fetchOptional()
+				.isPresent()) {
+			entityQl.update(metaDataMeta, metaData)
+					.execute();
+		} else entityQl.insert(metaDataMeta, metaData).execute();
 	}
 }
