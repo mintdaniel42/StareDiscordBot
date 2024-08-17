@@ -6,13 +6,14 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
+import org.mintdaniel42.starediscordbot.bucket.RateLimited;
 
 /**
  * Implementing this interface is equivalent to implementing the logic for a command.
  * It has to be registered in {@link CommandDispatcher}
  */
 @FunctionalInterface
-public interface CommandAdapter {
+public interface CommandAdapter extends RateLimited {
 	/**
 	 * @param interactionHook this is the {@link InteractionHook} which has to be used for responses
 	 * @param event           contains read-only data like {@link OptionMapping}, should not be used for responding
