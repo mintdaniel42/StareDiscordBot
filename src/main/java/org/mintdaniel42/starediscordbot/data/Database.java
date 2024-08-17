@@ -65,6 +65,7 @@ public final class Database {
 		new HNSUserDaoImpl(config).createTable();
 		new MetaDataDaoImpl(config).createTable();
 		new PGUserDaoImpl(config).createTable();
+		new SpotDaoImpl(config).createTable();
 		new UserDaoImpl(config).createTable();
 		new UsernameDaoImpl(config).createTable();
 		metaDataRepository.insertOrUpdate(new MetaDataEntity(0, MetaDataEntity.Version.UNKNOWN));
