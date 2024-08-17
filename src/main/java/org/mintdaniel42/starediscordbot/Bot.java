@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import org.mintdaniel42.starediscordbot.bucket.DefaultBucketPool;
 import org.mintdaniel42.starediscordbot.bucket.PoolUpdater;
 import org.mintdaniel42.starediscordbot.bucket.SpotBucketPool;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
@@ -28,7 +29,10 @@ public final class Bot extends ListenerAdapter {
 	public Bot(@NonNull final Database database) {
 		JDABuilder.createDefault(Options.getToken())
 				.addEventListeners(
-						new PoolUpdater(SpotBucketPool.getInstance()),
+						new PoolUpdater(
+								DefaultBucketPool.getInstance(),
+								SpotBucketPool.getInstance()
+						),
 						new AutoCompletionHandler(database),
 						new CommandDispatcher(database),
 						new ButtonDispatcher(database),
