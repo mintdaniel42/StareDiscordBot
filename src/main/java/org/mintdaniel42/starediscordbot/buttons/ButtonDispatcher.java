@@ -22,6 +22,9 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.Permission;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+import java.time.Duration;
+import java.util.Objects;
+
 @RequiredArgsConstructor
 @Slf4j
 public final class ButtonDispatcher extends ListenerAdapter implements ButtonAdapter {
@@ -37,13 +40,19 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 		}
 		//#endif
 
-		event.deferEdit().queue(interactionHook -> {
+		event.deferReply().queue(interactionHook -> {
 			try {
-				handleButton(event)
-						.handle(interactionHook, event)
-						.queue();
+				final var adapter = dispatch(event);
+				if (adapter.getPool()
+						.getBucket(Objects.requireNonNull(event.getMember()))
+						.asBlocking()
+						.tryConsume(adapter.getActionTokenPrice(), Duration.ofSeconds(10))) {
+					adapter.handle(interactionHook, event)
+							.queue();
+				} else
+					interactionHook.editOriginal(R.Strings.ui("you_dont_have_enough_tokens_for_this_action_please_wait_a_few_seconds")).queue();
 			} catch (Exception e) {
-				new ErrorHandler(e).handle(interactionHook, event);
+				new ErrorHandler(e).handle(interactionHook, event).queue();
 			}
 		});
 	}
@@ -55,7 +64,7 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 		else return interactionHook.editOriginal(R.Strings.ui("you_do_not_have_the_permission_to_use_this_button"));
 	}
 
-	private @NonNull ButtonAdapter handleButton(@NonNull final ButtonInteractionEvent event) {
+	private @NonNull ButtonAdapter dispatch(@NonNull final ButtonInteractionEvent event) {
 		return switch (event.getComponentId().split(":")) {
 			case String[] b when b.length == 2 && b[0].equals("approve") && Permission.hasP2(event.getMember()) ->
 					new ApproveButton(database);

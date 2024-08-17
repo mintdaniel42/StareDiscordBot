@@ -32,6 +32,9 @@ import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.Permission;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+import java.time.Duration;
+import java.util.Objects;
+
 @RequiredArgsConstructor
 @Slf4j
 public final class CommandDispatcher extends ListenerAdapter implements CommandAdapter {
@@ -49,9 +52,15 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 
 		event.deferReply().queue(interactionHook -> {
 			try {
-				handleCommand(event)
-						.handle(interactionHook, event)
-						.queue();
+				final var adapter = dispatch(event);
+				if (adapter.getPool()
+						.getBucket(Objects.requireNonNull(event.getMember()))
+						.asBlocking()
+						.tryConsume(adapter.getActionTokenPrice(), Duration.ofSeconds(10))) {
+					adapter.handle(interactionHook, event)
+							.queue();
+				} else
+					interactionHook.editOriginal(R.Strings.ui("you_dont_have_enough_tokens_for_this_action_please_wait_a_few_seconds")).queue();
 			} catch (Exception e) {
 				new ErrorHandler(e).handle(interactionHook, event).queue();
 			}
@@ -64,7 +73,7 @@ public final class CommandDispatcher extends ListenerAdapter implements CommandA
 	}
 
 	@Contract("_ -> _")
-	private @NonNull CommandAdapter handleCommand(@NonNull final SlashCommandInteractionEvent event) {
+	private @NonNull CommandAdapter dispatch(@NonNull final SlashCommandInteractionEvent event) {
 		return switch (event.getFullCommandName()) {
 			case String c when c.equals("approve") && Permission.hasP2(event.getMember()) ->
 					new ApproveChangeCommand(database);
