@@ -14,8 +14,9 @@ You need to set the following environment variables for the bot to function corr
 DISCORD_TOKEN: Your Discord bot token.
 GUILD_ID: The ID of your Discord guild (server).
 EDIT_ROLE_ID: The ID of the role that can edit.
-CREATE_ROLE_ID: The ID of the role that can create.
-VIEW_ROLE_ID: The ID of the role that can view.
+P4_ROLE_ID: The ID of the role that can create.
+P3_ROLE_ID: Another Role inbetween P2 and P4
+P2_ROLE_ID: The ID of the role that can view.
 REQUEST_CHANNEL_ID: The ID of the request channel.
 LOG_CHANNEL_ID: The ID of the channel where errors should be reported to.
 COLOR_NORMAL: Hex color code for normal messages.
@@ -28,9 +29,9 @@ Example .env file
 ```
 DISCORD_TOKEN=your_discord_token_here
 GUILD_ID=your_guild_id_here
-EDIT_ROLE_ID=your_edit_role_id_here
-CREATE_ROLE_ID=your_create_role_id_here
-VIEW_ROLE_ID=your_view_role_id_here
+P4_ROLE_ID=your_role_p4_id_here
+P3_ROLE_ID=your_role_p4_id_here
+P2_ROLE_ID=your_role_p4_id_here
 REQUEST_CHANNEL_ID=your_request_channel_id_here
 LOG_CHANNEL_ID=your_log_channel_id_here
 COLOR_NORMAL=ffffff
