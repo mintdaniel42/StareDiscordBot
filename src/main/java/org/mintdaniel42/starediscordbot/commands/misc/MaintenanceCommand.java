@@ -26,4 +26,9 @@ public final class MaintenanceCommand implements CommandAdapter {
 			return interactionHook.editOriginal(R.Strings.ui("maintenance_is_now_set_to_s", activeMapping.getAsBoolean()));
 		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
 	}
+
+	@Override
+	public boolean isPublicResponseRestricted() {
+		return true;
+	}
 }
