@@ -21,4 +21,13 @@ public interface RateLimited {
 	default long getActionTokenPrice() {
 		return 1;
 	}
+
+	/**
+	 * Override this to force responses to be ephemeral
+	 *
+	 * @return usually true
+	 */
+	default boolean isPublicResponseRestricted() {
+		return false;
+	}
 }

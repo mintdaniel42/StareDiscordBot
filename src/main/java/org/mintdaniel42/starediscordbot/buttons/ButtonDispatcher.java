@@ -40,21 +40,22 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 		}
 		//#endif
 
-		event.deferReply().queue(interactionHook -> {
-			try {
-				final var adapter = dispatch(event);
-				if (adapter.getPool()
-						.getBucket(Objects.requireNonNull(event.getMember()))
-						.asBlocking()
-						.tryConsume(adapter.getActionTokenPrice(), Duration.ofSeconds(10))) {
-					adapter.handle(interactionHook, event)
-							.queue();
-				} else
-					interactionHook.editOriginal(R.Strings.ui("you_dont_have_enough_tokens_for_this_action_please_wait_a_few_seconds")).queue();
-			} catch (Exception e) {
-				new ErrorHandler(e).handle(interactionHook, event).queue();
-			}
-		});
+		final var adapter = dispatch(event);
+		event.deferReply()
+				.setEphemeral(adapter.isPublicResponseRestricted())
+				.queue(interactionHook -> {
+					try {
+						if (adapter.getPool()
+								.getBucket(Objects.requireNonNull(event.getMember()))
+								.asBlocking()
+								.tryConsume(adapter.getActionTokenPrice(), Duration.ofSeconds(10))) {
+							adapter.handle(interactionHook, event).queue();
+						} else
+							interactionHook.editOriginal(R.Strings.ui("you_dont_have_enough_tokens_for_this_action_please_wait_a_few_seconds")).queue();
+					} catch (Exception e) {
+						new ErrorHandler(e).handle(interactionHook, event).queue();
+					}
+				});
 	}
 
 	@Override
