@@ -7,7 +7,7 @@ import org.seasar.doma.Sql;
 @Dao
 public interface SpotDao {
 	@Sql("""
-			CREATE TABLE spots (
+			CREATE TABLE IF NOT EXISTS spots (
 			    uuid CHAR(36) PRIMARY KEY NOT NULL,
 			    mapUUID CHAR(36) NOT NULL,
 			    finderUUID CHAR(36),
