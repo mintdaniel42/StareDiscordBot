@@ -7,6 +7,8 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.*;
 import org.mintdaniel42.starediscordbot.data.entity.AchievementEntity;
 import org.mintdaniel42.starediscordbot.data.entity.GroupEntity;
+import org.mintdaniel42.starediscordbot.data.entity.MapEntity;
+import org.mintdaniel42.starediscordbot.data.entity.SpotEntity;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 public enum CommandList {
@@ -92,17 +94,17 @@ public enum CommandList {
 												.addOption(OptionType.STRING, "name", R.Strings.ui("achievement_name"), true)
 												.addOption(OptionType.STRING, "description", R.Strings.ui("achievement_description"), true)
 												.addOptions(new OptionData(OptionType.STRING, "type", R.Strings.ui("achievement_type"), true)
-														.addChoice(AchievementEntity.Type.riddle.name(), R.Strings.ui("riddle"))
-														.addChoice(AchievementEntity.Type.normal.name(), R.Strings.ui("normal"))
-														.addChoice(AchievementEntity.Type.longterm.name(), R.Strings.ui("longterm")))
+														.addChoice(R.Strings.ui("riddle"), AchievementEntity.Type.riddle.name())
+														.addChoice(R.Strings.ui("normal"), AchievementEntity.Type.normal.name())
+														.addChoice(R.Strings.ui("longterm"), AchievementEntity.Type.longterm.name()))
 												.addOption(OptionType.STRING, "points", R.Strings.ui("achievement_points"), true),
 										new SubcommandData("list", R.Strings.ui("show_achievements"))
 												.addOption(OptionType.STRING, "points", R.Strings.ui("filter_by_achievement_points"), false)
 												.addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true)
 												.addOptions(new OptionData(OptionType.STRING, "type", R.Strings.ui("filter_by_achievement_type"))
-														.addChoice(AchievementEntity.Type.riddle.name(), R.Strings.ui("riddle"))
-														.addChoice(AchievementEntity.Type.normal.name(), R.Strings.ui("normal"))
-														.addChoice(AchievementEntity.Type.longterm.name(), R.Strings.ui("longterm")))
+														.addChoice(R.Strings.ui("riddle"), AchievementEntity.Type.riddle.name())
+														.addChoice(R.Strings.ui("normal"), AchievementEntity.Type.normal.name())
+														.addChoice(R.Strings.ui("longterm"), AchievementEntity.Type.longterm.name()))
 								)
 				)
 				.addSubcommandGroups(
@@ -114,12 +116,30 @@ public enum CommandList {
 												.addOption(OptionType.STRING, "release", R.Strings.ui("the_maps_release_date"), true)
 												.addOption(OptionType.ATTACHMENT, "picture", R.Strings.ui("a_picture_of_the_map"), true)
 												.addOptions(new OptionData(OptionType.STRING, "difficulty", R.Strings.ui("the_maps_difficulty"), true)
-														.addChoice("easy", "easy")
-														.addChoice("medium", "medium")
-														.addChoice("hard", "hard")
-														.addChoice("ultra", "ultra")
+														.addChoice(R.Strings.ui("easy"), MapEntity.Difficulty.easy.name())
+														.addChoice(R.Strings.ui("medium"), MapEntity.Difficulty.medium.name())
+														.addChoice(R.Strings.ui("hard"), MapEntity.Difficulty.hard.name())
+														.addChoice(R.Strings.ui("ultra"), MapEntity.Difficulty.ultra.name())
 												)
-								));
+								))
+				.addSubcommandGroups(
+						new SubcommandGroupData("spots", R.Strings.ui("spots_related_commands"))
+								.addSubcommands(
+										new SubcommandData("add", R.Strings.ui("add_a_spot"))
+												.addOption(OptionType.STRING, "map", R.Strings.ui("the_maps_name"), true, true)
+												.addOption(OptionType.STRING, "finder", R.Strings.ui("the_person_who_found_the_spot"), true, true)
+												.addOptions(
+														new OptionData(OptionType.STRING, "type", R.Strings.ui("the_type_of_spot"), true)
+																.addChoice(SpotEntity.Type.afk.name(), R.Strings.ui("afk_spot"))
+																.addChoice(SpotEntity.Type.spelling.name(), R.Strings.ui("spelling_spot")),
+														new OptionData(OptionType.BOOLEAN, "twoplayer", R.Strings.ui("is_the_spot_for_two_players")),
+														new OptionData(OptionType.STRING, "block", R.Strings.ui("block")),
+														new OptionData(OptionType.STRING, "rating", R.Strings.ui("rating")),
+														new OptionData(OptionType.STRING, "videolink", R.Strings.ui("link_a_video_were_the_spot_is_shown")),
+														new OptionData(OptionType.STRING, "coordinates", R.Strings.ui("coordinates"))
+												)
+								)
+				);
 		//#else
 		//$$ );
 		//#endif
