@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -19,6 +20,7 @@ import java.util.regex.Pattern;
 import java.util.stream.LongStream;
 
 // TODO: add autocomplete for achievements
+@Singleton
 public final class AutoCompletionHandler extends ListenerAdapter {
 	@NonNull private final Database database;
 	@NonNull private final Pattern numberPattern;
