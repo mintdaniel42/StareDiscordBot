@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.buttons.misc;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
+@Singleton
 public final class TutorialSuggestionButtons implements ButtonAdapter {
 	public static @NonNull ActionRow create(@NonNull final TutorialEntity tutorialEntity) {
 		if (tutorialEntity.getSimilar().length > 0) {

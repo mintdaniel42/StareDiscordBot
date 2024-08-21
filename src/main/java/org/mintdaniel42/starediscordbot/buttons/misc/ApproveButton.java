@@ -1,5 +1,7 @@
 package org.mintdaniel42.starediscordbot.buttons.misc;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -14,7 +16,8 @@ import org.mintdaniel42.starediscordbot.data.Database;
 import org.mintdaniel42.starediscordbot.utils.R;
 import org.mintdaniel42.starediscordbot.utils.Status;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Inject)
+@Singleton
 public final class ApproveButton implements ButtonAdapter {
 	@NonNull private final Database database;
 

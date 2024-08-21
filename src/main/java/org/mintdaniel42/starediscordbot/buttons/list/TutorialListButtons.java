@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.buttons.list;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -16,6 +17,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.Arrays;
 
+@Singleton
 public final class TutorialListButtons implements ButtonAdapter {
 	@Contract(pure = true, value = "_ -> new")
 	public static @NonNull ActionRow create(@NonNull final TutorialEntity tutorialEntity) {

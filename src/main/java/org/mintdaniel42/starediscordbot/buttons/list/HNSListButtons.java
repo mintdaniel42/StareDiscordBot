@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.buttons.list;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -16,6 +17,7 @@ import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
+@Singleton
 public final class HNSListButtons implements ButtonAdapter {
 	@NonNull private final HNSUserRepository hnsUserRepository;
 	@NonNull private final UsernameRepository usernameRepository;
