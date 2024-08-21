@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands.pg;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -21,6 +22,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@Singleton
 public final class PGShowCommand implements CommandAdapter {
 	@NonNull private final PGUserRepository pgUserRepository;
 	@NonNull private final UserRepository userRepository;
