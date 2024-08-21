@@ -1,7 +1,9 @@
 package org.mintdaniel42.starediscordbot.data;
 
+import jakarta.inject.Singleton;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.mintdaniel42.starediscordbot.data.dao.*;
 import org.mintdaniel42.starediscordbot.data.entity.*;
 import org.mintdaniel42.starediscordbot.data.repository.*;
@@ -11,6 +13,8 @@ import org.seasar.doma.jdbc.Config;
 import java.util.UUID;
 
 @Getter
+@RequiredArgsConstructor
+@Singleton
 public final class Database {
 	@NonNull private final Config config;
 	@NonNull private final AchievementRepository achievementRepository;
@@ -23,20 +27,6 @@ public final class Database {
 	@NonNull private final SpotRepository spotRepository;
 	@NonNull private final UsernameRepository usernameRepository;
 	@NonNull private final UserRepository userRepository;
-
-	public Database(@NonNull final Config config) {
-		this.config = config;
-		achievementRepository = new AchievementRepository(config);
-		groupRepository = new GroupRepository(config);
-		hnsUserRepository = new HNSUserRepository(config);
-		mapRepository = new MapRepository(config);
-		metaDataRepository = new MetaDataRepository(config);
-		pgUserRepository = new PGUserRepository(config);
-		requestRepository = new RequestRepository(config);
-		spotRepository = new SpotRepository(config);
-		usernameRepository = new UsernameRepository(config);
-		userRepository = new UserRepository(config);
-	}
 
 	// TODO
 	public @NonNull Status deleteUserData(@NonNull final UUID uuid) {

@@ -2,7 +2,11 @@ package org.mintdaniel42.starediscordbot;
 
 import com.coreoz.wisp.Scheduler;
 import com.coreoz.wisp.schedule.Schedules;
+import io.avaje.inject.BeanScope;
+import jakarta.inject.Singleton;
+import lombok.Cleanup;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -17,45 +21,51 @@ import org.mintdaniel42.starediscordbot.commands.AutoCompletionHandler;
 import org.mintdaniel42.starediscordbot.commands.CommandDispatcher;
 import org.mintdaniel42.starediscordbot.commands.CommandList;
 import org.mintdaniel42.starediscordbot.data.Database;
-import org.mintdaniel42.starediscordbot.data.DatabaseConfig;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.time.Duration;
 import java.util.Arrays;
 
+@RequiredArgsConstructor
+@Singleton
 @Slf4j
 public final class Bot extends ListenerAdapter {
-	public Bot(@NonNull final Database database) {
+	@NonNull private final Database database;
+	@NonNull private final Scheduler scheduler;
+	@NonNull private final ButtonDispatcher buttonDispatcher;
+	@NonNull private final CommandDispatcher commandDispatcher;
+	@NonNull private final AutoCompletionHandler autoCompletionHandler;
+
+	public static void main(@NonNull final String[] args) {
+		//#if dev
+		log.info(R.Strings.log("running_in_dev_mode"));
+		//#endif
+		@Cleanup final var beanScope = BeanScope.builder().build();
+		beanScope.get(Bot.class).run();
+	}
+
+	public void run() {
 		JDABuilder.createDefault(Options.getToken())
 				.addEventListeners(
 						new PoolUpdater(
 								DefaultBucketPool.getInstance(),
 								SpotBucketPool.getInstance()
 						),
-						new AutoCompletionHandler(database),
-						new CommandDispatcher(database),
-						new ButtonDispatcher(database),
+						autoCompletionHandler,
+						commandDispatcher,
+						buttonDispatcher,
 						this
 				)
 				.build();
 
 		database.prepareDatabase();
 
-		final var scheduler = new Scheduler();
-
 		scheduler.schedule(
 				database::cleanDatabase,
 				Schedules.afterInitialDelay((timestamp, _, _) -> timestamp + BuildConfig.cleaningInterval - (timestamp % BuildConfig.cleaningInterval),
 						Duration.ZERO)
 		);
-	}
-
-	public static void main(@NonNull final String[] args) {
-		//#if dev
-		log.info(R.Strings.log("running_in_dev_mode"));
-		//#endif
-		new Bot(new Database(new DatabaseConfig()));
 	}
 
 	@Override

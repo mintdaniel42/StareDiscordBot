@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.buttons;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,6 @@ import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.GroupButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.HNSShowButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.TutorialSuggestionButtons;
-import org.mintdaniel42.starediscordbot.data.Database;
 import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.Permission;
@@ -26,9 +26,18 @@ import java.time.Duration;
 import java.util.Objects;
 
 @RequiredArgsConstructor
+@Singleton
 @Slf4j
 public final class ButtonDispatcher extends ListenerAdapter implements ButtonAdapter {
-	@NonNull private final Database database;
+	@NonNull private final ApproveButton approveButton;
+	@NonNull private final GroupButton groupButton;
+	@NonNull private final HNSShowButton hnsShowButton;
+	@NonNull private final TutorialSuggestionButtons tutorialSuggestionButtons;
+	@NonNull private final TutorialListButtons tutorialListButtons;
+	@NonNull private final PGListButtons pgListButtons;
+	@NonNull private final HNSListButtons hnsListButtons;
+	@NonNull private final GroupListButtons groupListButtons;
+	@NonNull private final AchievementListButtons achievementListButtons;
 
 	@Override
 	public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
@@ -68,23 +77,20 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 	private @NonNull ButtonAdapter dispatch(@NonNull final ButtonInteractionEvent event) {
 		return switch (event.getComponentId().split(":")) {
 			case String[] b when b.length == 2 && b[0].equals("approve") && Permission.hasP2(event.getMember()) ->
-					new ApproveButton(database);
-			case String[] b when b.length == 2 && b[0].equals("group") && Permission.hasP1() ->
-					new GroupButton(database.getGroupRepository(), database.getHnsUserRepository(), database.getUserRepository(), database.getUsernameRepository());
-			case String[] b when b.length == 3 && b[0].equals("hns") && Permission.hasP1() ->
-					new HNSShowButton(database.getHnsUserRepository(), database.getUserRepository(), database.getUsernameRepository(), database.getGroupRepository());
+					approveButton;
+			case String[] b when b.length == 2 && b[0].equals("group") && Permission.hasP1() -> groupButton;
+			case String[] b when b.length == 3 && b[0].equals("hns") && Permission.hasP1() -> hnsShowButton;
 			case String[] b when b.length == 3 && b[0].equals("tutorial") && b[2].equals("suggestion") && Permission.hasP1() ->
-					new TutorialSuggestionButtons();
+					tutorialSuggestionButtons;
 			case String[] b when b.length == 3 && b[0].equals("tutorial") && b[2].equals("list") && Permission.hasP1() ->
-					new TutorialListButtons();
+					tutorialListButtons;
 			case String[] b when b.length == 3 && b[0].equals("list") && b[1].equals("pg") && Permission.hasP1() ->
-					new PGListButtons(database.getPgUserRepository(), database.getUsernameRepository());
+					pgListButtons;
 			case String[] b when b.length == 3 && b[0].equals("list") && b[1].equals("hns") && Permission.hasP1() ->
-					new HNSListButtons(database.getHnsUserRepository(), database.getUsernameRepository());
-			case String[] b when b.length == 3 && b[0].equals("group") && Permission.hasP1() ->
-					new GroupListButtons(database.getGroupRepository(), database.getHnsUserRepository(), database.getUserRepository(), database.getUsernameRepository());
+					hnsListButtons;
+			case String[] b when b.length == 3 && b[0].equals("group") && Permission.hasP1() -> groupListButtons;
 			case String[] b when b.length == 4 && b[0].equals("achievement") && Permission.hasP1() ->
-					new AchievementListButtons(database.getAchievementRepository());
+					achievementListButtons;
 			default -> this;
 		};
 	}
