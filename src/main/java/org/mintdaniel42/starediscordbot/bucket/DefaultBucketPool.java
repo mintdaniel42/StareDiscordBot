@@ -24,12 +24,12 @@ public final class DefaultBucketPool implements PoolAdapter {
 	}
 
 	@Override
-	public void onPermissionChanged(@NonNull Member member, @NonNull Permission permission) {
+	public void onPermissionChanged(@NonNull final Member member, @NonNull final Permission permission) {
 		buckets.remove(member.getIdLong());
 	}
 
 	@Override
-	public @NonNull Bucket getBucket(@NonNull Member member) {
+	public @NonNull Bucket getBucket(@NonNull final Member member) {
 		final var id = member.getIdLong();
 		if (buckets.containsKey(id)) return buckets.get(id);
 
