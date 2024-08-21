@@ -2,6 +2,8 @@ package org.mintdaniel42.starediscordbot.bucket;
 
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.experimental.NonFinal;
 import net.dv8tion.jda.api.entities.Member;
@@ -11,18 +13,14 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DefaultBucketPool implements PoolAdapter {
+@Singleton
+public final class DefaultBucketPool implements PoolAdapter {
 	private static final long CAPACITY = 500;
-	private static DefaultBucketPool instance;
 	@NonFinal private final Map<Long, Bucket> buckets;
 
-	private DefaultBucketPool() {
+	@Inject
+	public DefaultBucketPool() {
 		buckets = new HashMap<>();
-	}
-
-	public static @NonNull DefaultBucketPool getInstance() {
-		if (instance == null) instance = new DefaultBucketPool();
-		return instance;
 	}
 
 	@Override

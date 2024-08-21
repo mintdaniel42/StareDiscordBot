@@ -5,7 +5,7 @@ import io.avaje.inject.Bean;
 import io.avaje.inject.Factory;
 
 @Factory
-public class SchedulerFactory {
+public final class SchedulerFactory {
 	@Bean
 	public Scheduler build() {
 		return new Scheduler();

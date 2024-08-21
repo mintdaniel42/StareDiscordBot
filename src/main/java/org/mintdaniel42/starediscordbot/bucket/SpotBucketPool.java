@@ -1,7 +1,10 @@
 package org.mintdaniel42.starediscordbot.bucket;
 
+import io.avaje.inject.BeanScope;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.experimental.NonFinal;
 import net.dv8tion.jda.api.entities.Member;
@@ -14,24 +17,25 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
+@Singleton
 public final class SpotBucketPool implements PoolAdapter {
-	private static SpotBucketPool instance;
 	@NonFinal private final Map<Long, Bucket> buckets;
 
-	private SpotBucketPool() {
+	@Inject
+	public SpotBucketPool() {
 		buckets = new HashMap<>();
-	}
-
-	public static @NonNull SpotBucketPool getInstance() {
-		if (instance == null) instance = new SpotBucketPool();
-		return instance;
 	}
 
 	@Override
 	public @NonNull Bucket getBucket(@NonNull final Member member) {
 		final var id = member.getIdLong();
 		final var permission = Permission.fromUser(member);
-		if (permission.equals(Permission.p4)) return DefaultBucketPool.getInstance().getBucket(member);
+		if (permission.equals(Permission.p4)) {
+			try (final var beanScope = BeanScope.builder().build()) {
+				return beanScope.get(DefaultBucketPool.class)
+						.getBucket(member);
+			}
+		}
 		if (buckets.containsKey(id)) return buckets.get(id);
 
 		final var max = switch (permission) {
