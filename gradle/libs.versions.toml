@@ -13,6 +13,7 @@ wisp = "2.4.0"
 verbalexpressions = "1.8"
 doma = "2.62.0"
 bucket4j = "8.13.1"
+avaje-inject = "10.3"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
@@ -31,6 +32,8 @@ verbalexpressions = { module = "ru.lanwen.verbalregex:java-verbal-expressions", 
 doma-core = { module = "org.seasar.doma:doma-core", version.ref = "doma" }
 doma-processor = { module = "org.seasar.doma:doma-processor", version.ref = "doma" }
 bucket4j = { module = "com.bucket4j:bucket4j_jdk17-core", version.ref = "bucket4j" }
+avaje-inject = { module = "io.avaje:avaje-inject", version.ref = "avaje-inject" }
+avaje-inject-generator = { module = "io.avaje:avaje-inject-generator", version.ref = "avaje-inject" }
 
 [plugins]
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }

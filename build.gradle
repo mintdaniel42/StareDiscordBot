@@ -36,9 +36,11 @@ dependencies {
     implementation(libs.verbalexpressions)
     implementation(libs.doma.core)
     implementation(libs.bucket4j)
+    implementation(libs.avaje.inject)
     annotationProcessor(libs.lombok)
     annotationProcessor(libs.doma.processor)
     annotationProcessor(libs.avaje.jsonb.generator)
+    annotationProcessor(libs.avaje.inject.generator)
 }
 
 group = 'org.mintdaniel42.starediscordbot'
