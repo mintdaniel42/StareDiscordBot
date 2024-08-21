@@ -17,9 +17,10 @@ public final class MetaDataRepository {
 		metaDataMeta = new MetaDataEntityMeta();
 	}
 
-	public MetaDataEntity selectFirst() {
+	public @NonNull MetaDataEntity selectFirst() {
 		return entityQl.from(metaDataMeta)
-				.fetchOne();
+				.fetchOptional()
+				.orElse(new MetaDataEntity(0, MetaDataEntity.Version.UNKNOWN));
 	}
 
 	public void insertOrUpdate(@NonNull final MetaDataEntity metaData) {

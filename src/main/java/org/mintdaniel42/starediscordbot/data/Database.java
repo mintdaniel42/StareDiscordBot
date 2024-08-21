@@ -50,15 +50,20 @@ public final class Database {
 	}
 
 	public void prepareDatabase() {
-		new AchievementDaoImpl(config).createTable();
-		new GroupDaoImpl(config).createTable();
-		new HNSUserDaoImpl(config).createTable();
 		new MetaDataDaoImpl(config).createTable();
-		new PGUserDaoImpl(config).createTable();
-		new SpotDaoImpl(config).createTable();
-		new UserDaoImpl(config).createTable();
-		new UsernameDaoImpl(config).createTable();
-		metaDataRepository.insertOrUpdate(new MetaDataEntity(0, MetaDataEntity.Version.UNKNOWN));
+		if (metaDataRepository.selectFirst()
+				.version()
+				.equals(MetaDataEntity.Version.UNKNOWN)) {
+			new AchievementDaoImpl(config).createTable();
+			new GroupDaoImpl(config).createTable();
+			new HNSUserDaoImpl(config).createTable();
+			new PGUserDaoImpl(config).createTable();
+			new SpotDaoImpl(config).createTable();
+			new UserDaoImpl(config).createTable();
+			new UsernameDaoImpl(config).createTable();
+		}
+		// insert calls to migrations right here
+		metaDataRepository.insertOrUpdate(new MetaDataEntity(0, MetaDataEntity.Version.V2_4));
 	}
 
 	// TODO
