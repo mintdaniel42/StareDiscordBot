@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands.hns.achievements;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -15,6 +16,7 @@ import org.mintdaniel42.starediscordbot.embeds.AchievementEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
+@Singleton
 public final class AchievementsListCommand implements CommandAdapter {
 	@NonNull private final AchievementRepository achievementRepository;
 

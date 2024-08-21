@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands.hns;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -17,6 +18,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.Arrays;
 
 @RequiredArgsConstructor
+@Singleton
 public final class HNSTutorialCommand implements CommandAdapter {
 
 	@Override

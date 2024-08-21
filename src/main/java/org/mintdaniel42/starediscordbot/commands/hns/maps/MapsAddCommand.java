@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands.hns.maps;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -12,6 +13,7 @@ import org.mintdaniel42.starediscordbot.data.repository.MapRepository;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
+@Singleton
 public final class MapsAddCommand implements CommandAdapter {
 	@NonNull private final MapRepository mapRepository;
 

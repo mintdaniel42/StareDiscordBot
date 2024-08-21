@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands.hns;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -15,6 +16,7 @@ import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
+@Singleton
 public final class HNSListCommand implements CommandAdapter {
 	@NonNull private final HNSUserRepository hnsUserRepository;
 	@NonNull private final UsernameRepository usernameRepository;
