@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands.misc;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +14,9 @@ import org.mintdaniel42.starediscordbot.data.Database;
 import org.mintdaniel42.starediscordbot.utils.R;
 import org.mintdaniel42.starediscordbot.utils.Status;
 
-@Slf4j
 @RequiredArgsConstructor
+@Singleton
+@Slf4j
 public final class ApproveChangeCommand implements CommandAdapter {
 	@NonNull private final Database database;
 

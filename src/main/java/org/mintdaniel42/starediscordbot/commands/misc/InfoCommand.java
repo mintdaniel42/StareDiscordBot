@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands.misc;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -14,6 +15,7 @@ import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
 import org.mintdaniel42.starediscordbot.embeds.InfoEmbed;
 
 @RequiredArgsConstructor
+@Singleton
 public final class InfoCommand implements CommandAdapter {
 	@NonNull final MetaDataRepository metaDataRepository;
 	@NonNull final HNSUserRepository hnsUserRepository;

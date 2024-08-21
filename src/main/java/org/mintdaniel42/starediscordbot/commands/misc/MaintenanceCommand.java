@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands.misc;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -12,6 +13,7 @@ import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+@Singleton
 public final class MaintenanceCommand implements CommandAdapter {
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
