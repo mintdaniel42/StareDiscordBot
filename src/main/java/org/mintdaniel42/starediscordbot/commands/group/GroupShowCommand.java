@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands.group;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -18,6 +19,7 @@ import org.mintdaniel42.starediscordbot.embeds.GroupEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
+@Singleton
 public final class GroupShowCommand implements CommandAdapter {
 	@NonNull private final GroupRepository groupRepository;
 	@NonNull private final HNSUserRepository hnsUserRepository;

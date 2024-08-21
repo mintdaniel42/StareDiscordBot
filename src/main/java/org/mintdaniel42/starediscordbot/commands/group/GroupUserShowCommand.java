@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands.group;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@Singleton
 public final class GroupUserShowCommand implements CommandAdapter {
 	@NonNull private final GroupRepository groupRepository;
 	@NonNull private final HNSUserRepository hnsUserRepository;

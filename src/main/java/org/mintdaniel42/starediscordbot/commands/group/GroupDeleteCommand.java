@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands.group;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -13,6 +14,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import org.mintdaniel42.starediscordbot.utils.Status;
 
 @RequiredArgsConstructor
+@Singleton
 public final class GroupDeleteCommand implements CommandAdapter {
 	@NonNull private final GroupRepository groupRepository;
 
