@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.data;
 
+import jakarta.inject.Singleton;
 import lombok.Getter;
 import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.utils.Options;
@@ -11,6 +12,7 @@ import org.seasar.doma.jdbc.tx.LocalTransactionManager;
 import org.seasar.doma.jdbc.tx.TransactionManager;
 
 @Getter
+@Singleton
 public final class DatabaseConfig implements Config {
 	@NonNull private final Dialect dialect;
 	@NonNull private final LocalTransactionDataSource dataSource;
