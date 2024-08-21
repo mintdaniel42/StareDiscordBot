@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.data.repository;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.data.entity.HNSUserEntity;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Singleton
 public final class HNSUserRepository {
 	@NonNull private final Entityql entityQl;
 	@NonNull private final HNSUserEntityMeta hnsUserMeta;

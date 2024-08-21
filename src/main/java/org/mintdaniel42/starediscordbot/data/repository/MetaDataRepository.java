@@ -1,11 +1,13 @@
 package org.mintdaniel42.starediscordbot.data.repository;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.data.entity.MetaDataEntity;
 import org.mintdaniel42.starediscordbot.data.entity.MetaDataEntityMeta;
 import org.seasar.doma.jdbc.Config;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
+@Singleton
 public final class MetaDataRepository {
 	@NonNull private final Entityql entityQl;
 	@NonNull private final MetaDataEntityMeta metaDataMeta;

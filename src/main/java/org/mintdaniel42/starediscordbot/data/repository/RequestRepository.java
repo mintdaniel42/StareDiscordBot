@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.data.repository;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.data.entity.RequestEntity;
 import org.mintdaniel42.starediscordbot.data.entity.RequestEntityMeta;
@@ -10,6 +11,7 @@ import org.seasar.doma.jdbc.criteria.Entityql;
 import java.util.List;
 import java.util.Optional;
 
+@Singleton
 public final class RequestRepository {
 	@NonNull private final Entityql entityQl;
 	@NonNull private final RequestEntityMeta requestMeta;

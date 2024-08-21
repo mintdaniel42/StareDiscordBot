@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.data.repository;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.data.entity.UserEntity;
 import org.mintdaniel42.starediscordbot.data.entity.UserEntityMeta;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Singleton
 public final class UserRepository {
 	@NonNull private final Entityql entityQl;
 	@NonNull private final UserEntityMeta userMeta;

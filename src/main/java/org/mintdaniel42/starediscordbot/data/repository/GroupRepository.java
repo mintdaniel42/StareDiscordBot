@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.data.repository;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.data.entity.GroupEntity;
@@ -11,6 +12,7 @@ import org.seasar.doma.jdbc.criteria.Entityql;
 import java.util.List;
 import java.util.Optional;
 
+@Singleton
 public final class GroupRepository {
 	@NonNull private final Entityql entityQl;
 	@NonNull private final GroupEntityMeta groupMeta;

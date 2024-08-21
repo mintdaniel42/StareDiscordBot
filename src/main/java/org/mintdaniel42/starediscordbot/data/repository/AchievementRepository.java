@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.data.repository;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.data.entity.AchievementEntity;
@@ -10,6 +11,7 @@ import org.seasar.doma.jdbc.criteria.Entityql;
 
 import java.util.List;
 
+@Singleton
 public final class AchievementRepository {
 	@NonNull private final Entityql entityQl;
 	@NonNull private final AchievementEntityMeta achievementMeta;
