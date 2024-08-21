@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands.user;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
@@ -24,6 +25,7 @@ import org.mintdaniel42.starediscordbot.utils.*;
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@Singleton
 public final class UserEditCommand implements CommandAdapter {
 	@NonNull private final UserRepository userRepository;
 	@NonNull private final RequestRepository requestRepository;

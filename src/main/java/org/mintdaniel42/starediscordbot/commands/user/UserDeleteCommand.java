@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands.user;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -17,6 +18,7 @@ import org.mintdaniel42.starediscordbot.utils.Status;
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@Singleton
 public final class UserDeleteCommand implements CommandAdapter {
 	@NonNull private final Database database;
 	@NonNull private final UsernameRepository usernameRepository;
