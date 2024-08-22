@@ -3,7 +3,6 @@ package org.mintdaniel42.starediscordbot.bucket;
 import io.avaje.inject.BeanScope;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.experimental.NonFinal;
@@ -21,7 +20,6 @@ import java.util.Map;
 public final class SpotBucketPool implements PoolAdapter {
 	@NonFinal private final Map<Long, Bucket> buckets;
 
-	@Inject
 	public SpotBucketPool() {
 		buckets = new HashMap<>();
 	}

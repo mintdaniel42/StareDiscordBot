@@ -2,7 +2,6 @@ package org.mintdaniel42.starediscordbot.bucket;
 
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.experimental.NonFinal;
@@ -18,7 +17,6 @@ public final class DefaultBucketPool implements PoolAdapter {
 	private static final long CAPACITY = 500;
 	@NonFinal private final Map<Long, Bucket> buckets;
 
-	@Inject
 	public DefaultBucketPool() {
 		buckets = new HashMap<>();
 	}
