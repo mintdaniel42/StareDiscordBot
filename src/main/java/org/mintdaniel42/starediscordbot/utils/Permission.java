@@ -28,17 +28,17 @@ public enum Permission {
 
 	@Contract("null -> false")
 	public static boolean hasP2(@Nullable final Member member) {
-		return member != null && (!Options.isInMaintenance() || fromUser(member).ordinal() > 1);
+		return member != null && (!Options.isInMaintenance() || fromUser(member).ordinal() >= 1);
 	}
 
 	@Contract("null -> false")
 	public static boolean hasP3(@Nullable final Member member) {
-		return member != null && (!Options.isInMaintenance() || fromUser(member).ordinal() > 1);
+		return member != null && (!Options.isInMaintenance() || fromUser(member).ordinal() >= 2);
 	}
 
 	@Contract("null -> false")
 	public static boolean hasP4(@Nullable final Member member) {
-		return member != null && (!Options.isInMaintenance() || fromUser(member).ordinal() > 1);
+		return member != null && (!Options.isInMaintenance() || fromUser(member).ordinal() >= 3);
 	}
 
 	@Contract("null -> false")
