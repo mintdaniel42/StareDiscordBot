@@ -1,6 +1,7 @@
 package org.mintdaniel42.starediscordbot.bucket;
 
 import io.avaje.inject.BeanScope;
+import lombok.Cleanup;
 import lombok.NonNull;
 
 /**
@@ -11,9 +12,8 @@ public interface RateLimited {
 	 * @return the wanted PoolAdapter (usually {@link DefaultBucketPool})
 	 */
 	default @NonNull PoolAdapter getPool() {
-		try (final var beanScope = BeanScope.builder().build()) {
-			return beanScope.get(DefaultBucketPool.class);
-		}
+		@Cleanup final var beanScope = BeanScope.builder().build();
+		return beanScope.get(DefaultBucketPool.class);
 	}
 
 	/**
