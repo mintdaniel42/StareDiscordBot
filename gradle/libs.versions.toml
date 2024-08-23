@@ -1,5 +1,5 @@
 [versions]
-jda = "5.0.2"
+jda = "5.1.0"
 jdbc-sqlite = "3.46.1.0"
 jdbc-mariadb = "3.4.1"
 json = "20240303"
