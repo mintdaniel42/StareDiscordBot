@@ -1,0 +1,11 @@
+{
+  "priority": 2,
+  "title": "Die Rolle ''**Seeker**''",
+  "description": "Als Seeker ist deine Hauptaufgabe die Hider aufzudecken und zu töten. Dafür gibt es verschiedene Kits, welche dir diesen Prozess des Suchens durch Spezialitems oder Fähigkeiten einfacher gestalten sollen. Je nach Map gibt es verschiedene Props, welche man als Seeker aufdecken muss. Nachdem ein Hider aufgedeckt wurde ist er noch nicht final gefunden. Der Hider muss erst getötet werden. Wenn ein Hider gefunden wurde unterstützt er die anderen Seeker mit.",
+  "color": 9109643,
+  "thumbnailUrl": "",
+  "imageUrl": "",
+  "similar": [
+    "role_hider, seeker_kits"
+  ]
+}
