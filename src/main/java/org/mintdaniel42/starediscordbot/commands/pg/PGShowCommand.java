@@ -33,9 +33,7 @@ public final class PGShowCommand implements CommandAdapter {
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("username") instanceof final OptionMapping usernameMapping) {
 			if (MCHelper.getUuid(usernameRepository, usernameMapping.getAsString()) instanceof final UUID uuid) {
-				final var pgUserOptional = pgUserRepository.selectByUUID(uuid);
-				final var userOptional = userRepository.selectByUUID(uuid);
-				final var usernameOptional = usernameRepository.selectByUUID(uuid);
+				final var pgUserOptional = pgUserRepository.selectById(uuid);
 				final var userOptional = userRepository.selectById(uuid);
 				final var usernameOptional = usernameRepository.selectById(uuid);
 				if (pgUserOptional.isPresent() && userOptional.isPresent() && usernameOptional.isPresent()) {

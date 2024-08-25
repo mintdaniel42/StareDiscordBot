@@ -35,8 +35,7 @@ public final class PGEditCommand implements CommandAdapter {
 		if (event.getOption("username") instanceof final OptionMapping usernameMapping &&
 				event.getOptions().size() >= 2) {
 			if (MCHelper.getUuid(usernameRepository, usernameMapping.getAsString()) instanceof final UUID uuid) {
-				final var pgUserOptional = pgUserRepository.selectByUUID(uuid);
-				final var usernameOptional = usernameRepository.selectByUUID(uuid);
+				final var pgUserOptional = pgUserRepository.selectById(uuid);
 				final var usernameOptional = usernameRepository.selectById(uuid);
 				if (pgUserOptional.isPresent() && usernameOptional.isPresent()) {
 					final var pgUser = PGUserEntity.merge(event.getOptions(), pgUserOptional.get().toBuilder());
