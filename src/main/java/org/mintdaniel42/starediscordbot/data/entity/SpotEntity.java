@@ -22,6 +22,7 @@ public class SpotEntity {
 	@NonNull String rating;
 	@NonNull String videolink;
 	@NonNull Type type;
+	@NonNull String coordinates;
 	boolean twoPlayers;
 
 	public enum Type {

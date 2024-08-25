@@ -15,7 +15,8 @@ public interface SpotDao {
 			    rating VARCHAR(255) NOT NULL,
 			    videolink VARCHAR(255) NOT NULL,
 			    type VARCHAR(255) NOT NULL,
-			    twoPlayers BOOLEAN NOT NULL
+			    twoPlayers BOOLEAN NOT NULL,
+			    coordinates VARCHAR(255) NOT NULL
 			);
 			""")
 	@Script
