@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.bucket4j)
     compileOnly(libs.lombok)
     compileOnly(libs.jetbrains.annotations)
+    compileOnly(libs.jakarta.inject)
     annotationProcessor(libs.lombok)
     annotationProcessor(libs.doma.processor)
     annotationProcessor(libs.avaje.jsonb.generator)

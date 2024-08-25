@@ -15,6 +15,7 @@ doma = "2.62.0"
 bucket4j = "8.13.1"
 avaje-inject = "10.3"
 jetbrains-annotations = "24.1.0"
+jakarta-inject = "2.0.1"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
@@ -36,6 +37,7 @@ doma-core = { module = "org.seasar.doma:doma-core", version.ref = "doma" }
 doma-processor = { module = "org.seasar.doma:doma-processor", version.ref = "doma" }
 bucket4j = { module = "com.bucket4j:bucket4j_jdk17-core", version.ref = "bucket4j" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+jakarta-inject = { module = "jakarta.inject:jakarta.inject-api", version.ref = "jakarta-inject" }
 
 [plugins]
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
