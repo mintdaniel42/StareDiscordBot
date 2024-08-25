@@ -4,15 +4,14 @@ import jakarta.inject.Singleton;
 import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.data.entity.MapEntity;
 import org.mintdaniel42.starediscordbot.data.entity.MapEntityMeta;
-import org.seasar.doma.jdbc.Config;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
 import java.util.UUID;
 
 @Singleton
 public final class MapRepository extends BaseRepository<UUID, MapEntity> {
-	public MapRepository(@NonNull final Config config) {
+	public MapRepository(@NonNull final Entityql entityQl) {
 		final var meta = new MapEntityMeta();
-		super(new Entityql(config), meta, meta.uuid);
+		super(entityQl, meta, meta.uuid);
 	}
 }

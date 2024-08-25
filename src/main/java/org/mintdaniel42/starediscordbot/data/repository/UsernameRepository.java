@@ -4,7 +4,6 @@ import jakarta.inject.Singleton;
 import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.data.entity.UsernameEntity;
 import org.mintdaniel42.starediscordbot.data.entity.UsernameEntityMeta;
-import org.seasar.doma.jdbc.Config;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
 import java.util.List;
@@ -13,9 +12,9 @@ import java.util.UUID;
 
 @Singleton
 public final class UsernameRepository extends BaseRepository<UUID, UsernameEntity> {
-	public UsernameRepository(@NonNull final Config config) {
+	public UsernameRepository(@NonNull final Entityql entityQl) {
 		final var meta = new UsernameEntityMeta();
-		super(new Entityql(config), meta, meta.uuid);
+		super(entityQl, meta, meta.uuid);
 	}
 
 	public @NonNull List<UsernameEntity> selectByUsernameLike(@NonNull final String like) {

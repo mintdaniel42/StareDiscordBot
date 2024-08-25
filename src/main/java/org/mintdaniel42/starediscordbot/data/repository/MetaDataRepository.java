@@ -4,14 +4,13 @@ import jakarta.inject.Singleton;
 import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.data.entity.MetaDataEntity;
 import org.mintdaniel42.starediscordbot.data.entity.MetaDataEntityMeta;
-import org.seasar.doma.jdbc.Config;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
 @Singleton
 public final class MetaDataRepository extends BaseRepository<Integer, MetaDataEntity> {
-	public MetaDataRepository(@NonNull final Config config) {
+	public MetaDataRepository(@NonNull final Entityql entityQl) {
 		final var meta = new MetaDataEntityMeta();
-		super(new Entityql(config), meta, meta.id);
+		super(entityQl, meta, meta.id);
 	}
 
 	public @NonNull MetaDataEntity selectFirst() {

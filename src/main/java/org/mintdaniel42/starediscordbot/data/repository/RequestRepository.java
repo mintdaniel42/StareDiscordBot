@@ -4,13 +4,12 @@ import jakarta.inject.Singleton;
 import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.data.entity.RequestEntity;
 import org.mintdaniel42.starediscordbot.data.entity.RequestEntityMeta;
-import org.seasar.doma.jdbc.Config;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
 @Singleton
 public final class RequestRepository extends BaseRepository<Long, RequestEntity> {
-	public RequestRepository(@NonNull final Config config) {
+	public RequestRepository(@NonNull final Entityql entityQl) {
 		final var meta = new RequestEntityMeta();
-		super(new Entityql(config), meta, meta.timestamp);
+		super(entityQl, meta, meta.timestamp);
 	}
 }

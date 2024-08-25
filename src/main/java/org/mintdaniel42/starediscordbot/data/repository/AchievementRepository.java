@@ -5,7 +5,6 @@ import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.data.entity.AchievementEntity;
 import org.mintdaniel42.starediscordbot.data.entity.AchievementEntityMeta;
-import org.seasar.doma.jdbc.Config;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
 import java.util.List;
@@ -13,9 +12,9 @@ import java.util.UUID;
 
 @Singleton
 public final class AchievementRepository extends BaseRepository<UUID, AchievementEntity> {
-	public AchievementRepository(@NonNull final Config config) {
+	public AchievementRepository(@NonNull final Entityql entityQl) {
 		final var meta = new AchievementEntityMeta();
-		super(new Entityql(config), meta, meta.uuid);
+		super(entityQl, meta, meta.uuid);
 	}
 
 	public @NonNull List<AchievementEntity> selectByTypeAndPoints(@Nullable final AchievementEntity.Type type, final int points) {

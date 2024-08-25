@@ -5,7 +5,6 @@ import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.data.entity.HNSUserEntity;
 import org.mintdaniel42.starediscordbot.data.entity.HNSUserEntityMeta;
-import org.seasar.doma.jdbc.Config;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
 import java.util.List;
@@ -13,9 +12,9 @@ import java.util.UUID;
 
 @Singleton
 public final class HNSUserRepository extends BaseRepository<UUID, HNSUserEntity> {
-	public HNSUserRepository(@NonNull final Config config) {
+	public HNSUserRepository(@NonNull final Entityql entityQl) {
 		final var meta = new HNSUserEntityMeta();
-		super(new Entityql(config), meta, meta.uuid);
+		super(entityQl, meta, meta.uuid);
 	}
 
 	public @NonNull List<HNSUserEntity> selectByPage(final int page) {

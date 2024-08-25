@@ -5,7 +5,6 @@ import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.data.entity.PGUserEntity;
 import org.mintdaniel42.starediscordbot.data.entity.PGUserEntityMeta;
-import org.seasar.doma.jdbc.Config;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
 import java.util.List;
@@ -13,9 +12,9 @@ import java.util.UUID;
 
 @Singleton
 public final class PGUserRepository extends BaseRepository<UUID, PGUserEntity> {
-	public PGUserRepository(@NonNull final Config config) {
+	public PGUserRepository(@NonNull final Entityql entityQl) {
 		final var meta = new PGUserEntityMeta();
-		super(new Entityql(config), meta, meta.uuid);
+		super(entityQl, meta, meta.uuid);
 	}
 
 	public @NonNull List<PGUserEntity> selectByPage(final int page) {
