@@ -4,7 +4,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
-import org.seasar.doma.*;
+import org.seasar.doma.Entity;
+import org.seasar.doma.Id;
+import org.seasar.doma.Metamodel;
+import org.seasar.doma.Table;
 
 import java.util.UUID;
 
@@ -28,13 +31,13 @@ public class RequestEntity {
 	String name;
 	UUID leader;
 	GroupEntity.Relation relation;
-	@Column(name = "group_id") String groupTag;
+	String groupTag;
 	@Builder.Default long discord = 0;
 	String note;
 	String top10;
 	@Builder.Default int streak = 0;
 	String highestRank;
-	@Column(name = "database") @NonNull Type type;
+	@NonNull Type type;
 
 	public static @NonNull RequestEntity from(final long timestamp, @NonNull final HNSUserEntity hnsUser) {
 		return RequestEntity.builder()

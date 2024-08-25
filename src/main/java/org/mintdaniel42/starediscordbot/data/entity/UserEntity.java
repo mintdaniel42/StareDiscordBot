@@ -4,7 +4,10 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import org.seasar.doma.*;
+import org.seasar.doma.Entity;
+import org.seasar.doma.Id;
+import org.seasar.doma.Metamodel;
+import org.seasar.doma.Table;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +18,7 @@ import java.util.UUID;
 @Value
 public class UserEntity {
 	@Id UUID uuid;
-	@Column(name = "group_id") String groupTag;
+	String groupTag;
 	@Builder.Default long discord = 0;
 	@Builder.Default String note = "❌";
 

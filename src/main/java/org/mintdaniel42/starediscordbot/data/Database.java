@@ -4,7 +4,6 @@ import jakarta.inject.Singleton;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.mintdaniel42.starediscordbot.data.dao.*;
 import org.mintdaniel42.starediscordbot.data.entity.*;
 import org.mintdaniel42.starediscordbot.data.repository.*;
 import org.mintdaniel42.starediscordbot.utils.Status;
@@ -16,7 +15,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Singleton
 public final class Database {
+	@NonNull private static final MetaDataEntity.Version targetVersion = MetaDataEntity.Version.V3;
 	@NonNull private final Config config;
+	@NonNull private final Migrator migrator;
 	@NonNull private final AchievementRepository achievementRepository;
 	@NonNull private final GroupRepository groupRepository;
 	@NonNull private final HNSUserRepository hnsUserRepository;
@@ -50,20 +51,8 @@ public final class Database {
 	}
 
 	public void prepareDatabase() {
-		new MetaDataDaoImpl(config).createTable();
-		if (metaDataRepository.selectFirst()
-				.version()
-				.equals(MetaDataEntity.Version.UNKNOWN)) {
-			new AchievementDaoImpl(config).createTable();
-			new GroupDaoImpl(config).createTable();
-			new HNSUserDaoImpl(config).createTable();
-			new PGUserDaoImpl(config).createTable();
-			new SpotDaoImpl(config).createTable();
-			new UserDaoImpl(config).createTable();
-			new UsernameDaoImpl(config).createTable();
-		}
-		// insert calls to migrations right here
-		metaDataRepository.insertOrUpdate(new MetaDataEntity(0, MetaDataEntity.Version.V2_4));
+		migrator.onUpgrade(metaDataRepository.selectFirst().version(), targetVersion);
+		metaDataRepository.insertOrUpdate(new MetaDataEntity(0, targetVersion));
 	}
 
 	// TODO

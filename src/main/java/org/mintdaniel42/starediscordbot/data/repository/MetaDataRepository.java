@@ -14,9 +14,13 @@ public final class MetaDataRepository extends BaseRepository<Integer, MetaDataEn
 	}
 
 	public @NonNull MetaDataEntity selectFirst() {
-		return entityQl.from(meta)
-				.fetchOptional()
-				.orElse(new MetaDataEntity(0, MetaDataEntity.Version.UNKNOWN));
+		try {
+			return entityQl.from(meta)
+					.fetchOptional()
+					.orElse(new MetaDataEntity(0, MetaDataEntity.Version.UNKNOWN));
+		} catch (Exception e) {
+			return new MetaDataEntity(0, MetaDataEntity.Version.UNKNOWN);
+		}
 	}
 
 	public void insertOrUpdate(@NonNull final MetaDataEntity metaData) {
