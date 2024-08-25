@@ -28,7 +28,7 @@ public interface RateLimited {
 	/**
 	 * Override this to force responses to be ephemeral
 	 *
-	 * @return usually true
+	 * @return usually false
 	 */
 	default boolean isPublicResponseRestricted() {
 		return false;
