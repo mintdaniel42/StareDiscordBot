@@ -20,4 +20,13 @@ public interface ButtonAdapter extends RateLimited {
 	 */
 	@NonNull
 	WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event);
+
+	/**
+	 * If pressing a button should result in editing the original message or creating a new one
+	 *
+	 * @return usually true
+	 */
+	default boolean sameMessage() {
+		return true;
+	}
 }

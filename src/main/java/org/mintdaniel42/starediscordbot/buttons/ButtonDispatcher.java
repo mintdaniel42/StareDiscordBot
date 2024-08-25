@@ -50,8 +50,7 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 		//#endif
 
 		final var adapter = dispatch(event);
-		event.deferReply()
-				.setEphemeral(adapter.isPublicResponseRestricted())
+		(adapter.sameMessage() ? event.deferEdit() : event.deferReply(adapter.isPublicResponseRestricted()))
 				.queue(interactionHook -> {
 					try {
 						if (adapter.getPool()
