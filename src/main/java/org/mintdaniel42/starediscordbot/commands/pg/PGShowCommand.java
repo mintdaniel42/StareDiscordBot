@@ -36,6 +36,7 @@ public final class PGShowCommand implements CommandAdapter {
 				final var pgUserOptional = pgUserRepository.selectByUUID(uuid);
 				final var userOptional = userRepository.selectByUUID(uuid);
 				final var usernameOptional = usernameRepository.selectByUUID(uuid);
+				final var userOptional = userRepository.selectById(uuid);
 				if (pgUserOptional.isPresent() && userOptional.isPresent() && usernameOptional.isPresent()) {
 					final var groupOptional = groupRepository.selectById(userOptional.get().getGroupTag());
 					return interactionHook.editOriginalEmbeds(PGUserEmbed.of(pgUserOptional.get(), usernameOptional.get(), false))

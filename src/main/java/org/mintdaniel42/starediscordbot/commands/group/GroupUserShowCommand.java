@@ -37,6 +37,7 @@ public final class GroupUserShowCommand implements CommandAdapter {
 			if (MCHelper.getUuid(usernameRepository, usernameMapping.getAsString()) instanceof final UUID uuid) {
 				final var userOptional = userRepository.selectByUUID(uuid);
 				final var usernameOptional = usernameRepository.selectByUUID(uuid);
+				final var userOptional = userRepository.selectById(uuid);
 				if (userOptional.isPresent() && usernameOptional.isPresent()) {
 					final var user = userOptional.get();
 					final var groupOptional = user.getGroupTag() != null ? groupRepository.selectById(user.getGroupTag()) : Optional.<GroupEntity>empty();

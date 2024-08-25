@@ -31,6 +31,7 @@ public final class GroupUserRemoveCommand implements CommandAdapter {
 			if (MCHelper.getUuid(usernameRepository, usernameMapping.getAsString()) instanceof UUID uuid) {
 				final var userOptional = userRepository.selectByUUID(uuid);
 				final var usernameOptional = usernameRepository.selectByUUID(uuid);
+				final var userOptional = userRepository.selectById(uuid);
 				if (userOptional.isPresent() && usernameOptional.isPresent()) {
 					final var user = userOptional.get();
 					final var username = usernameOptional.get();

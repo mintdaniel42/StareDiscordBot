@@ -37,6 +37,7 @@ public final class HNSShowCommand implements CommandAdapter {
 				final var hnsUserOptional = hnsUserRepository.selectByUUID(uuid);
 				final var userOptional = userRepository.selectByUUID(uuid);
 				final var usernameOptional = usernameRepository.selectByUUID(uuid);
+				final var userOptional = userRepository.selectById(uuid);
 				if (hnsUserOptional.isPresent() && userOptional.isPresent() && usernameOptional.isPresent()) {
 					final var groupOptional = groupRepository.selectById(userOptional.get().getGroupTag());
 					return interactionHook.editOriginalEmbeds(HNSBasicUserEmbed.of(hnsUserOptional.get(), userOptional.get(), usernameOptional.get(), false))

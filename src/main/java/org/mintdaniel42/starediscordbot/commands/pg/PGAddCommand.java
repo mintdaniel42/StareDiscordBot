@@ -32,7 +32,7 @@ public final class PGAddCommand implements CommandAdapter {
 		if (event.getOption("username") instanceof final OptionMapping usernameMapping && event.getOptions().size() >= 2) {
 			if (MCHelper.getUuid(usernameRepository, usernameMapping.getAsString()) instanceof final UUID uuid) {
 				final var pgUser = PGUserEntity.merge(event.getOptions(), PGUserEntity.builder().uuid(uuid));
-				final var userOptional = userRepository.selectByUUID(uuid);
+				final var userOptional = userRepository.selectById(uuid);
 				final var user = userOptional.orElseGet(() -> UserEntity.builder()
 						.uuid(uuid)
 						.build());

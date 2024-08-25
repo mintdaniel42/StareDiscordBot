@@ -30,7 +30,7 @@ public final class GroupUserAddCommand implements CommandAdapter {
 		if (event.getOption("tag") instanceof final OptionMapping tagMapping &&
 				event.getOption("username") instanceof final OptionMapping usernameMapping) {
 			if (MCHelper.getUuid(usernameRepository, usernameMapping.getAsString()) instanceof UUID uuid) {
-				final var userOptional = userRepository.selectByUUID(uuid);
+				final var userOptional = userRepository.selectById(uuid);
 				if (userOptional.isPresent()) {
 					final var groupOptional = groupRepository.selectById(tagMapping.getAsString());
 					final var user = userOptional.get();

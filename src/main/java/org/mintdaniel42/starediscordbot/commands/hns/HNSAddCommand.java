@@ -32,7 +32,7 @@ public final class HNSAddCommand implements CommandAdapter {
 		if (event.getOption("username") instanceof final OptionMapping usernameMapping && event.getOptions().size() >= 2) {
 			if (MCHelper.getUuid(usernameRepository, usernameMapping.getAsString()) instanceof final UUID uuid) {
 				final var hnsUser = HNSUserEntity.merge(event.getOptions(), HNSUserEntity.builder().uuid(uuid));
-				final var userOptional = userRepository.selectByUUID(uuid);
+				final var userOptional = userRepository.selectById(uuid);
 				final var user = userOptional.orElseGet(() -> UserEntity.builder()
 						.uuid(uuid)
 						.build());
