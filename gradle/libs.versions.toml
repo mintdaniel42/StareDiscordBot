@@ -14,6 +14,7 @@ verbalexpressions = "1.8"
 doma = "2.62.0"
 bucket4j = "8.13.1"
 avaje-inject = "10.3"
+jetbrains-annotations = "24.1.0"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
@@ -26,14 +27,15 @@ jcp = { module = "com.igormaznitsa:jcp", version.ref = "jcp" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 avaje-jsonb = { module = "io.avaje:avaje-jsonb", version.ref = "avaje-jsonb" }
 avaje-jsonb-generator = { module = "io.avaje:avaje-jsonb-generator", version.ref = "avaje-jsonb" }
+avaje-inject = { module = "io.avaje:avaje-inject", version.ref = "avaje-inject" }
+avaje-inject-generator = { module = "io.avaje:avaje-inject-generator", version.ref = "avaje-inject" }
 ioutils = { module = "commons-io:commons-io", version.ref = "ioutils" }
 wisp = { module = "com.coreoz:wisp", version.ref = "wisp" }
 verbalexpressions = { module = "ru.lanwen.verbalregex:java-verbal-expressions", version.ref = "verbalexpressions" }
 doma-core = { module = "org.seasar.doma:doma-core", version.ref = "doma" }
 doma-processor = { module = "org.seasar.doma:doma-processor", version.ref = "doma" }
 bucket4j = { module = "com.bucket4j:bucket4j_jdk17-core", version.ref = "bucket4j" }
-avaje-inject = { module = "io.avaje:avaje-inject", version.ref = "avaje-inject" }
-avaje-inject-generator = { module = "io.avaje:avaje-inject-generator", version.ref = "avaje-inject" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 
 [plugins]
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
