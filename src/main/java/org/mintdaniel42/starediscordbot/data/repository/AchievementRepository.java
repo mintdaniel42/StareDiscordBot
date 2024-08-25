@@ -5,28 +5,25 @@ import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.data.entity.AchievementEntity;
 import org.mintdaniel42.starediscordbot.data.entity.AchievementEntityMeta;
-import org.mintdaniel42.starediscordbot.utils.Status;
 import org.seasar.doma.jdbc.Config;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
 import java.util.List;
+import java.util.UUID;
 
 @Singleton
-public final class AchievementRepository {
-	@NonNull private final Entityql entityQl;
-	@NonNull private final AchievementEntityMeta achievementMeta;
-
+public final class AchievementRepository extends BaseRepository<UUID, AchievementEntity> {
 	public AchievementRepository(@NonNull final Config config) {
-		entityQl = new Entityql(config);
-		achievementMeta = new AchievementEntityMeta();
+		final var meta = new AchievementEntityMeta();
+		super(new Entityql(config), meta, meta.uuid);
 	}
 
 	public @NonNull List<AchievementEntity> selectByTypeAndPoints(@Nullable final AchievementEntity.Type type, final int points) {
 		if (type != null && points >= 0) {
-			return entityQl.from(achievementMeta)
+			return entityQl.from(meta)
 					.where(w -> {
-						w.eq(achievementMeta.type, type);
-						w.and(() -> w.eq(achievementMeta.points, points));
+						w.eq(((AchievementEntityMeta) meta).type, type);
+						w.and(() -> w.eq(((AchievementEntityMeta) meta).points, points));
 					})
 					.fetch();
 		} else if (type != null) {
@@ -37,29 +34,14 @@ public final class AchievementRepository {
 	}
 
 	public @NonNull List<AchievementEntity> selectByType(@NonNull final AchievementEntity.Type type) {
-		return entityQl.from(achievementMeta)
-				.where(w -> w.eq(achievementMeta.type, type))
+		return entityQl.from(meta)
+				.where(w -> w.eq(((AchievementEntityMeta) meta).type, type))
 				.fetch();
 	}
 
 	public @NonNull List<AchievementEntity> selectByPoints(final int points) {
-		return entityQl.from(achievementMeta)
-				.where(w -> w.eq(achievementMeta.points, points))
+		return entityQl.from(meta)
+				.where(w -> w.eq(((AchievementEntityMeta) meta).points, points))
 				.fetch();
-	}
-
-	public @NonNull List<AchievementEntity> selectAll() {
-		return entityQl.from(achievementMeta)
-				.fetch();
-	}
-
-	public @NonNull Status insert(@NonNull final AchievementEntity achievement) {
-		if (entityQl.from(achievementMeta)
-				.where(w -> w.eq(achievementMeta.uuid, achievement.getUuid()))
-				.fetchOptional()
-				.isPresent()) return Status.DUPLICATE;
-		return entityQl.insert(achievementMeta, achievement)
-				.execute()
-				.getCount() == 1 ? Status.SUCCESS : Status.ERROR;
 	}
 }
