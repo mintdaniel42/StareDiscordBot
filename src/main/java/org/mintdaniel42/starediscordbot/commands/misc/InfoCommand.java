@@ -24,9 +24,8 @@ public final class InfoCommand implements CommandAdapter {
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		return interactionHook.editOriginalEmbeds(InfoEmbed.of(metaDataRepository.selectFirst().version(),
-						usernameRepository.countEntries(),
-						hnsUserRepository.countEntries(),
 						usernameRepository.count(),
+						hnsUserRepository.count(),
 						0))
 				.setComponents(InfoButtons.create());
 	}

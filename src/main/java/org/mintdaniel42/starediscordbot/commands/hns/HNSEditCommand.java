@@ -35,8 +35,7 @@ public final class HNSEditCommand implements CommandAdapter {
 		if (event.getOption("username") instanceof final OptionMapping usernameMapping &&
 				event.getOptions().size() >= 2) {
 			if (MCHelper.getUuid(usernameRepository, usernameMapping.getAsString()) instanceof final UUID uuid) {
-				final var hnsUserOptional = hnsUserRepository.selectByUUID(uuid);
-				final var usernameOptional = usernameRepository.selectByUUID(uuid);
+				final var hnsUserOptional = hnsUserRepository.selectById(uuid);
 				final var usernameOptional = usernameRepository.selectById(uuid);
 				if (hnsUserOptional.isPresent() && usernameOptional.isPresent()) {
 					final var hnsUser = HNSUserEntity.merge(event.getOptions(), hnsUserOptional.get().toBuilder());

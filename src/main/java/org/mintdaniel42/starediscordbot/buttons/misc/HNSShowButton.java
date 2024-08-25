@@ -42,9 +42,7 @@ public final class HNSShowButton implements ButtonAdapter {
 		final var buttonParts = event.getComponentId().split(":");
 		final var current = Type.valueOf(buttonParts[1]);
 		final var uuid = UUID.fromString(buttonParts[2]);
-		final var hnsUserOptional = hnsUserRepository.selectByUUID(uuid);
-		final var usernameOptional = usernameRepository.selectByUUID(uuid);
-		final var userOptional = userRepository.selectByUUID(uuid);
+		final var hnsUserOptional = hnsUserRepository.selectById(uuid);
 		final var usernameOptional = usernameRepository.selectById(uuid);
 		final var userOptional = userRepository.selectById(uuid);
 		if (hnsUserOptional.isPresent() && userOptional.isPresent() && usernameOptional.isPresent()) {
