@@ -26,6 +26,7 @@ public final class InfoCommand implements CommandAdapter {
 		return interactionHook.editOriginalEmbeds(InfoEmbed.of(metaDataRepository.selectFirst().version(),
 						usernameRepository.countEntries(),
 						hnsUserRepository.countEntries(),
+						usernameRepository.count(),
 						0))
 				.setComponents(InfoButtons.create());
 	}

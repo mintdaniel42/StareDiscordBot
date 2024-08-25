@@ -35,9 +35,8 @@ public final class GroupUserShowCommand implements CommandAdapter {
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("username") instanceof final OptionMapping usernameMapping) {
 			if (MCHelper.getUuid(usernameRepository, usernameMapping.getAsString()) instanceof final UUID uuid) {
-				final var userOptional = userRepository.selectByUUID(uuid);
-				final var usernameOptional = usernameRepository.selectByUUID(uuid);
 				final var userOptional = userRepository.selectById(uuid);
+				final var usernameOptional = usernameRepository.selectById(uuid);
 				if (userOptional.isPresent() && usernameOptional.isPresent()) {
 					final var user = userOptional.get();
 					final var groupOptional = user.getGroupTag() != null ? groupRepository.selectById(user.getGroupTag()) : Optional.<GroupEntity>empty();

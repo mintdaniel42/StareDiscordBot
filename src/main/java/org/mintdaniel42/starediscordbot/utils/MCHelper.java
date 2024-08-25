@@ -43,7 +43,7 @@ public class MCHelper {
     }
 
     public @Nullable String getUsername(@NonNull UsernameRepository usernameRepository, @NonNull UUID uuid) {
-        final var usernameOptional = usernameRepository.selectByUUID(uuid);
+        final var usernameOptional = usernameRepository.selectById(uuid);
         if (usernameOptional.isPresent()) return usernameOptional.get().getUsername();
         else {
             final var okHttpClient = new OkHttpClient();

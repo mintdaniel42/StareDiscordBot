@@ -4,7 +4,6 @@ import jakarta.inject.Singleton;
 import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.data.entity.UsernameEntity;
 import org.mintdaniel42.starediscordbot.data.entity.UsernameEntityMeta;
-import org.mintdaniel42.starediscordbot.utils.Status;
 import org.seasar.doma.jdbc.Config;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
@@ -13,57 +12,21 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Singleton
-public final class UsernameRepository {
-	@NonNull private final Entityql entityQl;
-	@NonNull private final UsernameEntityMeta usernameMeta;
-
+public final class UsernameRepository extends BaseRepository<UUID, UsernameEntity> {
 	public UsernameRepository(@NonNull final Config config) {
-		entityQl = new Entityql(config);
-		usernameMeta = new UsernameEntityMeta();
+		final var meta = new UsernameEntityMeta();
+		super(new Entityql(config), meta, meta.uuid);
 	}
 
 	public @NonNull List<UsernameEntity> selectByUsernameLike(@NonNull final String like) {
-		return entityQl.from(usernameMeta)
-				.where(w -> w.like(usernameMeta.username, "%%%s%%".formatted(like)))
+		return entityQl.from(meta)
+				.where(w -> w.like(((UsernameEntityMeta) meta).username, "%%%s%%".formatted(like)))
 				.fetch();
 	}
 
-	public @NonNull Optional<UsernameEntity> selectByUUID(@NonNull final UUID uuid) {
-		return entityQl.from(usernameMeta)
-				.where(w -> w.eq(usernameMeta.uuid, uuid))
-				.fetchOptional();
-	}
-
 	public @NonNull Optional<UsernameEntity> selectByUsername(@NonNull final String username) {
-		return entityQl.from(usernameMeta)
-				.where(w -> w.eq(usernameMeta.username, username))
+		return entityQl.from(meta)
+				.where(w -> w.eq(((UsernameEntityMeta) meta).username, username))
 				.fetchOptional();
-	}
-
-	public @NonNull Status insert(@NonNull final UsernameEntity username) {
-		if (entityQl.from(usernameMeta)
-				.where(w -> w.eq(usernameMeta.uuid, username.getUuid()))
-				.fetchOptional()
-				.isPresent()) {
-			return entityQl.update(usernameMeta, username)
-					.execute()
-					.getCount() == 1 ? Status.SUCCESS : Status.ERROR;
-		} else return entityQl.insert(usernameMeta, username)
-				.execute()
-				.getCount() == 1 ? Status.SUCCESS : Status.ERROR;
-	}
-
-	public @NonNull Status deleteByUUID(@NonNull final UUID uuid) {
-		return selectByUUID(uuid).filter(username -> entityQl.delete(usernameMeta, username)
-						.execute()
-						.getCount() == 1)
-				.map(_ -> Status.SUCCESS)
-				.orElse(Status.ERROR);
-	}
-
-	public int countEntries() {
-		return entityQl.from(usernameMeta)
-				.fetch()
-				.size();
 	}
 }

@@ -36,7 +36,7 @@ public final class HNSAddCommand implements CommandAdapter {
 				final var user = userOptional.orElseGet(() -> UserEntity.builder()
 						.uuid(uuid)
 						.build());
-				final var usernameOptional = usernameRepository.selectByUUID(uuid);
+				final var usernameOptional = usernameRepository.selectById(uuid);
 
 				return usernameOptional.map(username -> interactionHook.editOriginal(switch (userRepository.insert(user)) {
 					case ERROR -> R.Strings.ui("the_entry_could_not_be_created");

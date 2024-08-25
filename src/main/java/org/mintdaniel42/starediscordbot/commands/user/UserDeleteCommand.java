@@ -27,7 +27,7 @@ public final class UserDeleteCommand implements CommandAdapter {
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("username") instanceof OptionMapping usernameMapping) {
 			if (MCHelper.getUuid(usernameRepository, usernameMapping.getAsString()) instanceof UUID uuid) {
-				final var usernameOptional = usernameRepository.selectByUUID(uuid);
+				final var usernameOptional = usernameRepository.selectById(uuid);
 				if (usernameOptional.isPresent() && database.deleteUserData(uuid).equals(Status.SUCCESS)) {
 					return interactionHook.editOriginal(R.Strings.ui("the_user_s_was_successfully_deleted",
 							usernameOptional.get().getUsername()));

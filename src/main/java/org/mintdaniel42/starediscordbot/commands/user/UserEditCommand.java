@@ -40,6 +40,7 @@ public final class UserEditCommand implements CommandAdapter {
 				final var userOptional = userRepository.selectByUUID(uuid);
 				final var usernameOptional = usernameRepository.selectByUUID(uuid);
 				final var userOptional = userRepository.selectById(uuid);
+				final var usernameOptional = usernameRepository.selectById(uuid);
 				if (userOptional.isPresent() && usernameOptional.isPresent()) {
 					final var user = UserEntity.merge(event.getOptions(), userOptional.get().toBuilder());
 					final var groupOptional = groupRepository.selectById(user.getGroupTag());
