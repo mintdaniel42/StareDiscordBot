@@ -20,14 +20,16 @@ import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 @RequiredArgsConstructor
 @Singleton
 @Slf4j
-public final class Bot extends ListenerAdapter {
+public final class Bot implements Consumer<GuildReadyEvent> {
 	@NonNull private final Database database;
 	@NonNull private final Scheduler scheduler;
 
+	@SuppressWarnings("unused")
 	public static void main(@NonNull final String[] args) {
 		//#if dev
 		log.info(R.Strings.log("running_in_dev_mode"));
@@ -36,11 +38,15 @@ public final class Bot extends ListenerAdapter {
 		beanScope.get(Bot.class).run();
 	}
 
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public void run() {
 		@Cleanup final var beanScope = BeanScope.builder().build();
 		JDABuilder.createDefault(Options.getToken())
 				.addEventListeners(beanScope.list(ListenerAdapter.class).toArray())
-				.build();
+				.build()
+				.listenOnce(GuildReadyEvent.class)
+				.filter(e -> e.getGuild().getIdLong() == Options.getGuildId())
+				.subscribe(this);
 
 		database.prepareDatabase();
 
@@ -52,16 +58,13 @@ public final class Bot extends ListenerAdapter {
 	}
 
 	@Override
-	public void onGuildReady(@NonNull final GuildReadyEvent event) {
-		// check if correct guild
-		if (event.getGuild().getIdLong() == Options.getGuildId()) {
-			// setup commands
-			event.getGuild()
-					.updateCommands()
-					.addCommands(Arrays.stream(CommandList.values())
-							.map(CommandList::get)
-							.toArray(CommandData[]::new))
-					.queue();
-		}
+	public void accept(@NonNull final GuildReadyEvent event) {
+		// setup commands
+		event.getGuild()
+				.updateCommands()
+				.addCommands(Arrays.stream(CommandList.values())
+						.map(CommandList::get)
+						.toArray(CommandData[]::new))
+				.queue();
 	}
 }
