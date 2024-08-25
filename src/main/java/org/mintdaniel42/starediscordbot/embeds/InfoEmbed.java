@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 @UtilityClass
 public class InfoEmbed {
-	public MessageEmbed of(@NonNull final MetaDataEntity.Version version, final int usernameCount, final int hnsCount, final int pgCount) {
+	public MessageEmbed of(@NonNull final MetaDataEntity.Version version, final int usernameCount, final int hnsCount, final int pgCount, final int groupCount, final int spotCount) {
 		return new EmbedBuilder()
 				.setColor(Options.getColorNormal())
 				.addField(R.Strings.ui("version"), "%s - \"%s\"".formatted(version.name().replace('_', '.'), version.getTitle()), false)
@@ -21,6 +21,8 @@ public class InfoEmbed {
 				.addField(R.Strings.ui("count_of_stored_usernames"), String.valueOf(usernameCount), false)
 				.addField(R.Strings.ui("hide_n_seek_entry_count"), String.valueOf(hnsCount), false)
 				.addField(R.Strings.ui("partygames_entry_count"), String.valueOf(pgCount), false)
+				.addField(R.Strings.ui("group_count"), String.valueOf(groupCount), false)
+				.addField(R.Strings.ui("spot_count"), String.valueOf(spotCount), false)
 				.build();
 	}
 
