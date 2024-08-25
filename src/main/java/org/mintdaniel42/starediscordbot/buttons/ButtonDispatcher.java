@@ -63,6 +63,9 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 							interactionHook.editOriginal(R.Strings.ui("you_dont_have_enough_tokens_for_this_action_please_wait_a_few_seconds")).queue();
 					} catch (Exception e) {
 						new ErrorHandler(e).handle(interactionHook, event).queue();
+						//#if dev
+						throw new RuntimeException(e);
+						//#endif
 					}
 				});
 	}
