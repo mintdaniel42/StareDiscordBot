@@ -69,7 +69,8 @@ tasks.preprocess.outputs.upToDateWhen {
 tasks.compileJava {
     dependsOn preprocess
     source = preprocess.target
-    options.compilerArgs = ['-Adoma.domain.converters=org.mintdaniel42.starediscordbot.data.domain.DomainConvertersProvider']
+    // TODO: remove when new constructor system is released
+    options.compilerArgs += ['-Adoma.domain.converters=org.mintdaniel42.starediscordbot.data.domain.DomainConvertersProvider', '--enable-preview']
 }
 
 tasks.jar {
