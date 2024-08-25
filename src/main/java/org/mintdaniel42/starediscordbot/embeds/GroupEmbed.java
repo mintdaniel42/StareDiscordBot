@@ -36,10 +36,10 @@ public class GroupEmbed {
 				.skip((long) page * BuildConfig.entriesPerPage)
 				.limit(BuildConfig.entriesPerPage)
 				.forEach(user -> builder.addField(
-						usernameRepository.selectByUUID(user.getUuid())
+						usernameRepository.selectById(user.getUuid())
 								.orElseThrow()
 								.getUsername(),
-						R.Strings.ui("banned") + ": " + (hnsUserRepository.selectByUUID(user.getUuid())
+						R.Strings.ui("banned") + ": " + (hnsUserRepository.selectById(user.getUuid())
 								.map(HNSUserEntity::isBanned).
 								orElse(false) ? "✅" : "❌"), false)
 				);

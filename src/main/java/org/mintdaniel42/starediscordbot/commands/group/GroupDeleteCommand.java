@@ -21,7 +21,7 @@ public final class GroupDeleteCommand implements CommandAdapter {
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("tag") instanceof final OptionMapping tagMapping) {
-			if (groupRepository.deleteByTag(tagMapping.getAsString()).equals(Status.SUCCESS)) {
+			if (groupRepository.deleteById(tagMapping.getAsString()).equals(Status.SUCCESS)) {
 				return interactionHook.editOriginal(R.Strings.ui("the_group_was_successfully_deleted"));
 			} else return interactionHook.editOriginal(R.Strings.ui("the_group_could_not_be_deleted"));
 		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));

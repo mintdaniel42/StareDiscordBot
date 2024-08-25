@@ -29,7 +29,7 @@ public final class GroupShowCommand implements CommandAdapter {
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("tag") instanceof final OptionMapping tagMapping) {
-			final var groupOptional = groupRepository.selectByTag(tagMapping.getAsString());
+			final var groupOptional = groupRepository.selectById(tagMapping.getAsString());
 			if (groupOptional.isPresent()) {
 				final var group = groupOptional.get();
 				return interactionHook.editOriginalEmbeds(GroupEmbed.of(group, userRepository, hnsUserRepository, usernameRepository))

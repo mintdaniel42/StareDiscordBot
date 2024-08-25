@@ -41,7 +41,7 @@ public final class UserEditCommand implements CommandAdapter {
 				final var usernameOptional = usernameRepository.selectByUUID(uuid);
 				if (userOptional.isPresent() && usernameOptional.isPresent()) {
 					final var user = UserEntity.merge(event.getOptions(), userOptional.get().toBuilder());
-					final var groupOptional = groupRepository.selectByTag(user.getGroupTag());
+					final var groupOptional = groupRepository.selectById(user.getGroupTag());
 					if (!Permission.hasP2(event.getMember())) {
 						long timestamp = System.currentTimeMillis();
 						if (event.getGuild() instanceof Guild guild) {

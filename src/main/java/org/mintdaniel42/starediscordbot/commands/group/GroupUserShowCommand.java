@@ -39,7 +39,7 @@ public final class GroupUserShowCommand implements CommandAdapter {
 				final var usernameOptional = usernameRepository.selectByUUID(uuid);
 				if (userOptional.isPresent() && usernameOptional.isPresent()) {
 					final var user = userOptional.get();
-					final var groupOptional = user.getGroupTag() != null ? groupRepository.selectByTag(user.getGroupTag()) : Optional.<GroupEntity>empty();
+					final var groupOptional = user.getGroupTag() != null ? groupRepository.selectById(user.getGroupTag()) : Optional.<GroupEntity>empty();
 					if (user.getGroupTag() == null || groupOptional.isEmpty()) {
 						return interactionHook.editOriginal(R.Strings.ui("the_user_s_is_not_in_any_group",
 								usernameOptional.get()));

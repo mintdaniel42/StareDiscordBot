@@ -37,7 +37,7 @@ public final class GroupUserRemoveCommand implements CommandAdapter {
 					if (user.getGroupTag() == null) {
 						return interactionHook.editOriginal(R.Strings.ui("the_user_s_is_not_in_any_group", username.getUsername()));
 					} else {
-						final var groupOptional = groupRepository.selectByTag(user.getGroupTag());
+						final var groupOptional = groupRepository.selectById(user.getGroupTag());
 						if (groupOptional.isPresent() && userRepository.update(user.toBuilder()
 										.groupTag(null)
 										.build())

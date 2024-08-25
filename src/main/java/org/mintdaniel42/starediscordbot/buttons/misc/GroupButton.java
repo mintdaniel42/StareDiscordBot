@@ -46,7 +46,7 @@ public final class GroupButton implements ButtonAdapter {
 
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
-		final var groupOptional = groupRepository.selectByTag(event.getComponentId().split(":")[1]);
+		final var groupOptional = groupRepository.selectById(event.getComponentId().split(":")[1]);
 		if (groupOptional.isPresent()) {
 			final var group = groupOptional.get();
 			return interactionHook.editOriginalEmbeds(GroupEmbed.of(group, userRepository, hnsUserRepository, usernameRepository, 0, false))

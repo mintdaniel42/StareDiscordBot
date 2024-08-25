@@ -33,7 +33,7 @@ public final class GroupEditCommand implements CommandAdapter {
 	@Override
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
 		if (event.getOption("tag") instanceof final OptionMapping tagMapping && event.getOptions().size() >= 2) {
-			final var groupOptional = groupRepository.selectByTag(tagMapping.getAsString());
+			final var groupOptional = groupRepository.selectById(tagMapping.getAsString());
 			if (groupOptional.isPresent()) {
 				UUID leaderUuid = null;
 				if (!(event.getOption("leader") instanceof final OptionMapping leaderMapping) ||

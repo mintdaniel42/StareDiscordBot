@@ -46,7 +46,7 @@ public final class HNSShowButton implements ButtonAdapter {
 		final var usernameOptional = usernameRepository.selectByUUID(uuid);
 		final var userOptional = userRepository.selectByUUID(uuid);
 		if (hnsUserOptional.isPresent() && userOptional.isPresent() && usernameOptional.isPresent()) {
-			final var groupOptional = groupRepository.selectByTag(userOptional.get().getGroupTag());
+			final var groupOptional = groupRepository.selectById(userOptional.get().getGroupTag());
 			final var embed = current == Type.basic ?
 					HNSBasicUserEmbed.of(hnsUserOptional.get(), userOptional.get(), usernameOptional.get(), false) :
 					HNSMoreUserEmbed.of(hnsUserOptional.get(), userOptional.get(), groupOptional.orElse(null), usernameOptional.get(), false);
