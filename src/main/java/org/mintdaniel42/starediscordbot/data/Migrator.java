@@ -47,13 +47,13 @@ public final class Migrator {
 		metaDataDao.createTable();
 		pgUserDao.createTable();
 		requestDao.createTable();
-		spotDao.createTable();
 		userDao.createTable();
 		usernameDao.createTable();
 		return MetaDataEntity.Version.V2_3;
 	}
 
 	private @NonNull MetaDataEntity.Version migrateV2_3ToV3() {
+		spotDao.createTable();
 		userDao.renameColumnGroupTag();
 		requestDao.renameColumnGroupTag();
 		requestDao.renameColumnType();
