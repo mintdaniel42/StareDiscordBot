@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
 import org.mintdaniel42.starediscordbot.compose.exceptions.CommandIncompleteException;
+import org.mintdaniel42.starediscordbot.compose.exceptions.NoSuchEntryException;
 import org.mintdaniel42.starediscordbot.compose.exceptions.UnknownUsernameException;
 import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
 import org.mintdaniel42.starediscordbot.utils.R;
@@ -27,6 +28,8 @@ public abstract class CommandComposer extends CommandHelper implements CommandAd
 			return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
 		} catch (UnknownUsernameException _) {
 			return interactionHook.editOriginal(R.Strings.ui("this_username_does_not_exist"));
+		} catch (NoSuchEntryException _) {
+			return interactionHook.editOriginal(R.Strings.ui("we_could_not_find_such_an_entry"));
 		}
 	}
 
