@@ -33,7 +33,7 @@ public abstract class BaseRepository<ID, ENTITY> {
 					.execute()
 					.getCount() == 1 ? Status.SUCCESS : Status.DUPLICATE;
 		} catch (JdbcException _) {
-			return Status.DUPLICATE;
+			return Status.ERROR;
 		}
 	}
 
