@@ -23,7 +23,7 @@ public class SpotEntity {
 	@NonNull String videolink;
 	@NonNull Type type;
 	@NonNull String coordinates;
-	boolean twoPlayers;
+	boolean twoPlayer;
 
 	public enum Type {
 		afk,
