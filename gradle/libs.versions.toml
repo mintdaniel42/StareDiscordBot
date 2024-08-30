@@ -11,7 +11,7 @@ avaje-jsonb = "2.1"
 ioutils = "2.16.1"
 wisp = "2.4.0"
 verbalexpressions = "1.8"
-doma = "2.62.0"
+doma = "2.62.1"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
