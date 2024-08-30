@@ -51,8 +51,10 @@ public final class Bot implements Consumer<GuildReadyEvent> {
 		database.prepareDatabase();
 
 		scheduler.schedule(
-				database::cleanDatabase,
-				Schedules.afterInitialDelay((timestamp, _, _) -> timestamp + BuildConfig.cleaningInterval - (timestamp % BuildConfig.cleaningInterval),
+				database::cleanDatabase, Schedules.afterInitialDelay(
+						Schedules.fixedFrequencySchedule(
+								Duration.ofMillis(BuildConfig.cleaningInterval)
+						),
 						Duration.ZERO)
 		);
 	}
