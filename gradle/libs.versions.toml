@@ -9,7 +9,7 @@ buildConfig = "5.4.0"
 jcp = "7.1.2"
 avaje-jsonb = "2.1"
 ioutils = "2.16.1"
-wisp = "2.4.0"
+wisp = "2.5.0"
 verbalexpressions = "1.8"
 doma = "2.62.0"
 
