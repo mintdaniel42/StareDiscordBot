@@ -25,10 +25,4 @@ public final class HNSUserRepository extends BaseRepository<UUID, HNSUserEntity>
 				.limit(BuildConfig.entriesPerPage)
 				.toList();
 	}
-
-	public int countPages() {
-		return (int) Math.ceil((double) entityQl.from(meta)
-				.fetch()
-				.size() / BuildConfig.entriesPerPage);
-	}
 }

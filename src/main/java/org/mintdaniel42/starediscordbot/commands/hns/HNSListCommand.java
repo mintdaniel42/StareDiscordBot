@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
+import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.buttons.list.HNSListButtons;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
 import org.mintdaniel42.starediscordbot.data.repository.HNSUserRepository;
@@ -27,7 +28,7 @@ public final class HNSListCommand implements CommandAdapter {
 		if (event.getOption("page") instanceof final OptionMapping pageMapping) {
 			page = pageMapping.getAsInt() - 1;
 		} else page = 0;
-		final var pageCount = hnsUserRepository.countPages();
+		final var pageCount = hnsUserRepository.count() / BuildConfig.entriesPerPage;
 		final var entries = hnsUserRepository.selectByPage(page);
 		if (pageCount > page && page >= 0) {
 			return interactionHook.editOriginalEmbeds(ListEmbed.createHnsList(usernameRepository, entries, page, pageCount))

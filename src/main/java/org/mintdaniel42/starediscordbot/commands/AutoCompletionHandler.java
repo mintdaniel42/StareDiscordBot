@@ -101,12 +101,14 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 	@Contract(pure = true, value = "_, _ -> new")
 	private @NonNull Command.Choice[] autoCompletePage(@NonNull final String command, @NonNull final String input) {
 		return switch (command) {
-			case "hns list" -> LongStream.range(1, Math.min(database.getHnsUserRepository().countPages(), 25) + 1)
+			case "hns list" ->
+					LongStream.range(1, Math.min(database.getHnsUserRepository().count() / BuildConfig.entriesPerPage, 25) + 1)
 					.boxed()
 					.filter(operand -> String.valueOf(operand).startsWith(input))
 					.map(page -> new Command.Choice(String.valueOf(page), page))
 					.toArray(Command.Choice[]::new);
-			case "pg list" -> LongStream.range(1, Math.min(database.getPgUserRepository().countPages(), 25) + 1)
+			case "pg list" ->
+					LongStream.range(1, Math.min(database.getPgUserRepository().count() / BuildConfig.entriesPerPage, 25) + 1)
 					.boxed()
 					.filter(operand -> String.valueOf(operand).startsWith(input))
 					.map(page -> new Command.Choice(String.valueOf(page), page))

@@ -25,10 +25,4 @@ public final class PGUserRepository extends BaseRepository<UUID, PGUserEntity> {
 				.limit(BuildConfig.entriesPerPage)
 				.toList();
 	}
-
-	public int countPages() {
-		return (int) Math.ceil((double) entityQl.from(meta)
-				.fetch()
-				.size() / BuildConfig.entriesPerPage);
-	}
 }

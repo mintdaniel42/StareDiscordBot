@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.jetbrains.annotations.Contract;
+import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
 import org.mintdaniel42.starediscordbot.data.repository.PGUserRepository;
 import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
@@ -38,7 +39,7 @@ public final class PGListButtons implements ButtonAdapter {
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
 		final var buttonParts = event.getComponentId().split(":");
 		final var page = Integer.parseInt(buttonParts[buttonParts.length - 1]);
-		return interactionHook.editOriginalEmbeds(ListEmbed.createPgList(usernameRepository, pgUserRepository.selectByPage(page), page, pgUserRepository.countPages()))
-				.setComponents(create(page, pgUserRepository.countPages()));
+		return interactionHook.editOriginalEmbeds(ListEmbed.createPgList(usernameRepository, pgUserRepository.selectByPage(page), page, pgUserRepository.count() / BuildConfig.entriesPerPage))
+				.setComponents(create(page, pgUserRepository.count() / BuildConfig.entriesPerPage));
 	}
 }
