@@ -6,7 +6,7 @@ WORKDIR /home/gradle/src
 
 RUN gradle build --no-daemon
 
-FROM amazoncorretto:22
+FROM amazoncorretto:23
 
 WORKDIR /usr/src/app
 
