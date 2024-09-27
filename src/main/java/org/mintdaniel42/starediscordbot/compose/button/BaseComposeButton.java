@@ -28,14 +28,14 @@ public abstract class BaseComposeButton extends Composer<ButtonContext> implemen
 	}
 
 	/* ========== BUTTON META ========== */
-	protected final boolean requireButtonPartCount(@NonNull final ButtonContext context, final int atLeast) throws ButtonIncompleteException {
+	protected static boolean requireButtonPartCount(@NonNull final ButtonContext context, final int atLeast) throws ButtonIncompleteException {
 		if (context.getButtonPartsLength() < atLeast) {
 			throw new ButtonIncompleteException();
 		}
 		return true;
 	}
 
-	protected final @NonNull <T> T requireButtonPartCount(@NonNull final ButtonContext context, final int atLeast, @NonNull final Supplier<T> supplier) throws ButtonIncompleteException {
+	protected static @NonNull <T> T requireButtonPartCount(@NonNull final ButtonContext context, final int atLeast, @NonNull final Supplier<T> supplier) throws ButtonIncompleteException {
 		if (context.getButtonPartsLength() < atLeast) {
 			throw new ButtonIncompleteException();
 		}
@@ -43,7 +43,7 @@ public abstract class BaseComposeButton extends Composer<ButtonContext> implemen
 	}
 
 	/* ========== BUTTON PARTS ========== */
-	protected final @NonNull String requireButtonPart(@NonNull final ButtonContext context, final int index) throws ButtonIncompleteException {
+	protected static @NonNull String requireButtonPart(@NonNull final ButtonContext context, final int index) throws ButtonIncompleteException {
 		return Optional.ofNullable(context.getButtonPartAt(index))
 				.orElseThrow(ButtonIncompleteException::new);
 	}
