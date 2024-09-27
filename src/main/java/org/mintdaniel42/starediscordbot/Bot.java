@@ -1,6 +1,5 @@
 package org.mintdaniel42.starediscordbot;
 
-import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricRegistry;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
@@ -16,7 +15,6 @@ import org.mintdaniel42.starediscordbot.di.DI;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Singleton
@@ -36,10 +34,6 @@ public final class Bot {
 
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public void run() {
-		try (final var consoleReporter = ConsoleReporter.forRegistry(metrics).build()) {
-			consoleReporter.start(20, TimeUnit.SECONDS);
-		}
-
 		final var jda = JDABuilder.createDefault(config.getToken())
 				.addEventListeners(DI.list(ListenerAdapter.class).toArray())
 				.build();
