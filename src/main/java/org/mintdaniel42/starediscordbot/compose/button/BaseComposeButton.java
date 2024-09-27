@@ -18,8 +18,6 @@ public abstract class BaseComposeButton extends Composer<ButtonContext> implemen
 	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) throws BotException {
 		try {
 			return interactionHook.editOriginal(compose(new ButtonContext(event)));
-		} catch (IllegalArgumentException _) {
-			return interactionHook.editOriginal(response("one_of_your_options_was_invalid"));
 		} catch (BotException e) {
 			return interactionHook.editOriginal(response()
 					.setContent(e.getMessage())
