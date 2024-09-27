@@ -31,11 +31,12 @@ dependencies {
     implementation(libs.slf4j.simple)
     implementation(libs.avaje.jsonb)
     implementation(libs.avaje.inject)
+    implementation(libs.avaje.config)
     implementation(libs.ioutils)
     implementation(libs.wisp)
-    implementation(libs.verbalexpressions)
     implementation(libs.doma.core)
     implementation(libs.bucket4j)
+    implementation(libs.dropwizard.metrics)
     compileOnly(libs.lombok)
     compileOnly(libs.jetbrains.annotations)
     compileOnly(libs.jakarta.inject)
@@ -97,5 +98,6 @@ buildConfig {
         buildConfigField(int, "entriesPerPage", 10)
 
         buildConfigField(boolean, "autoFetch", true)
+        buildConfigField(boolean, "production", !(System.getenv("DEV") == "1"))
     }
 }
