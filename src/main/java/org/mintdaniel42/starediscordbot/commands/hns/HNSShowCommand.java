@@ -9,13 +9,12 @@ import org.mintdaniel42.starediscordbot.buttons.misc.GroupButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.HNSShowButton;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
-import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
 import org.mintdaniel42.starediscordbot.data.repository.GroupRepository;
 import org.mintdaniel42.starediscordbot.data.repository.HNSUserRepository;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
 import org.mintdaniel42.starediscordbot.embeds.user.hns.HNSBasicUserEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 
 @RequiredArgsConstructor
 @Singleton
@@ -26,7 +25,7 @@ public final class HNSShowCommand extends BaseComposeCommand {
 	@NonNull private final GroupRepository groupRepository;
 
 	@Override
-	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException, DatabaseException {
+	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
 		final var hnsUser = requireEntity(hnsUserRepository, profile.getUuid());
 		final var user = requireEntity(userRepository, profile.getUuid());

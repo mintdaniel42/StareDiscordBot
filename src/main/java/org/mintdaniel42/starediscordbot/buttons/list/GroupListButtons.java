@@ -18,6 +18,7 @@ import org.mintdaniel42.starediscordbot.data.repository.HNSUserRepository;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
 import org.mintdaniel42.starediscordbot.embeds.GroupEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
@@ -45,7 +46,7 @@ public final class GroupListButtons implements ButtonAdapter {
 	}
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) throws BotException {
 		final var buttonParts = event.getComponentId().split(":");
 		final var page = Integer.parseInt(buttonParts[2]);
 		final var groupOptional = groupRepository.selectById(buttonParts[1]);

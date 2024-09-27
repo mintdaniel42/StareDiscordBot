@@ -15,6 +15,7 @@ import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
 import org.mintdaniel42.starediscordbot.data.repository.PGUserRepository;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
@@ -36,7 +37,7 @@ public final class PGListButtons implements ButtonAdapter {
 	}
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) throws BotException {
 		final var buttonParts = event.getComponentId().split(":");
 		final var page = Integer.parseInt(buttonParts[buttonParts.length - 1]);
 		return interactionHook.editOriginalEmbeds(ListEmbed.createPgList(profileRepository, pgUserRepository.selectAll(page * BuildConfig.entriesPerPage, BuildConfig.entriesPerPage), page, pgUserRepository.count() / BuildConfig.entriesPerPage))

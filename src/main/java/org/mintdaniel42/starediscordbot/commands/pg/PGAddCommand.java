@@ -8,14 +8,13 @@ import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
 import org.mintdaniel42.starediscordbot.data.entity.PGUserEntity;
 import org.mintdaniel42.starediscordbot.data.entity.UserEntity;
-import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
 import org.mintdaniel42.starediscordbot.data.repository.PGUserRepository;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
 import org.mintdaniel42.starediscordbot.embeds.user.pg.PGUserEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.Permission;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -27,7 +26,7 @@ public final class PGAddCommand extends BaseComposeCommand {
 	@NonNull private final ProfileRepository profileRepository;
 
 	@Override
-	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException, DatabaseException {
+	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
 		final var pgUser = PGUserEntity.merge(context.getOptions(), PGUserEntity.builder().uuid(profile.getUuid()));
 		final var user = nullableEntity(userRepository, profile.getUuid())

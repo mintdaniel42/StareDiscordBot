@@ -17,6 +17,7 @@ import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
 import org.mintdaniel42.starediscordbot.embeds.user.hns.HNSBasicUserEmbed;
 import org.mintdaniel42.starediscordbot.embeds.user.hns.HNSMoreUserEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.UUID;
@@ -38,7 +39,7 @@ public final class HNSShowButton implements ButtonAdapter {
 	}
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) throws BotException {
 		final var buttonParts = event.getComponentId().split(":");
 		final var current = Type.valueOf(buttonParts[1]);
 		final var uuid = UUID.fromString(buttonParts[2]);

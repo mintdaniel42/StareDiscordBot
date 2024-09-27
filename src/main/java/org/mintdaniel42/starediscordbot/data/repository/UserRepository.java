@@ -4,7 +4,7 @@ import jakarta.inject.Singleton;
 import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.data.entity.UserEntity;
 import org.mintdaniel42.starediscordbot.data.entity.UserEntityMeta;
-import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.seasar.doma.jdbc.JdbcException;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
@@ -24,15 +24,13 @@ public final class UserRepository extends BaseRepository<UUID, UserEntity> {
 				.fetch();
 	}
 
-	public void upsert(@NonNull final UserEntity user) throws DatabaseException {
+	public void upsert(@NonNull final UserEntity user) throws BotException {
 		try {
-			if (entityQl.from(meta).where(o -> o.eq(((UserEntityMeta) meta).uuid, user.getUuid()))
-					.fetchOptional()
-					.isPresent()) {
+			if (selectById(user.getUuid()).isPresent()) {
 				entityQl.update(meta, user);
 			} else entityQl.insert(meta, user);
 		} catch (JdbcException _) {
-			throw new DatabaseException();
+			throw new BotException("the_entry_could_not_be_updated");
 		}
 	}
 }

@@ -9,9 +9,9 @@ import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.aspect.annotation.NotYetImplemented;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
 import org.mintdaniel42.starediscordbot.data.entity.MapEntity;
 import org.mintdaniel42.starediscordbot.data.repository.MapRepository;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.Permission;
 
 import java.util.UUID;
@@ -23,7 +23,7 @@ public class MapsAddCommand extends BaseComposeCommand {
 
 	@Override
 	@NotYetImplemented
-	public @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException {
+	public @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		final var builder = MapEntity.builder().uuid(UUID.randomUUID());
 		requireStringOption(context, "name", builder::name);
 		//final var picture = requireAttachmentOption(context, "picture");

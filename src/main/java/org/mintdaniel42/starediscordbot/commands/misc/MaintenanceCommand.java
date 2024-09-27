@@ -9,8 +9,7 @@ import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
-import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @Singleton
@@ -19,7 +18,7 @@ public final class MaintenanceCommand extends BaseComposeCommand {
 	@NonNull private final BotConfig config;
 
 	@Override
-	protected @NonNull MessageEditData compose(@NonNull CommandContext context) throws ComposeException, DatabaseException {
+	protected @NonNull MessageEditData compose(@NonNull CommandContext context) throws BotException {
 		final var active = requireBooleanOption(context, "active");
 		config.setInMaintenance(active);
 		final var presence = context.getPresence();

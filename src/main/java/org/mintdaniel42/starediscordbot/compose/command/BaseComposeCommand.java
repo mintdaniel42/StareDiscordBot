@@ -11,9 +11,7 @@ import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
 import org.mintdaniel42.starediscordbot.compose.Composer;
 import org.mintdaniel42.starediscordbot.compose.exception.CommandIncompleteException;
-import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
-import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
-import org.mintdaniel42.starediscordbot.exception.NotYetImplementedException;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -130,7 +128,7 @@ public abstract class BaseComposeCommand extends Composer<CommandContext> implem
 			return compose(new CommandContext(event));
 		} catch (IllegalArgumentException _) {
 			return response("one_of_your_options_was_invalid");
-		} catch (NotYetImplementedException | ComposeException | DatabaseException e) {
+		} catch (BotException e) {
 			return response(e.getMessage());
 		}
 	}

@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.mintdaniel42.starediscordbot.commands.CommandList;
 import org.mintdaniel42.starediscordbot.data.Database;
 import org.mintdaniel42.starediscordbot.di.DI;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.Arrays;
@@ -25,7 +26,7 @@ public final class Bot {
 	@NonNull private final BotConfig config;
 	@NonNull private final MetricRegistry metrics;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws BotException {
 		//#if dev
 		log.info(R.Strings.log("running_in_dev_mode"));
 		//#endif
@@ -33,7 +34,7 @@ public final class Bot {
 	}
 
 	@SuppressWarnings("ResultOfMethodCallIgnored")
-	public void run() {
+	public void run() throws BotException {
 		final var jda = JDABuilder.createDefault(config.getToken())
 				.addEventListeners(DI.list(ListenerAdapter.class).toArray())
 				.build();

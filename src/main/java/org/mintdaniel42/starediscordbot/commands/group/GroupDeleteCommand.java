@@ -8,9 +8,8 @@ import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
-import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
 import org.mintdaniel42.starediscordbot.data.repository.GroupRepository;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.Permission;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -20,7 +19,7 @@ public final class GroupDeleteCommand extends BaseComposeCommand {
 	@NonNull private final GroupRepository groupRepository;
 
 	@Override
-	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException, DatabaseException {
+	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		final var tag = requireStringOption(context, "tag");
 		groupRepository.deleteById(tag);
 		return response()

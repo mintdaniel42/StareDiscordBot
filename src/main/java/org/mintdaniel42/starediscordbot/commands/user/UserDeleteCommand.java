@@ -8,10 +8,9 @@ import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
 import org.mintdaniel42.starediscordbot.data.Database;
-import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.Permission;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -22,7 +21,7 @@ public final class UserDeleteCommand extends BaseComposeCommand {
 	@NonNull private final ProfileRepository profileRepository;
 
 	@Override
-	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException, DatabaseException {
+	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
 		database.deleteUserData(profile.getUuid());
 		return response()

@@ -9,11 +9,10 @@ import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
 import org.mintdaniel42.starediscordbot.data.entity.AchievementEntity;
-import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
 import org.mintdaniel42.starediscordbot.data.repository.AchievementRepository;
 import org.mintdaniel42.starediscordbot.embeds.AchievementEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.Permission;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -26,7 +25,7 @@ public final class AchievementsAddCommand extends BaseComposeCommand {
 	@NonNull private final BotConfig config;
 
 	@Override
-	public @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException, DatabaseException {
+	public @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		final var builder = requireStringOption(context, "name", name -> AchievementEntity.builder()
 				.uuid(UUID.nameUUIDFromBytes(name.getBytes()))
 				.name(name)

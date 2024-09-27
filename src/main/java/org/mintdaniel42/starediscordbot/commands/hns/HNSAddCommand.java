@@ -8,14 +8,13 @@ import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
 import org.mintdaniel42.starediscordbot.data.entity.HNSUserEntity;
 import org.mintdaniel42.starediscordbot.data.entity.UserEntity;
-import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
 import org.mintdaniel42.starediscordbot.data.repository.HNSUserRepository;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
 import org.mintdaniel42.starediscordbot.embeds.user.hns.HNSFullUserEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.Permission;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -27,7 +26,7 @@ public final class HNSAddCommand extends BaseComposeCommand {
 	@NonNull private final ProfileRepository profileRepository;
 
 	@Override
-	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException, DatabaseException {
+	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		requireOptionCount(context, 2);
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
 		final var hnsUser = HNSUserEntity.merge(context.getOptions(), HNSUserEntity.builder().uuid(profile.getUuid()));

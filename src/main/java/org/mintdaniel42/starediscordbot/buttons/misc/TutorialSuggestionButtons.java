@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
 import org.mintdaniel42.starediscordbot.data.entity.TutorialEntity;
 import org.mintdaniel42.starediscordbot.embeds.TutorialEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.Arrays;
@@ -37,7 +38,7 @@ public final class TutorialSuggestionButtons implements ButtonAdapter {
 	}
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) throws BotException {
 		if (R.Tutorials.get(event.getComponentId().split(":")[1]) instanceof final TutorialEntity tutorialEntity) {
 			return interactionHook.editOriginalEmbeds(TutorialEmbed.of(tutorialEntity))
 					.setComponents(TutorialSuggestionButtons.create(tutorialEntity));

@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.mintdaniel42.starediscordbot.bucket.RateLimited;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 
 /**
  * Implementing this interface is equivalent to implementing the logic for a button.
@@ -19,7 +20,7 @@ public interface ButtonAdapter extends RateLimited {
 	 * @return the {@link WebhookMessageEditAction} returned by calling an interactionHook edit action
 	 */
 	@NonNull
-	WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event);
+	WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) throws BotException;
 
 	/**
 	 * If pressing a button should result in editing the original message or creating a new one

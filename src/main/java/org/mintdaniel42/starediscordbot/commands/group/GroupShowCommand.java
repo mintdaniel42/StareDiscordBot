@@ -8,13 +8,12 @@ import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.buttons.list.GroupListButtons;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
-import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
 import org.mintdaniel42.starediscordbot.data.repository.GroupRepository;
 import org.mintdaniel42.starediscordbot.data.repository.HNSUserRepository;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
 import org.mintdaniel42.starediscordbot.embeds.GroupEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 
 @RequiredArgsConstructor
 @Singleton
@@ -25,7 +24,7 @@ public final class GroupShowCommand extends BaseComposeCommand {
 	@NonNull private final ProfileRepository profileRepository;
 
 	@Override
-	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException, DatabaseException {
+	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		final var tag = requireStringOption(context, "tag");
 		final var group = requireEntity(groupRepository, tag);
 		return response()

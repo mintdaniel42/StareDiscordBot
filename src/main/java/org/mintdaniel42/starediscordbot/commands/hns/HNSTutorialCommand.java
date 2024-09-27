@@ -8,9 +8,9 @@ import org.mintdaniel42.starediscordbot.buttons.list.TutorialListButtons;
 import org.mintdaniel42.starediscordbot.buttons.misc.TutorialSuggestionButtons;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
 import org.mintdaniel42.starediscordbot.data.entity.TutorialEntity;
 import org.mintdaniel42.starediscordbot.embeds.TutorialEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.Arrays;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 @Singleton
 public final class HNSTutorialCommand extends BaseComposeCommand {
 	@Override
-	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException {
+	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		return nullableStringOption(context, "page", page -> {
 			if (R.Tutorials.get(page) instanceof final TutorialEntity tutorialEntity) {
 				return response().setEmbeds(TutorialEmbed.of(tutorialEntity)).build();

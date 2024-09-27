@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.data.entity.*;
-import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
 import org.mintdaniel42.starediscordbot.data.exceptions.NonExistentKeyException;
 import org.mintdaniel42.starediscordbot.data.repository.*;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -34,14 +34,14 @@ public final class Database implements AutoCloseable {
 	@NonNull private final ProfileRepository profileRepository;
 	@NonNull private final UserRepository userRepository;
 
-	public void deleteUserData(@NonNull final UUID uuid) throws DatabaseException {
+	public void deleteUserData(@NonNull final UUID uuid) throws BotException {
 		userRepository.deleteById(uuid);
 		profileRepository.deleteById(uuid);
 		hnsUserRepository.deleteById(uuid);
 		pgUserRepository.deleteById(uuid);
 	}
 
-	public void mergeRequest(final long id) throws DatabaseException {
+	public void mergeRequest(final long id) throws BotException {
 		final var request = requestRepository.selectById(id).orElseThrow(NonExistentKeyException::new);
 		switch (request.getType()) {
 			case hns -> hnsUserRepository.update(HNSUserEntity.from(request));
@@ -52,12 +52,12 @@ public final class Database implements AutoCloseable {
 		requestRepository.deleteById(id);
 	}
 
-	public void prepareDatabase() {
+	public void prepareDatabase() throws BotException {
 		migrator.onUpgrade(metaDataRepository.selectFirst().version(), targetVersion);
 		metaDataRepository.upsert(new MetaDataEntity(0, targetVersion));
 	}
 
-	public void cleanDatabase() {
+	public void cleanDatabase() throws BotException {
 		// perform cleaning
 		try {
 			requestRepository.deleteByAge(System.currentTimeMillis() - BuildConfig.maxRequestAge);

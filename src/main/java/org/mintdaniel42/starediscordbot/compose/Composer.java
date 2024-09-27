@@ -7,11 +7,14 @@ import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.PropertyKey;
-import org.mintdaniel42.starediscordbot.compose.exception.*;
+import org.mintdaniel42.starediscordbot.compose.exception.NoSuchChannelException;
+import org.mintdaniel42.starediscordbot.compose.exception.NoSuchEntryException;
+import org.mintdaniel42.starediscordbot.compose.exception.NoSuchPageException;
+import org.mintdaniel42.starediscordbot.compose.exception.UnknownUsernameException;
 import org.mintdaniel42.starediscordbot.data.entity.ProfileEntity;
-import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
 import org.mintdaniel42.starediscordbot.data.repository.BaseRepository;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Permission;
 import org.mintdaniel42.starediscordbot.utils.R;
@@ -41,7 +44,7 @@ public abstract class Composer<CONTEXT extends Context> {
 	}
 
 	/* ========== PROFILE ENTITY ========== */
-	protected static @NonNull ProfileEntity requireProfile(@NonNull final ProfileRepository repository, @NonNull final String username) throws UnknownUsernameException {
+	protected static @NonNull ProfileEntity requireProfile(@NonNull final ProfileRepository repository, @NonNull final String username) throws BotException {
 		return Optional.ofNullable(MCHelper.getUuid(repository, username))
 				.flatMap(repository::selectById)
 				.orElseThrow(UnknownUsernameException::new);
@@ -60,7 +63,7 @@ public abstract class Composer<CONTEXT extends Context> {
 	}
 
 	/* ========== OPERATIONS ========== */
-	protected static void requireBounds(final int min, final int value, final int max) throws ComposeException {
+	protected static void requireBounds(final int min, final int value, final int max) throws BotException {
 		if (value >= max || value < min) throw new NoSuchPageException(); // TODO: make more general
 	}
 
@@ -80,10 +83,10 @@ public abstract class Composer<CONTEXT extends Context> {
 
 	/* ========== PREVENT EXECUTION ========== */
 	@Contract("_ -> fail")
-	protected static <R> R fail(@NonNull @PropertyKey(resourceBundle = "ui") final String reason) throws ComposeException {
-		throw new ComposeException(reason);
+	protected static <R> R fail(@NonNull @PropertyKey(resourceBundle = "ui") final String reason) throws BotException {
+		throw new BotException(reason);
 	}
 
 	@NonNull
-	protected abstract MessageEditData compose(@NonNull final CONTEXT context) throws ComposeException, DatabaseException;
+	protected abstract MessageEditData compose(@NonNull final CONTEXT context) throws BotException;
 }

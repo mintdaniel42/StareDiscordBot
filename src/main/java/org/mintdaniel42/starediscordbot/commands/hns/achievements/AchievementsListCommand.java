@@ -8,10 +8,10 @@ import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.buttons.list.AchievementListButtons;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
 import org.mintdaniel42.starediscordbot.data.entity.AchievementEntity;
 import org.mintdaniel42.starediscordbot.data.repository.AchievementRepository;
 import org.mintdaniel42.starediscordbot.embeds.AchievementEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 
 @RequiredArgsConstructor
 @Singleton
@@ -20,7 +20,7 @@ public final class AchievementsListCommand extends BaseComposeCommand {
 	@NonNull private final BotConfig config;
 
 	@Override
-	public @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException {
+	public @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		final var type = nullableStringOption(context, "type", AchievementEntity.Type::valueOf).orElse(null);
 		final int points = nullableIntegerOption(context, "type").orElse(-1);
 		final int page = nullableIntegerOption(context, "page").orElse(1) - 1;

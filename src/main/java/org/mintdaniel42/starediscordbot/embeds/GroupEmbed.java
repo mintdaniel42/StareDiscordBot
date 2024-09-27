@@ -10,21 +10,22 @@ import org.mintdaniel42.starediscordbot.data.entity.HNSUserEntity;
 import org.mintdaniel42.starediscordbot.data.repository.HNSUserRepository;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @UtilityClass
 public class GroupEmbed {
-	public @NonNull MessageEmbed of(@NonNull final GroupEntity group, @NonNull final UserRepository userRepository, @NonNull final HNSUserRepository hnsUserRepository, @NonNull final ProfileRepository profileRepository) {
+	public @NonNull MessageEmbed of(@NonNull final GroupEntity group, @NonNull final UserRepository userRepository, @NonNull final HNSUserRepository hnsUserRepository, @NonNull final ProfileRepository profileRepository) throws BotException {
 		return of(group, userRepository, hnsUserRepository, profileRepository, 0, false);
 	}
 
-	public @NonNull MessageEmbed of(@NonNull final GroupEntity group, @NonNull final UserRepository userRepository, @NonNull final HNSUserRepository hnsUserRepository, @NonNull final ProfileRepository profileRepository, final boolean isRequest) {
+	public @NonNull MessageEmbed of(@NonNull final GroupEntity group, @NonNull final UserRepository userRepository, @NonNull final HNSUserRepository hnsUserRepository, @NonNull final ProfileRepository profileRepository, final boolean isRequest) throws BotException {
 		return of(group, userRepository, hnsUserRepository, profileRepository, 0, isRequest);
 	}
 
-	public @NonNull MessageEmbed of(@NonNull final GroupEntity group, @NonNull final UserRepository userRepository, @NonNull final HNSUserRepository hnsUserRepository, @NonNull final ProfileRepository profileRepository, final int page, final boolean isRequest) {
+	public @NonNull MessageEmbed of(@NonNull final GroupEntity group, @NonNull final UserRepository userRepository, @NonNull final HNSUserRepository hnsUserRepository, @NonNull final ProfileRepository profileRepository, final int page, final boolean isRequest) throws BotException {
 		final var builder = new EmbedBuilder()
 				.setTitle(R.Strings.ui("group_overview"))
 				.setDescription(String.format("%s [%s]", group.getName(), group.getTag()))

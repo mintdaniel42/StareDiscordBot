@@ -8,9 +8,9 @@ import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.buttons.list.InfoButtons;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
 import org.mintdaniel42.starediscordbot.data.repository.*;
 import org.mintdaniel42.starediscordbot.embeds.InfoEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 
 @RequiredArgsConstructor
 @Singleton
@@ -24,7 +24,7 @@ public final class InfoCommand extends BaseComposeCommand {
 	@NonNull final BotConfig config;
 
 	@Override
-	public @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException {
+	public @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		return response()
 				.setEmbeds(new InfoEmbed(config,
 						metaDataRepository.selectFirst().version(),

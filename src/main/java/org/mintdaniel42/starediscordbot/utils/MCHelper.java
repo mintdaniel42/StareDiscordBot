@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.mintdaniel42.starediscordbot.data.entity.ProfileEntity;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.di.DI;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @UtilityClass
 @Slf4j
 public class MCHelper {
-    public @Nullable UUID getUuid(@NonNull final ProfileRepository profileRepository, @NonNull final String username) {
+    public @Nullable UUID getUuid(@NonNull final ProfileRepository profileRepository, @NonNull final String username) throws BotException {
         final var usernameOptional = profileRepository.selectByUsername(username);
         if (usernameOptional.isPresent()) return usernameOptional.get().getUuid();
         else {
@@ -43,7 +44,7 @@ public class MCHelper {
         }
     }
 
-    public @Nullable String getUsername(@NonNull ProfileRepository profileRepository, @NonNull UUID uuid) {
+    public @Nullable String getUsername(@NonNull ProfileRepository profileRepository, @NonNull UUID uuid) throws BotException {
         final var usernameOptional = profileRepository.selectById(uuid);
         if (usernameOptional.isPresent()) return usernameOptional.get().getUsername();
         else {

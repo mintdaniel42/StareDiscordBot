@@ -12,13 +12,14 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
+import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.buttons.list.*;
 import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.GroupButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.HNSShowButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.TutorialSuggestionButtons;
 import org.mintdaniel42.starediscordbot.embeds.ErrorEmbed;
-import org.mintdaniel42.starediscordbot.utils.Options;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.Permission;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -38,6 +39,7 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 	@NonNull private final HNSListButtons hnsListButtons;
 	@NonNull private final GroupListButtons groupListButtons;
 	@NonNull private final AchievementListButtons achievementListButtons;
+	@NonNull private final BotConfig config;
 
 	@Override
 	public void onButtonInteraction(@NonNull final ButtonInteractionEvent event) {
@@ -61,7 +63,7 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 						} else
 							interactionHook.editOriginal(R.Strings.ui("you_dont_have_enough_tokens_for_this_action_please_wait_a_few_seconds")).queue();
 					} catch (Exception e) {
-						new ErrorHandler(e).handle(interactionHook, event).queue();
+						new ErrorHandler(e, config).handle(interactionHook, event).queue();
 						//#if dev
 						throw new RuntimeException(e);
 						//#endif
@@ -70,8 +72,8 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 	}
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
-		if (Options.isInMaintenance())
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) throws BotException {
+		if (config.isInMaintenance())
 			return interactionHook.editOriginal((R.Strings.ui("the_bot_is_currently_in_maintenance_mode")));
 		else return interactionHook.editOriginal(R.Strings.ui("you_do_not_have_the_permission_to_use_this_button"));
 	}
@@ -97,11 +99,12 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 		};
 	}
 
-	private record ErrorHandler(@NonNull Exception exception) implements ButtonAdapter {
+	private record ErrorHandler(@NonNull Exception exception, @NonNull BotConfig config) implements ButtonAdapter {
+
 		@Override
 		public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
 			if (event.getGuild() instanceof final Guild guild) {
-				if (guild.getTextChannelById(Options.getLogChannelId()) instanceof final TextChannel channel) {
+				if (guild.getTextChannelById(config.getLogChannelId()) instanceof final TextChannel channel) {
 					channel.sendMessageEmbeds(ErrorEmbed.of(event.getComponentId(), exception)).queue();
 				}
 			}
