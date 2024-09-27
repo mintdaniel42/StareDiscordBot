@@ -3,28 +3,42 @@ package org.mintdaniel42.starediscordbot.commands.hns.maps;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
-import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
+import org.jetbrains.annotations.Nullable;
+import org.mintdaniel42.starediscordbot.aspect.annotation.NotYetImplemented;
+import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
+import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
+import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
+import org.mintdaniel42.starediscordbot.data.entity.MapEntity;
 import org.mintdaniel42.starediscordbot.data.repository.MapRepository;
-import org.mintdaniel42.starediscordbot.utils.R;
+import org.mintdaniel42.starediscordbot.utils.Permission;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Singleton
-public final class MapsAddCommand implements CommandAdapter {
+public class MapsAddCommand extends BaseComposeCommand {
 	@NonNull private final MapRepository mapRepository;
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
-		if (event.getOption("name") instanceof final OptionMapping nameMapping &&
-				event.getOption("builder") instanceof final OptionMapping builderMapping &&
-				event.getOption("release") instanceof final OptionMapping releaseMapping &&
-				event.getOption("picture") instanceof final OptionMapping pictureMapping &&
-				event.getOption("difficulty") instanceof final OptionMapping difficultyMapping) {
-			return null;
-		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
+	@NotYetImplemented
+	public @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException {
+		final var builder = MapEntity.builder().uuid(UUID.randomUUID());
+		requireStringOption(context, "name", builder::name);
+		//final var picture = requireAttachmentOption(context, "picture");
+		//requireStringOption(context, "blocks", builder::blocks)
+		final var map = builder.build();
+		return fail("this_is_not_yet_implemented");
+	}
+
+	@Override
+	public @NonNull String getCommandId() {
+		return "hns maps add";
+	}
+
+	@Override
+	public boolean hasPermission(@Nullable final Member member) {
+		return Permission.hasP4(member);
 	}
 }

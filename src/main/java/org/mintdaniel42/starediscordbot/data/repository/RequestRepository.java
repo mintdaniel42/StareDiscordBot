@@ -12,4 +12,11 @@ public final class RequestRepository extends BaseRepository<Long, RequestEntity>
 		final var meta = new RequestEntityMeta();
 		super(entityQl, meta, meta.timestamp);
 	}
+
+	public void deleteByAge(final long oldestTimestamp) {
+		entityQl.from(meta)
+				.where(w -> w.le(((RequestEntityMeta) meta).timestamp, oldestTimestamp))
+				.stream()
+				.forEach(request -> entityQl.delete(meta, request));
+	}
 }

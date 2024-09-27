@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Builder(toBuilder = true, access = AccessLevel.PRIVATE)
 @Entity(immutable = true, metamodel = @Metamodel(suffix = "Meta"))
-@Table(name = "users")
+@Table(name = "requests")
 @Value
 public class RequestEntity {
 	@Id long timestamp;

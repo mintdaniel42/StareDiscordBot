@@ -2,7 +2,6 @@ package org.mintdaniel42.starediscordbot.data.repository;
 
 import jakarta.inject.Singleton;
 import lombok.NonNull;
-import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.data.entity.HNSUserEntity;
 import org.mintdaniel42.starediscordbot.data.entity.HNSUserEntityMeta;
 import org.seasar.doma.jdbc.criteria.Entityql;
@@ -17,12 +16,10 @@ public final class HNSUserRepository extends BaseRepository<UUID, HNSUserEntity>
 		super(entityQl, meta, meta.uuid);
 	}
 
-	public @NonNull List<HNSUserEntity> selectByPage(final int page) {
+	@Override
+	public @NonNull List<HNSUserEntity> selectAll() {
 		return entityQl.from(meta)
 				.orderBy(o -> o.desc(((HNSUserEntityMeta) meta).points))
-				.stream()
-				.skip((long) BuildConfig.entriesPerPage * page)
-				.limit(BuildConfig.entriesPerPage)
-				.toList();
+				.fetch();
 	}
 }

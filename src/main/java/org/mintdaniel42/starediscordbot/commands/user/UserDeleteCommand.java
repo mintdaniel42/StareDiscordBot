@@ -3,37 +3,40 @@ package org.mintdaniel42.starediscordbot.commands.user;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
-import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
+import org.jetbrains.annotations.Nullable;
+import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
+import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
+import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
 import org.mintdaniel42.starediscordbot.data.Database;
-import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
-import org.mintdaniel42.starediscordbot.utils.MCHelper;
+import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
+import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
+import org.mintdaniel42.starediscordbot.utils.Permission;
 import org.mintdaniel42.starediscordbot.utils.R;
-import org.mintdaniel42.starediscordbot.utils.Status;
-
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Singleton
-public final class UserDeleteCommand implements CommandAdapter {
+public final class UserDeleteCommand extends BaseComposeCommand {
 	@NonNull private final Database database;
-	@NonNull private final UsernameRepository usernameRepository;
+	@NonNull private final ProfileRepository profileRepository;
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
-		if (event.getOption("username") instanceof OptionMapping usernameMapping) {
-			if (MCHelper.getUuid(usernameRepository, usernameMapping.getAsString()) instanceof UUID uuid) {
-				final var usernameOptional = usernameRepository.selectById(uuid);
-				if (usernameOptional.isPresent() && database.deleteUserData(uuid).equals(Status.SUCCESS)) {
-					return interactionHook.editOriginal(R.Strings.ui("the_user_s_was_successfully_deleted",
-							usernameOptional.get().getUsername()));
-				} else return interactionHook.editOriginal(R.Strings.ui("the_user_s_could_not_be_deleted",
-						usernameMapping.getAsString()));
-			} else return interactionHook.editOriginal(R.Strings.ui("this_username_does_not_exist"));
-		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
+	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException, DatabaseException {
+		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
+		database.deleteUserData(profile.getUuid());
+		return response()
+				.setContent(R.Strings.ui("the_user_s_was_successfully_deleted", profile.getUsername()))
+				.build();
+	}
+
+	@Override
+	public @NonNull String getCommandId() {
+		return "user delete";
+	}
+
+	@Override
+	public boolean hasPermission(@Nullable final Member member) {
+		return Permission.hasP4(member);
 	}
 }

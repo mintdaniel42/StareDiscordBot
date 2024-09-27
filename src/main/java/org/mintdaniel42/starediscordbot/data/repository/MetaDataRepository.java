@@ -23,7 +23,7 @@ public final class MetaDataRepository extends BaseRepository<Integer, MetaDataEn
 		}
 	}
 
-	public void insertOrUpdate(@NonNull final MetaDataEntity metaData) {
+	public void upsert(@NonNull final MetaDataEntity metaData) {
 		if (selectById(metaData.id()).isPresent()) {
 			update(metaData);
 		} else insert(metaData);

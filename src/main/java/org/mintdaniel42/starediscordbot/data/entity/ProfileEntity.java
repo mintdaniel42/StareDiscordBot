@@ -14,7 +14,7 @@ import java.util.UUID;
 @Entity(immutable = true, metamodel = @Metamodel(suffix = "Meta"))
 @Table(name = "usernames")
 @Value
-public class UsernameEntity {
+public class ProfileEntity {
 	@NonNull @Id UUID uuid;
 	@NonNull String username;
 	long lastUpdated;

@@ -15,8 +15,8 @@ import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
 import org.mintdaniel42.starediscordbot.data.entity.GroupEntity;
 import org.mintdaniel42.starediscordbot.data.repository.GroupRepository;
 import org.mintdaniel42.starediscordbot.data.repository.HNSUserRepository;
+import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
-import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
 import org.mintdaniel42.starediscordbot.embeds.GroupEmbed;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -26,7 +26,7 @@ public final class GroupListButtons implements ButtonAdapter {
 	@NonNull private final GroupRepository groupRepository;
 	@NonNull private final HNSUserRepository hnsUserRepository;
 	@NonNull private final UserRepository userRepository;
-	@NonNull private final UsernameRepository usernameRepository;
+	@NonNull private final ProfileRepository profileRepository;
 
 	@Contract(pure = true, value = "_, _, _ -> new")
 	public static @NonNull ActionRow create(@NonNull final GroupEntity group, final int page, final long maxPages) {
@@ -51,7 +51,7 @@ public final class GroupListButtons implements ButtonAdapter {
 		final var groupOptional = groupRepository.selectById(buttonParts[1]);
 		if (groupOptional.isPresent()) {
 			final var group = groupOptional.get();
-			return interactionHook.editOriginalEmbeds(GroupEmbed.of(groupOptional.get(), userRepository, hnsUserRepository, usernameRepository, page, false))
+			return interactionHook.editOriginalEmbeds(GroupEmbed.of(groupOptional.get(), userRepository, hnsUserRepository, profileRepository, page, false))
 					.setComponents(create(group, page, (long) Math.ceil((double) userRepository.selectByGroupTag(group.getTag()).size() / BuildConfig.entriesPerPage)));
 		} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
 	}

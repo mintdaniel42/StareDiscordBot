@@ -3,41 +3,37 @@ package org.mintdaniel42.starediscordbot.commands.hns.achievements;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
+import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.buttons.list.AchievementListButtons;
-import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
+import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
+import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
+import org.mintdaniel42.starediscordbot.compose.exception.ComposeException;
 import org.mintdaniel42.starediscordbot.data.entity.AchievementEntity;
 import org.mintdaniel42.starediscordbot.data.repository.AchievementRepository;
 import org.mintdaniel42.starediscordbot.embeds.AchievementEmbed;
-import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
 @Singleton
-public final class AchievementsListCommand implements CommandAdapter {
+public final class AchievementsListCommand extends BaseComposeCommand {
 	@NonNull private final AchievementRepository achievementRepository;
+	@NonNull private final BotConfig config;
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
-		final AchievementEntity.Type type;
-		final int points;
-		final int page;
-		if (event.getOption("type") instanceof final OptionMapping typeMapping) {
-			type = AchievementEntity.Type.valueOf(typeMapping.getAsString());
-		} else type = null;
-		if (event.getOption("points") instanceof final OptionMapping pointsMapping) {
-			points = pointsMapping.getAsInt();
-		} else points = -1;
-		if (event.getOption("page") instanceof final OptionMapping pageMapping) {
-			page = pageMapping.getAsInt();
-		} else page = 1;
+	public @NonNull MessageEditData compose(@NonNull final CommandContext context) throws ComposeException {
+		final var type = nullableStringOption(context, "type", AchievementEntity.Type::valueOf).orElse(null);
+		final int points = nullableIntegerOption(context, "type").orElse(-1);
+		final int page = nullableIntegerOption(context, "page").orElse(1) - 1;
 		final var achievements = achievementRepository.selectByTypeAndPoints(type, points);
-		if (page <= achievements.size()) {
-			return interactionHook.editOriginalEmbeds(AchievementEmbed.of(achievements.get(page - 1), page, achievements.size()))
-					.setComponents(AchievementListButtons.create(type, points, page - 1, achievements.size()));
-		} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
+		requireBounds(0, page, achievements.size());
+		return response()
+				.setEmbeds(new AchievementEmbed(achievements.get(page), config, page, achievements.size()))
+				.setComponents(AchievementListButtons.create(type, points, page, achievements.size()))
+				.build();
+	}
+
+	@Override
+	public @NonNull String getCommandId() {
+		return "hns achievements list";
 	}
 }

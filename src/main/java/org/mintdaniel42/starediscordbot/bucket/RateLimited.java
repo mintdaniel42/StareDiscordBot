@@ -1,8 +1,7 @@
 package org.mintdaniel42.starediscordbot.bucket;
 
-import io.avaje.inject.BeanScope;
-import lombok.Cleanup;
 import lombok.NonNull;
+import org.mintdaniel42.starediscordbot.di.DI;
 
 /**
  * This interface sets up anything related to rate limiting
@@ -12,8 +11,7 @@ public interface RateLimited {
 	 * @return the wanted PoolAdapter (usually {@link DefaultBucketPool})
 	 */
 	default @NonNull PoolAdapter getPool() {
-		@Cleanup final var beanScope = BeanScope.builder().build();
-		return beanScope.get(DefaultBucketPool.class);
+		return DI.get(DefaultBucketPool.class);
 	}
 
 	/**

@@ -4,6 +4,8 @@ import jakarta.inject.Singleton;
 import lombok.NonNull;
 import org.mintdaniel42.starediscordbot.data.entity.UserEntity;
 import org.mintdaniel42.starediscordbot.data.entity.UserEntityMeta;
+import org.mintdaniel42.starediscordbot.data.exceptions.DatabaseException;
+import org.seasar.doma.jdbc.JdbcException;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
 import java.util.List;
@@ -20,5 +22,17 @@ public final class UserRepository extends BaseRepository<UUID, UserEntity> {
 		return entityQl.from(meta)
 				.where(w -> w.eq(((UserEntityMeta) meta).groupTag, groupTag))
 				.fetch();
+	}
+
+	public void upsert(@NonNull final UserEntity user) throws DatabaseException {
+		try {
+			if (entityQl.from(meta).where(o -> o.eq(((UserEntityMeta) meta).uuid, user.getUuid()))
+					.fetchOptional()
+					.isPresent()) {
+				entityQl.update(meta, user);
+			} else entityQl.insert(meta, user);
+		} catch (JdbcException _) {
+			throw new DatabaseException();
+		}
 	}
 }

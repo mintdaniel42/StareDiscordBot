@@ -1,12 +1,12 @@
 package org.mintdaniel42.starediscordbot.bucket;
 
-import io.avaje.inject.BeanScope;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.experimental.NonFinal;
 import net.dv8tion.jda.api.entities.Member;
+import org.mintdaniel42.starediscordbot.di.DI;
 import org.mintdaniel42.starediscordbot.utils.Permission;
 
 import java.time.Duration;
@@ -29,10 +29,8 @@ public final class SpotBucketPool implements PoolAdapter {
 		final var id = member.getIdLong();
 		final var permission = Permission.fromUser(member);
 		if (permission.equals(Permission.p4)) {
-			try (final var beanScope = BeanScope.builder().build()) {
-				return beanScope.get(DefaultBucketPool.class)
+			DI.get(DefaultBucketPool.class)
 						.getBucket(member);
-			}
 		}
 		if (buckets.containsKey(id)) return buckets.get(id);
 

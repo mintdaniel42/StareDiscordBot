@@ -8,8 +8,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.data.entity.GroupEntity;
 import org.mintdaniel42.starediscordbot.data.entity.HNSUserEntity;
+import org.mintdaniel42.starediscordbot.data.entity.ProfileEntity;
 import org.mintdaniel42.starediscordbot.data.entity.UserEntity;
-import org.mintdaniel42.starediscordbot.data.entity.UsernameEntity;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
 import org.mintdaniel42.starediscordbot.utils.R;
@@ -17,7 +17,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 @UtilityClass
 public class HNSMoreUserEmbed {
 	@Contract(pure = true, value = "_, _, _, _, _ -> new")
-	public @NonNull MessageEmbed of(@NonNull final HNSUserEntity hnsUser, @NonNull final UserEntity user, @Nullable final GroupEntity group, @NonNull final UsernameEntity username, final boolean isRequest) {
+	public @NonNull MessageEmbed of(@NonNull final HNSUserEntity hnsUser, @NonNull final UserEntity user, @Nullable final GroupEntity group, @NonNull final ProfileEntity username, final boolean isRequest) {
 		return new EmbedBuilder()
 				.setDescription(username.getUsername())
 				.setColor(isRequest ? Options.getColorRequest() : Options.getColorNormal())
