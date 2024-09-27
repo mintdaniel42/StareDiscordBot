@@ -9,7 +9,5 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./.data:/usr/src/app/.data
-    env_file:
-      - .env
     tty: true
     stdin_open: true
