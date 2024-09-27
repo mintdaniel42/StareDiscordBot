@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.PropertyKey;
 
 @RequiredArgsConstructor
-@Getter
+@Getter(onMethod_ = @PropertyKey(resourceBundle = "ui"))
 public class BotException extends Exception {
 	@NonNull @PropertyKey(resourceBundle = "ui") protected final String message;
 }

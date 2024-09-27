@@ -52,7 +52,7 @@ public final class Database implements AutoCloseable {
 		requestRepository.deleteById(id);
 	}
 
-	public void prepareDatabase() throws BotException {
+	public void prepareDatabase() {
 		migrator.onUpgrade(metaDataRepository.selectFirst().version(), targetVersion);
 		metaDataRepository.upsert(new MetaDataEntity(0, targetVersion));
 	}
