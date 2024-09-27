@@ -44,6 +44,6 @@ jitdump.*.dmp
 Snap.*.trc
 
 ### Project Specific ###
-app*
+.data/bot.properties
 .data/**
 **.env
