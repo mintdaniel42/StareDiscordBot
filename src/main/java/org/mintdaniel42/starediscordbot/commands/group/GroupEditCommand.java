@@ -35,7 +35,7 @@ public final class GroupEditCommand extends BaseComposeCommand {
 		UUID leaderUUID = null;
 		if (leaderName != null) leaderUUID = requireProfile(profileRepository, leaderName).getUuid();
 		final var group = GroupEntity.merge(context.getOptions(), requireEntity(groupRepository, requireStringOption(context, "tag")).toBuilder(), leaderUUID);
-		if (!requirePermission(context.getMember(), Permission.p2)) {
+		if (!requirePermission(config, context.getMember(), Permission.p2)) {
 			final var timestamp = System.currentTimeMillis();
 			final var requestChannel = requireChannel(context, config.getGuildId(), config.getRequestChannelId());
 			requestRepository.insert(RequestEntity.from(timestamp, group));

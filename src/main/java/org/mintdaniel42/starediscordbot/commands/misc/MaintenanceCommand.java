@@ -24,7 +24,7 @@ public final class MaintenanceCommand extends BaseComposeCommand {
 		final var presence = context.getPresence();
 		if (active) {
 			presence.setPresence(OnlineStatus.DO_NOT_DISTURB, Activity.customStatus(R.Strings.ui("under_maintenance")));
-		} else presence.setPresence(null, null);
+		} else presence.setPresence(OnlineStatus.ONLINE, null);
 		return response("maintenance_is_now_set_to_s", active);
 	}
 

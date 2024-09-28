@@ -47,7 +47,7 @@ public final class AchievementsAddCommand extends BaseComposeCommand {
 	}
 
 	@Override
-	public boolean hasPermission(@Nullable final Member member) {
-		return Permission.hasP4(member);
+	public boolean hasPermission(@NonNull final BotConfig config, @Nullable final Member member) {
+		return Permission.hasP4(config, member);
 	}
 }

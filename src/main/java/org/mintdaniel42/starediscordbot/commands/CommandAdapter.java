@@ -5,9 +5,10 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.bucket.RateLimited;
-import org.mintdaniel42.starediscordbot.utils.Permission;
 
 /**
  * Implementing this interface is equivalent to implementing the logic for a command
@@ -23,7 +24,8 @@ public interface CommandAdapter extends RateLimited {
 	@NonNull
 	String getCommandId();
 
-	default boolean hasPermission(@Nullable final Member member) {
-		return Permission.hasP1();
+	@Contract("_, null -> false")
+	default boolean hasPermission(@NonNull final BotConfig config, @Nullable final Member member) {
+		return member != null;
 	}
 }

@@ -31,7 +31,7 @@ public final class HNSEditCommand extends BaseComposeCommand {
 		requireOptionCount(context, 2);
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
 		final var hnsUser = HNSUserEntity.merge(context.getOptions(), requireEntity(hnsUserRepository, profile.getUuid()).toBuilder());
-		if (!requirePermission(context.getMember(), Permission.p2)) {
+		if (!requirePermission(config, context.getMember(), Permission.p2)) {
 			final var timestamp = System.currentTimeMillis();
 			final var requestChannel = requireChannel(context, config.getGuildId(), config.getRequestChannelId());
 			requestRepository.insert(RequestEntity.from(timestamp, hnsUser));

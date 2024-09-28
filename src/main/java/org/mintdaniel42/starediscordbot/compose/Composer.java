@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.PropertyKey;
+import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.compose.exception.NoSuchChannelException;
 import org.mintdaniel42.starediscordbot.compose.exception.NoSuchEntryException;
 import org.mintdaniel42.starediscordbot.compose.exception.NoSuchPageException;
@@ -58,8 +59,8 @@ public abstract class Composer<CONTEXT extends Context> {
 	}
 
 	/* ========== PERMISSIONS ========== */
-	protected static boolean requirePermission(@NonNull final Member member, @NonNull final Permission permission) {
-		return Permission.fromUser(member).ordinal() >= permission.ordinal();
+	protected static boolean requirePermission(@NonNull final BotConfig config, @NonNull final Member member, @NonNull final Permission permission) {
+		return Permission.fromUser(config, member).ordinal() >= permission.ordinal();
 	}
 
 	/* ========== OPERATIONS ========== */

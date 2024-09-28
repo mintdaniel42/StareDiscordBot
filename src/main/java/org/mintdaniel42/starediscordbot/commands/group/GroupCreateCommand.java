@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.jetbrains.annotations.Nullable;
+import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
 import org.mintdaniel42.starediscordbot.data.entity.GroupEntity;
@@ -51,7 +52,7 @@ public final class GroupCreateCommand extends BaseComposeCommand {
 	}
 
 	@Override
-	public boolean hasPermission(@Nullable final Member member) {
-		return Permission.hasP4(member);
+	public boolean hasPermission(@NonNull final BotConfig config, @Nullable final Member member) {
+		return Permission.hasP4(config, member);
 	}
 }

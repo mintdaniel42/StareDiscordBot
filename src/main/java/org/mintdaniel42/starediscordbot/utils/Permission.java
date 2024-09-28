@@ -4,6 +4,7 @@ import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Member;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import org.mintdaniel42.starediscordbot.BotConfig;
 
 public enum Permission {
 	p1,
@@ -11,34 +12,34 @@ public enum Permission {
 	p3,
 	p4;
 
-	public static @NonNull Permission fromUser(@NonNull final Member member) {
-		if (DCHelper.hasRole(member, Options.getP4Id())) {
+	public static @NonNull Permission fromUser(@NonNull final BotConfig config, @NonNull final Member member) {
+		if (DCHelper.hasRole(member, config.getP4Id())) {
 			return p4;
-		} else if (DCHelper.hasRole(member, Options.getP3Id())) {
+		} else if (DCHelper.hasRole(member, config.getP3Id())) {
 			return p3;
-		} else if (DCHelper.hasRole(member, Options.getP2Id())) {
+		} else if (DCHelper.hasRole(member, config.getP2Id())) {
 			return p2;
 		} else return p1;
 	}
 
 	@Contract(pure = true)
 	public static boolean hasP1() {
-		return !Options.isInMaintenance();
+		return true;
 	}
 
-	@Contract("null -> false")
-	public static boolean hasP2(@Nullable final Member member) {
-		return member != null && (!Options.isInMaintenance() || fromUser(member).ordinal() >= 1);
+	@Contract("_, null -> false")
+	public static boolean hasP2(@NonNull final BotConfig config, @Nullable final Member member) {
+		return member != null && fromUser(config, member).ordinal() >= 1;
 	}
 
-	@Contract("null -> false")
-	public static boolean hasP3(@Nullable final Member member) {
-		return member != null && (!Options.isInMaintenance() || fromUser(member).ordinal() >= 2);
+	@Contract("_, null -> false")
+	public static boolean hasP3(@NonNull final BotConfig config, @Nullable final Member member) {
+		return member != null && fromUser(config, member).ordinal() >= 2;
 	}
 
-	@Contract("null -> false")
-	public static boolean hasP4(@Nullable final Member member) {
-		return member != null && (!Options.isInMaintenance() || fromUser(member).ordinal() >= 3);
+	@Contract("_, null -> false")
+	public static boolean hasP4(@NonNull final BotConfig config, @Nullable final Member member) {
+		return member != null && fromUser(config, member).ordinal() >= 3;
 	}
 
 	@Contract("null -> false")

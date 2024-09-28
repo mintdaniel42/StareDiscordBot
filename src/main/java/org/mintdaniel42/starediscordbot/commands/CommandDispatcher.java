@@ -22,8 +22,6 @@ import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Singleton
@@ -40,35 +38,55 @@ public final class CommandDispatcher extends ListenerAdapter {
 					member.getEffectiveName()));
 		}
 
-		dispatch(event).ifPresentOrElse(adapter ->
-						event.deferReply()
-								.setEphemeral(adapter.isPublicResponseRestricted())
-								.queue(interactionHook -> respond(interactionHook, adapter, event))
-				, () -> event.reply((R.Strings.ui(config.isInMaintenance() ? "the_bot_is_currently_in_maintenance_mode" : "you_do_not_have_the_permission_to_use_this_command")))
-						.setEphemeral(true)
-						.queue());
+		final var adapter = dispatch(event);
+		event.deferReply()
+				.setEphemeral(adapter.isPublicResponseRestricted())
+				.queue(interactionHook -> respond(interactionHook, adapter, event));
 	}
 
 	@Contract("_ -> _")
-	private @NonNull Optional<CommandAdapter> dispatch(@NonNull final SlashCommandInteractionEvent event) {
+	private @NonNull CommandAdapter dispatch(@NonNull final SlashCommandInteractionEvent event) {
 		return commandAdapters.stream()
 				.filter(commandAdapter -> commandAdapter.getCommandId().equals(event.getFullCommandName()))
-				.filter(commandAdapter -> commandAdapter.hasPermission(event.getMember()))
-				.findFirst();
+				.findFirst()
+				.orElseGet(CommandNotFoundHandler::new);
 	}
 
 	private void respond(@NonNull final InteractionHook interactionHook, @NonNull final CommandAdapter adapter, @NonNull final SlashCommandInteractionEvent event) {
 		try {
-			if (adapter instanceof MaintenanceCommand || adapter.getPool()
-					.getBucket(Objects.requireNonNull(event.getMember()))
+			if (!adapter.hasPermission(config, event.getMember())) {
+				interactionHook.editOriginal(R.Strings.ui("you_do_not_have_the_permission_to_use_this_command"))
+						.queue();
+			} else if (config.isInMaintenance() && !(adapter instanceof MaintenanceCommand)) {
+				interactionHook.editOriginal(R.Strings.ui("the_bot_is_currently_in_maintenance_mode"))
+						.queue();
+			} else if (adapter instanceof MaintenanceCommand) {
+				interactionHook.editOriginal(adapter.handle(event)).queue();
+			} else if (adapter.getPool()
+					.getBucket(event.getMember())
 					.asBlocking()
 					.tryConsume(adapter.getActionTokenPrice(), Duration.ofSeconds(10))) {
-				interactionHook.editOriginal(adapter.handle(event)).queue();
+				interactionHook.editOriginal(adapter.handle(event))
+						.queue();
 			} else
-				interactionHook.editOriginal(R.Strings.ui("you_dont_have_enough_tokens_for_this_action_please_wait_a_few_seconds")).queue();
+				interactionHook.editOriginal(R.Strings.ui("you_dont_have_enough_tokens_for_this_action_please_wait_a_few_seconds"))
+						.queue();
 		} catch (Exception e) {
 			interactionHook.editOriginal(new ExceptionHandler(e, event.getInteraction()).handle(event)).queue();
 			if (!BuildConfig.production) throw new RuntimeException(e);
+		}
+	}
+
+	@RequiredArgsConstructor
+	static class CommandNotFoundHandler extends BaseComposeCommand {
+		@Override
+		protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
+			return response("this_command_is_currently_unavailable");
+		}
+
+		@Override
+		public @NonNull String getCommandId() {
+			return "";
 		}
 	}
 

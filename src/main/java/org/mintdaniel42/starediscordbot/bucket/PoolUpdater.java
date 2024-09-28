@@ -1,6 +1,8 @@
 package org.mintdaniel42.starediscordbot.bucket;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
@@ -11,14 +13,11 @@ import org.mintdaniel42.starediscordbot.utils.Permission;
 
 import java.util.List;
 
+@RequiredArgsConstructor
+@Singleton
 public final class PoolUpdater extends ListenerAdapter {
-	@NonNull private final PoolAdapter[] poolAdapters;
+	@NonNull private final List<PoolAdapter> poolAdapters;
 	@NonNull private final BotConfig config;
-
-	public PoolUpdater(@NonNull final BotConfig config, @NonNull final PoolAdapter... poolAdapters) {
-		this.poolAdapters = poolAdapters;
-		this.config = config;
-	}
 
 	@Override
 	public void onGuildMemberRoleAdd(@NonNull final GuildMemberRoleAddEvent event) {
@@ -37,7 +36,7 @@ public final class PoolUpdater extends ListenerAdapter {
 						id.equals(config.getP3Id()) ||
 						id.equals(config.getP4Id()))) {
 			for (PoolAdapter poolAdapter : poolAdapters) {
-				poolAdapter.onPermissionChanged(member, Permission.fromUser(member));
+				poolAdapter.onPermissionChanged(member, Permission.fromUser(config, member));
 			}
 		}
 	}

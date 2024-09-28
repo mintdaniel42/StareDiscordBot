@@ -34,7 +34,7 @@ public final class UserEditCommand extends BaseComposeCommand {
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
 		final var user = UserEntity.merge(context.getOptions(), requireEntity(userRepository, profile.getUuid()).toBuilder());
 		final var group = nullableEntity(groupRepository, user.getGroupTag()).orElse(null);
-		if (!requirePermission(context.getMember(), Permission.p2)) {
+		if (!requirePermission(config, context.getMember(), Permission.p2)) {
 			final var timestamp = System.currentTimeMillis();
 			final var requestChannel = requireChannel(context, config.getGuildId(), config.getRequestChannelId());
 			requestRepository.insert(RequestEntity.from(timestamp, user));

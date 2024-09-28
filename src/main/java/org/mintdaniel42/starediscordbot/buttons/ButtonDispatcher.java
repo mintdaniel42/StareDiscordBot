@@ -80,7 +80,7 @@ public final class ButtonDispatcher extends ListenerAdapter implements ButtonAda
 
 	private @NonNull ButtonAdapter dispatch(@NonNull final ButtonInteractionEvent event) {
 		return switch (event.getComponentId().split(":")) {
-			case String[] b when b.length == 2 && b[0].equals("approve") && Permission.hasP2(event.getMember()) ->
+			case String[] b when b.length == 2 && b[0].equals("approve") && Permission.hasP2(config, event.getMember()) ->
 					approveButton;
 			case String[] b when b.length == 2 && b[0].equals("group") && Permission.hasP1() -> groupButton;
 			case String[] b when b.length == 3 && b[0].equals("hns") && Permission.hasP1() -> hnsShowButton;
