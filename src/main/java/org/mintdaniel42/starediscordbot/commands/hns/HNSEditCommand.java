@@ -8,7 +8,6 @@ import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.data.entity.HNSUserEntity;
 import org.mintdaniel42.starediscordbot.data.entity.RequestEntity;
 import org.mintdaniel42.starediscordbot.data.repository.HNSUserRepository;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
@@ -30,7 +29,7 @@ public final class HNSEditCommand extends BaseComposeCommand {
 	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		requireOptionCount(context, 2);
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
-		final var hnsUser = HNSUserEntity.merge(context.getOptions(), requireEntity(hnsUserRepository, profile.getUuid()).toBuilder());
+		final var hnsUser = merge(context, requireEntity(hnsUserRepository, profile.getUuid()).toBuilder());
 		if (!requirePermission(config, context.getMember(), Permission.p2)) {
 			final var timestamp = System.currentTimeMillis();
 			final var requestChannel = requireChannel(context, config.getGuildId(), config.getRequestChannelId());

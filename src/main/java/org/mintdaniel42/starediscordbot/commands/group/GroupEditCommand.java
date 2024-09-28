@@ -8,7 +8,6 @@ import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.data.entity.GroupEntity;
 import org.mintdaniel42.starediscordbot.data.entity.RequestEntity;
 import org.mintdaniel42.starediscordbot.data.repository.*;
 import org.mintdaniel42.starediscordbot.embeds.GroupEmbed;
@@ -34,7 +33,7 @@ public final class GroupEditCommand extends BaseComposeCommand {
 		final var leaderName = nullableStringOption(context, "leader").orElse(null);
 		UUID leaderUUID = null;
 		if (leaderName != null) leaderUUID = requireProfile(profileRepository, leaderName).getUuid();
-		final var group = GroupEntity.merge(context.getOptions(), requireEntity(groupRepository, requireStringOption(context, "tag")).toBuilder(), leaderUUID);
+		final var group = merge(context, requireEntity(groupRepository, requireStringOption(context, "tag")).toBuilder(), leaderUUID);
 		if (!requirePermission(config, context.getMember(), Permission.p2)) {
 			final var timestamp = System.currentTimeMillis();
 			final var requestChannel = requireChannel(context, config.getGuildId(), config.getRequestChannelId());

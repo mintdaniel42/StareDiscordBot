@@ -29,7 +29,7 @@ public final class PGAddCommand extends BaseComposeCommand {
 	@Override
 	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
-		final var pgUser = PGUserEntity.merge(context.getOptions(), PGUserEntity.builder().uuid(profile.getUuid()));
+		final var pgUser = merge(context, PGUserEntity.builder().uuid(profile.getUuid()));
 		final var user = nullableEntity(userRepository, profile.getUuid())
 				.orElseGet(() -> UserEntity.builder()
 						.uuid(profile.getUuid())

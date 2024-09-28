@@ -9,7 +9,6 @@ import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
 import org.mintdaniel42.starediscordbot.data.entity.RequestEntity;
-import org.mintdaniel42.starediscordbot.data.entity.UserEntity;
 import org.mintdaniel42.starediscordbot.data.repository.GroupRepository;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.data.repository.RequestRepository;
@@ -32,7 +31,7 @@ public final class UserEditCommand extends BaseComposeCommand {
 	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		requireOptionCount(context, 2);
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
-		final var user = UserEntity.merge(context.getOptions(), requireEntity(userRepository, profile.getUuid()).toBuilder());
+		final var user = merge(context, requireEntity(userRepository, profile.getUuid()).toBuilder());
 		final var group = nullableEntity(groupRepository, user.getGroupTag()).orElse(null);
 		if (!requirePermission(config, context.getMember(), Permission.p2)) {
 			final var timestamp = System.currentTimeMillis();

@@ -8,12 +8,19 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
 import org.mintdaniel42.starediscordbot.compose.Composer;
 import org.mintdaniel42.starediscordbot.compose.exception.CommandIncompleteException;
+import org.mintdaniel42.starediscordbot.data.entity.GroupEntity;
+import org.mintdaniel42.starediscordbot.data.entity.HNSUserEntity;
+import org.mintdaniel42.starediscordbot.data.entity.PGUserEntity;
+import org.mintdaniel42.starediscordbot.data.entity.UserEntity;
 import org.mintdaniel42.starediscordbot.exception.BotException;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -120,6 +127,64 @@ public abstract class BaseComposeCommand extends Composer<CommandContext> implem
 	protected static @NonNull <T> T requireBooleanOption(@NonNull final CommandContext context, @NonNull final String key, @NonNull final Function<Boolean, T> function) throws CommandIncompleteException {
 		return nullableBooleanOption(context, key, function)
 				.orElseThrow(CommandIncompleteException::new);
+	}
+
+	/* ========== MERGE ENTITIES ========== */
+	@Contract(pure = true, value = "_, _, _ -> new")
+	public static @NonNull GroupEntity merge(@NonNull final CommandContext context, final GroupEntity.EntityBuilder builder, @Nullable UUID leaderUuid) {
+		for (OptionMapping optionMapping : context.getOptions()) {
+			switch (optionMapping.getName()) {
+				case "name" -> builder.name(optionMapping.getAsString());
+				case "leader" -> {
+					if (leaderUuid != null) builder.leader(leaderUuid);
+				}
+				case "relation" -> builder.relation(GroupEntity.Relation.valueOf(optionMapping.getAsString()));
+			}
+		}
+		return builder.build();
+	}
+
+	@Contract(pure = true, value = "_, _ -> new")
+	public static @NonNull HNSUserEntity merge(@NonNull final CommandContext context, final HNSUserEntity.EntityBuilder builder) {
+		for (final var optionMapping : context.getOptions()) {
+			switch (optionMapping.getName()) {
+				case "rating" -> builder.rating(optionMapping.getAsString());
+				case "points" -> builder.points(Math.round(optionMapping.getAsDouble()));
+				case "joined" -> builder.joined(optionMapping.getAsString());
+				case "secondary" -> builder.secondary(optionMapping.getAsBoolean());
+				case "banned" -> builder.banned(optionMapping.getAsBoolean());
+				case "cheating" -> builder.cheating(optionMapping.getAsBoolean());
+				case "top10" -> builder.top10(optionMapping.getAsString());
+				case "streak" -> builder.streak(optionMapping.getAsInt());
+				case "highest_rank" -> builder.highestRank(optionMapping.getAsString());
+			}
+		}
+		return builder.build();
+	}
+
+	@Contract(pure = true, value = "_, _ -> new")
+	public static @NonNull PGUserEntity merge(@NonNull final CommandContext context, final PGUserEntity.EntityBuilder builder) {
+		for (final var optionMapping : context.getOptions()) {
+			switch (optionMapping.getName()) {
+				case "rating" -> builder.rating(optionMapping.getAsString());
+				case "points" -> builder.points(Math.round(optionMapping.getAsDouble()));
+				case "joined" -> builder.joined(optionMapping.getAsString());
+				case "luck" -> builder.luck(optionMapping.getAsDouble());
+				case "quota" -> builder.quota(optionMapping.getAsDouble());
+				case "winrate" -> builder.winrate(optionMapping.getAsDouble());
+			}
+		}
+		return builder.build();
+	}
+
+	public static @NonNull UserEntity merge(@NonNull final CommandContext context, UserEntity.EntityBuilder builder) {
+		for (OptionMapping optionMapping : context.getOptions()) {
+			switch (optionMapping.getName()) {
+				case "discord" -> builder.discord(optionMapping.getAsLong());
+				case "note" -> builder.note(optionMapping.getAsString());
+			}
+		}
+		return builder.build();
 	}
 
 	@Override

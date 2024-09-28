@@ -8,7 +8,6 @@ import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
-import org.mintdaniel42.starediscordbot.data.entity.PGUserEntity;
 import org.mintdaniel42.starediscordbot.data.entity.RequestEntity;
 import org.mintdaniel42.starediscordbot.data.repository.PGUserRepository;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
@@ -30,7 +29,7 @@ public final class PGEditCommand extends BaseComposeCommand {
 	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		requireOptionCount(context, 2);
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
-		final var pgUser = PGUserEntity.merge(context.getOptions(), requireEntity(pgUserRepository, profile.getUuid()).toBuilder());
+		final var pgUser = merge(context, requireEntity(pgUserRepository, profile.getUuid()).toBuilder());
 		if (!requirePermission(config, context.getMember(), Permission.p2)) {
 			final var timestamp = System.currentTimeMillis();
 			final var requestChannel = requireChannel(context, config.getGuildId(), config.getRequestChannelId());

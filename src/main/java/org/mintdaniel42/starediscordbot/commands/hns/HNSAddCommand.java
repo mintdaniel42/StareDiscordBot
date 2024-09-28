@@ -30,7 +30,7 @@ public final class HNSAddCommand extends BaseComposeCommand {
 	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		requireOptionCount(context, 2);
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
-		final var hnsUser = HNSUserEntity.merge(context.getOptions(), HNSUserEntity.builder().uuid(profile.getUuid()));
+		final var hnsUser = merge(context, HNSUserEntity.builder().uuid(profile.getUuid()));
 		final var user = nullableEntity(userRepository, profile.getUuid())
 				.orElseGet(() -> UserEntity.builder()
 						.uuid(profile.getUuid())
