@@ -1,8 +1,15 @@
 package org.mintdaniel42.starediscordbot.commands.user;
 
+import io.avaje.inject.RequiresBean;
+import io.avaje.inject.RequiresProperty;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
@@ -19,6 +26,8 @@ import org.mintdaniel42.starediscordbot.utils.Permission;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
+@RequiresBean(UserCommand.class)
+@RequiresProperty(value = "feature.command.user.edit.enabled", equalTo = "true")
 @Singleton
 public final class UserEditCommand extends BaseComposeCommand {
 	@NonNull private final UserRepository userRepository;
@@ -51,6 +60,14 @@ public final class UserEditCommand extends BaseComposeCommand {
 					.setEmbeds(UserEmbed.of(user, group, profile, false))
 					.build();
 		}
+	}
+
+	@Inject
+	public void register(@NonNull @Named("user") SlashCommandData command) {
+		command.addSubcommands(new SubcommandData("edit", R.Strings.ui("edit_a_user_entry"))
+				.addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true)
+				.addOption(OptionType.STRING, "note", R.Strings.ui("note"))
+				.addOption(OptionType.USER, "discord", R.Strings.ui("discord_tag")));
 	}
 
 	@Override
