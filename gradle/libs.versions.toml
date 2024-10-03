@@ -19,6 +19,7 @@ jetbrains-annotations = "24.1.0"
 jakarta-inject = "2.0.1"
 jupiter = "5.10.0"
 mockito = "5.13.0"
+shadow = "8.3.3"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
@@ -48,6 +49,7 @@ mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 
 [plugins]
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 
 [bundles]
 jdbc-all = ["jdbc-sqlite", "jdbc-mariadb"]
