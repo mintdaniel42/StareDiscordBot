@@ -17,6 +17,8 @@ avaje-config = "4.0"
 dropwizard-metrics = "4.2.0"
 jetbrains-annotations = "24.1.0"
 jakarta-inject = "2.0.1"
+jupiter = "5.10.0"
+mockito = "5.13.0"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
@@ -40,6 +42,9 @@ doma-processor = { module = "org.seasar.doma:doma-processor", version.ref = "dom
 bucket4j = { module = "com.bucket4j:bucket4j_jdk17-core", version.ref = "bucket4j" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 jakarta-inject = { module = "jakarta.inject:jakarta.inject-api", version.ref = "jakarta-inject" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "jupiter" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "jupiter" }
+mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 
 [plugins]
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
