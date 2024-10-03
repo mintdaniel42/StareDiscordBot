@@ -35,10 +35,13 @@ public final class Database implements AutoCloseable {
 	@NonNull private final UserRepository userRepository;
 
 	public void deleteUserData(@NonNull final UUID uuid) throws BotException {
-		userRepository.deleteById(uuid);
 		profileRepository.deleteById(uuid);
-		hnsUserRepository.deleteById(uuid);
-		pgUserRepository.deleteById(uuid);
+		try {
+			userRepository.deleteById(uuid);
+			hnsUserRepository.deleteById(uuid);
+			pgUserRepository.deleteById(uuid);
+		} catch (BotException _) {
+		}
 	}
 
 	public void mergeRequest(final long id) throws BotException {
