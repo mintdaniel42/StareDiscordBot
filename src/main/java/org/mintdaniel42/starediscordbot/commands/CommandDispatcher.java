@@ -98,7 +98,7 @@ public final class CommandDispatcher extends ListenerAdapter {
 		@Override
 		protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 			final var logChannel = requireChannel(context, config.getGuildId(), config.getLogChannelId());
-			logChannel.sendMessageEmbeds(ErrorEmbed.of(interaction, exception)).queue();
+			logChannel.sendMessageEmbeds(new ErrorEmbed(interaction, exception)).queue();
 			return response("an_error_occurred_the_developer_has_been_notified");
 		}
 
