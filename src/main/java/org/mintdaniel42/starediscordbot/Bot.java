@@ -8,8 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import org.mintdaniel42.starediscordbot.commands.CommandList;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.mintdaniel42.starediscordbot.data.Database;
 import org.mintdaniel42.starediscordbot.di.DI;
 import org.mintdaniel42.starediscordbot.exception.BotException;
@@ -58,9 +57,7 @@ public final class Bot {
 		// setup commands
 		event.getGuild()
 				.updateCommands()
-				.addCommands(Arrays.stream(CommandList.values())
-						.map(CommandList::get)
-						.toArray(CommandData[]::new))
+				.addCommands(DI.list(SlashCommandData.class))
 				.queue();
 	}
 }

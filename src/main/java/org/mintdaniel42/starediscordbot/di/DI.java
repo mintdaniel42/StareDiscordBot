@@ -16,6 +16,10 @@ public class DI {
 		return beanScope.get(tClass);
 	}
 
+	public @NonNull <T> T get(@NonNull final Class<T> tClass, @NonNull final String name) {
+		return beanScope.get(tClass, name);
+	}
+
 	public @NonNull <T> List<T> list(@NonNull final Class<T> tClass) {
 		return beanScope.list(tClass);
 	}
