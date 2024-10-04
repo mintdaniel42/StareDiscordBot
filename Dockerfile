@@ -4,7 +4,7 @@ COPY --chown=gradle:gradle . /home/gradle/src
 
 WORKDIR /home/gradle/src
 
-RUN gradle shadowJar --no-daemon
+RUN gradle jar --no-daemon
 
 FROM amazoncorretto:23
 
@@ -14,4 +14,4 @@ VOLUME /usr/src/app/.data
 
 COPY --from=build /home/gradle/src/build/libs/*.jar /usr/src/app/executable.jar
 
-ENTRYPOINT [ "java", "-jar", "/usr/src/app/executable.jar" ]
+ENTRYPOINT [ "java", "--enable-preview", "-jar", "/usr/src/app/executable.jar" ]
