@@ -20,7 +20,7 @@ import java.util.UUID;
 @Singleton
 @Slf4j
 public final class Database implements AutoCloseable {
-	@NonNull private static final MetaDataEntity.Version targetVersion = MetaDataEntity.Version.V3;
+	@NonNull private static final MetaDataEntity.Version targetVersion = MetaDataEntity.Version.V2_4;
 	@NonNull private final DatabaseConfig config;
 	@NonNull private final Migrator migrator;
 	@NonNull private final AchievementRepository achievementRepository;

@@ -34,7 +34,7 @@ public final class Migrator {
 		while (current != to) {
 			current = switch (current) {
 				case UNKNOWN -> migrateUnknownToV2_3();
-				case V2_3 -> migrateV2_3ToV3();
+				case V2_3 -> migrateV2_3ToV2_4();
 				default -> to;
 			};
 		}
@@ -52,11 +52,11 @@ public final class Migrator {
 		return MetaDataEntity.Version.V2_3;
 	}
 
-	private @NonNull MetaDataEntity.Version migrateV2_3ToV3() {
+	private @NonNull MetaDataEntity.Version migrateV2_3ToV2_4() {
 		spotDao.createTable();
 		userDao.renameColumnGroupTag();
 		requestDao.renameColumnGroupTag();
 		requestDao.renameColumnType();
-		return MetaDataEntity.Version.V3;
+		return MetaDataEntity.Version.V2_4;
 	}
 }
