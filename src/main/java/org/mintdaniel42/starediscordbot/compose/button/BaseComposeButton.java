@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 
 public abstract class BaseComposeButton extends Composer<ButtonContext> implements ButtonAdapter {
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) throws BotException {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
 		try {
 			return interactionHook.editOriginal(compose(new ButtonContext(event)));
 		} catch (BotException e) {
