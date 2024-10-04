@@ -7,8 +7,6 @@ services:
     image: ghcr.io/mintdaniel42/starediscordbot:master
     volumes:
       - ./.data:/usr/src/app/.data
-    env_file:
-      - .env
     tty: true
     stdin_open: true
 

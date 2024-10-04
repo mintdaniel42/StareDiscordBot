@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.buttons.misc;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -12,19 +13,21 @@ import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
 import org.mintdaniel42.starediscordbot.data.repository.GroupRepository;
 import org.mintdaniel42.starediscordbot.data.repository.HNSUserRepository;
+import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
-import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
 import org.mintdaniel42.starediscordbot.embeds.user.hns.HNSBasicUserEmbed;
 import org.mintdaniel42.starediscordbot.embeds.user.hns.HNSMoreUserEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@Singleton
 public final class HNSShowButton implements ButtonAdapter {
 	@NonNull private final HNSUserRepository hnsUserRepository;
 	@NonNull private final UserRepository userRepository;
-	@NonNull private final UsernameRepository usernameRepository;
+	@NonNull private final ProfileRepository profileRepository;
 	@NonNull private final GroupRepository groupRepository;
 
 	@Contract(pure = true, value = "_, _ -> new")
@@ -36,15 +39,15 @@ public final class HNSShowButton implements ButtonAdapter {
 	}
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) throws BotException {
 		final var buttonParts = event.getComponentId().split(":");
 		final var current = Type.valueOf(buttonParts[1]);
 		final var uuid = UUID.fromString(buttonParts[2]);
-		final var hnsUserOptional = hnsUserRepository.selectByUUID(uuid);
-		final var usernameOptional = usernameRepository.selectByUUID(uuid);
-		final var userOptional = userRepository.selectByUUID(uuid);
+		final var hnsUserOptional = hnsUserRepository.selectById(uuid);
+		final var usernameOptional = profileRepository.selectById(uuid);
+		final var userOptional = userRepository.selectById(uuid);
 		if (hnsUserOptional.isPresent() && userOptional.isPresent() && usernameOptional.isPresent()) {
-			final var groupOptional = groupRepository.selectByTag(userOptional.get().getGroupTag());
+			final var groupOptional = groupRepository.selectById(userOptional.get().getGroupTag());
 			final var embed = current == Type.basic ?
 					HNSBasicUserEmbed.of(hnsUserOptional.get(), userOptional.get(), usernameOptional.get(), false) :
 					HNSMoreUserEmbed.of(hnsUserOptional.get(), userOptional.get(), groupOptional.orElse(null), usernameOptional.get(), false);

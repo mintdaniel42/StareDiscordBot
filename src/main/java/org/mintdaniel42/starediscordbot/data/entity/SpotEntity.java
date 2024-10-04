@@ -10,12 +10,23 @@ import org.seasar.doma.Table;
 
 import java.util.UUID;
 
-@Builder
+@Builder(toBuilder = true)
 @Entity(immutable = true, metamodel = @Metamodel(suffix = "Meta"))
-@Table(name = "usernames")
+@Table(name = "spots")
 @Value
-public class UsernameEntity {
+public class SpotEntity {
 	@NonNull @Id UUID uuid;
-	@NonNull String username;
-	long lastUpdated;
+	@NonNull UUID mapUUID;
+	UUID finderUUID;
+	@NonNull String blockId;
+	@NonNull String rating;
+	@NonNull String videolink;
+	@NonNull Type type;
+	@NonNull String coordinates;
+	boolean twoPlayer;
+
+	public enum Type {
+		afk,
+		spelling
+	}
 }

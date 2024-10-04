@@ -16,4 +16,11 @@ public interface UserDao {
 			""")
 	@Script
 	void createTable();
+
+	@Sql("""
+			ALTER TABLE users
+			RENAME COLUMN group_id TO groupTag
+			""")
+	@Script
+	void renameColumnGroupTag();
 }

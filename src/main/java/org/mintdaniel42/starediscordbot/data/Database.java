@@ -1,18 +1,28 @@
 package org.mintdaniel42.starediscordbot.data;
 
+import jakarta.inject.Singleton;
 import lombok.Getter;
 import lombok.NonNull;
-import org.mintdaniel42.starediscordbot.data.dao.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.data.entity.*;
+import org.mintdaniel42.starediscordbot.data.exceptions.NonExistentKeyException;
 import org.mintdaniel42.starediscordbot.data.repository.*;
-import org.mintdaniel42.starediscordbot.utils.Status;
-import org.seasar.doma.jdbc.Config;
+import org.mintdaniel42.starediscordbot.exception.BotException;
+import org.mintdaniel42.starediscordbot.utils.MCHelper;
+import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.UUID;
 
 @Getter
-public final class Database {
-	@NonNull private final Config config;
+@RequiredArgsConstructor
+@Singleton
+@Slf4j
+public final class Database implements AutoCloseable {
+	@NonNull private static final MetaDataEntity.Version targetVersion = MetaDataEntity.Version.V2_4;
+	@NonNull private final DatabaseConfig config;
+	@NonNull private final Migrator migrator;
 	@NonNull private final AchievementRepository achievementRepository;
 	@NonNull private final GroupRepository groupRepository;
 	@NonNull private final HNSUserRepository hnsUserRepository;
@@ -20,55 +30,81 @@ public final class Database {
 	@NonNull private final MetaDataRepository metaDataRepository;
 	@NonNull private final PGUserRepository pgUserRepository;
 	@NonNull private final RequestRepository requestRepository;
-	@NonNull private final UsernameRepository usernameRepository;
+	@NonNull private final SpotRepository spotRepository;
+	@NonNull private final ProfileRepository profileRepository;
 	@NonNull private final UserRepository userRepository;
 
-	public Database(@NonNull final Config config) {
-		this.config = config;
-		achievementRepository = new AchievementRepository(config);
-		groupRepository = new GroupRepository(config);
-		hnsUserRepository = new HNSUserRepository(config);
-		mapRepository = new MapRepository(config);
-		metaDataRepository = new MetaDataRepository(config);
-		pgUserRepository = new PGUserRepository(config);
-		requestRepository = new RequestRepository(config);
-		usernameRepository = new UsernameRepository(config);
-		userRepository = new UserRepository(config);
+	public void deleteUserData(@NonNull final UUID uuid) throws BotException {
+		profileRepository.deleteById(uuid);
+		try {
+			userRepository.deleteById(uuid);
+		} catch (BotException _) {
+		}
+		try {
+			hnsUserRepository.deleteById(uuid);
+		} catch (BotException _) {
+		}
+		try {
+			pgUserRepository.deleteById(uuid);
+		} catch (BotException _) {
+		}
 	}
 
-	// TODO
-	public @NonNull Status deleteUserData(@NonNull final UUID uuid) {
-		return Status.ERROR;
-	}
-
-	public @NonNull Status mergeRequest(final long id) {
-		final var requestOptional = requestRepository.selectById(id);
-		if (requestOptional.isPresent()) {
-			final var request = requestOptional.get();
-			return switch (switch (request.getType()) {
-				case hns -> hnsUserRepository.update(HNSUserEntity.from(request));
-				case pg -> pgUserRepository.update(PGUserEntity.from(request));
-				case user -> userRepository.update(UserEntity.from(request));
-				case group -> groupRepository.update(GroupEntity.from(request));
-			}) {
-				case SUCCESS -> requestRepository.deleteById(id);
-				case ERROR, DUPLICATE -> Status.ERROR;
-			};
-		} else return Status.ERROR;
+	public void mergeRequest(final long id) throws BotException {
+		final var request = requestRepository.selectById(id).orElseThrow(NonExistentKeyException::new);
+		switch (request.getType()) {
+			case hns -> hnsUserRepository.update(HNSUserEntity.from(request));
+			case pg -> pgUserRepository.update(PGUserEntity.from(request));
+			case user -> userRepository.update(UserEntity.from(request));
+			case group -> groupRepository.update(GroupEntity.from(request));
+		}
+		requestRepository.deleteById(id);
 	}
 
 	public void prepareDatabase() {
-		new AchievementDaoImpl(config).createTable();
-		new GroupDaoImpl(config).createTable();
-		new HNSUserDaoImpl(config).createTable();
-		new MetaDataDaoImpl(config).createTable();
-		new PGUserDaoImpl(config).createTable();
-		new UserDaoImpl(config).createTable();
-		new UsernameDaoImpl(config).createTable();
-		metaDataRepository.insertOrUpdate(new MetaDataEntity(0, MetaDataEntity.Version.UNKNOWN));
+		migrator.onUpgrade(metaDataRepository.selectFirst().version(), targetVersion);
+		metaDataRepository.upsert(new MetaDataEntity(0, targetVersion));
 	}
 
-	// TODO
-	public void cleanDatabase() {
+	public void cleanDatabase() throws BotException {
+		// perform cleaning
+		try {
+			requestRepository.deleteByAge(System.currentTimeMillis() - BuildConfig.maxRequestAge);
+			profileRepository.deleteByAge(System.currentTimeMillis() - BuildConfig.maxUsernameAge);
+		} catch (RuntimeException e) {
+			log.error(R.Strings.log("could_not_clean_database"), e);
+		}
+
+		// automatically fetch usernames after cleaning the database from old ones
+		if (BuildConfig.autoFetch) {
+			log.info(R.Strings.log("autofetching_usernames"));
+			var fetched = 0;
+			try {
+				for (UserEntity userEntity : userRepository.selectAll()) {
+					try {
+						if (profileRepository.has(userEntity.getUuid())) continue;
+						if (MCHelper.getUsername(profileRepository, userEntity.getUuid()) instanceof String username) {
+							profileRepository.insert(ProfileEntity.builder()
+									.uuid(userEntity.getUuid())
+									.username(username)
+									.lastUpdated(System.currentTimeMillis())
+									.build());
+							fetched++;
+						}
+					} catch (RuntimeException e) {
+						log.error(R.Strings.log("could_not_autofetch_usernames"), e);
+					}
+				}
+			} catch (RuntimeException e) {
+				log.error(R.Strings.log("could_not_autofetch_usernames"), e);
+			} finally {
+				log.info(R.Strings.log("autofetched_s_usernames", fetched));
+			}
+		}
+	}
+
+	@Override
+	public void close() throws Exception {
+		config.close();
 	}
 }

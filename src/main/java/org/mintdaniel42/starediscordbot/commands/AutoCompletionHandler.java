@@ -1,6 +1,8 @@
 package org.mintdaniel42.starediscordbot.commands;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
@@ -12,32 +14,17 @@ import org.mintdaniel42.starediscordbot.data.Database;
 import org.mintdaniel42.starediscordbot.data.entity.RequestEntity;
 import org.mintdaniel42.starediscordbot.utils.Calculator;
 import org.mintdaniel42.starediscordbot.utils.R;
-import ru.lanwen.verbalregex.VerbalExpression;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
 import java.util.stream.LongStream;
 
 // TODO: add autocomplete for achievements
+@Singleton
+@RequiredArgsConstructor
 public final class AutoCompletionHandler extends ListenerAdapter {
 	@NonNull private final Database database;
-	@NonNull private final Pattern numberPattern;
-
-	public AutoCompletionHandler(@NonNull final Database database) {
-		this.database = database;
-		numberPattern = Pattern.compile(
-				VerbalExpression.regex()
-						.maybe("-")
-						.digit()
-						.oneOrMore()
-						.maybe(VerbalExpression.regex()
-								.find(".")
-								.digit()
-								.oneOrMore())
-						.build()
-						.toString()
-		);
-	}
+	@NonNull private final Pattern numberPattern = Pattern.compile("-?\\d+(?:\\.\\d+)?");
 
 	@Override
 	public void onCommandAutoCompleteInteraction(@NonNull final CommandAutoCompleteInteractionEvent event) {
@@ -55,7 +42,7 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 
 	@Contract(pure = true, value = "_ -> new")
 	private @NonNull Command.Choice[] autoCompleteUsername(@NonNull final String input) {
-		return database.getUsernameRepository()
+		return database.getProfileRepository()
 				.selectByUsernameLike(input)
 				.stream()
 				.limit(25)
@@ -99,12 +86,14 @@ public final class AutoCompletionHandler extends ListenerAdapter {
 	@Contract(pure = true, value = "_, _ -> new")
 	private @NonNull Command.Choice[] autoCompletePage(@NonNull final String command, @NonNull final String input) {
 		return switch (command) {
-			case "hns list" -> LongStream.range(1, Math.min(database.getHnsUserRepository().countPages(), 25) + 1)
+			case "hns list" ->
+					LongStream.range(1, Math.min(database.getHnsUserRepository().count() / BuildConfig.entriesPerPage, 25) + 1)
 					.boxed()
 					.filter(operand -> String.valueOf(operand).startsWith(input))
 					.map(page -> new Command.Choice(String.valueOf(page), page))
 					.toArray(Command.Choice[]::new);
-			case "pg list" -> LongStream.range(1, Math.min(database.getPgUserRepository().countPages(), 25) + 1)
+			case "pg list" ->
+					LongStream.range(1, Math.min(database.getPgUserRepository().count() / BuildConfig.entriesPerPage, 25) + 1)
 					.boxed()
 					.filter(operand -> String.valueOf(operand).startsWith(input))
 					.map(page -> new Command.Choice(String.valueOf(page), page))

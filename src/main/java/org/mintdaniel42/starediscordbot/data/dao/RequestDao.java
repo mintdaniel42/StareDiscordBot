@@ -34,4 +34,18 @@ public interface RequestDao {
 			""")
 	@Script
 	void createTable();
+
+	@Sql("""
+			ALTER TABLE requests
+			RENAME COLUMN group_id TO groupTag
+			""")
+	@Script
+	void renameColumnGroupTag();
+
+	@Sql("""
+			ALTER TABLE requests
+			RENAME COLUMN database TO type
+			""")
+	@Script
+	void renameColumnType();
 }

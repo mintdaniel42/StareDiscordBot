@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.Contract;
 import org.mintdaniel42.starediscordbot.data.entity.HNSUserEntity;
-import org.mintdaniel42.starediscordbot.data.entity.UsernameEntity;
+import org.mintdaniel42.starediscordbot.data.entity.ProfileEntity;
 import org.mintdaniel42.starediscordbot.utils.Formatter;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Options;
@@ -15,7 +15,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 @UtilityClass
 public class HNSFullUserEmbed {
 	@Contract(pure = true, value = "_, _, _ -> new")
-	public @NonNull MessageEmbed of(@NonNull final HNSUserEntity hnsUser, @NonNull final UsernameEntity username, final boolean isRequest) {
+	public @NonNull MessageEmbed of(@NonNull final HNSUserEntity hnsUser, @NonNull final ProfileEntity username, final boolean isRequest) {
 		return new EmbedBuilder()
 				.setDescription(username.getUsername())
 				.setColor(isRequest ? Options.getColorRequest() : Options.getColorNormal())

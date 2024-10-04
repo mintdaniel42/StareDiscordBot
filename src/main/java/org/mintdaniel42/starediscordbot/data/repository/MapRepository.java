@@ -1,16 +1,17 @@
 package org.mintdaniel42.starediscordbot.data.repository;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
+import org.mintdaniel42.starediscordbot.data.entity.MapEntity;
 import org.mintdaniel42.starediscordbot.data.entity.MapEntityMeta;
-import org.seasar.doma.jdbc.Config;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
-public final class MapRepository {
-	@NonNull private final Entityql entityQl;
-	@NonNull private final MapEntityMeta mapMeta;
+import java.util.UUID;
 
-	public MapRepository(@NonNull final Config config) {
-		entityQl = new Entityql(config);
-		mapMeta = new MapEntityMeta();
+@Singleton
+public final class MapRepository extends BaseRepository<UUID, MapEntity> {
+	public MapRepository(@NonNull final Entityql entityQl) {
+		final var meta = new MapEntityMeta();
+		super(entityQl, meta, meta.uuid);
 	}
 }

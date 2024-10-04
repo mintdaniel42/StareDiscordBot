@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.buttons.list;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
@@ -10,15 +11,19 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
 import org.mintdaniel42.starediscordbot.data.entity.AchievementEntity;
 import org.mintdaniel42.starediscordbot.data.repository.AchievementRepository;
 import org.mintdaniel42.starediscordbot.embeds.AchievementEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
+@Singleton
 public final class AchievementListButtons implements ButtonAdapter {
 	@NonNull private final AchievementRepository achievementRepository;
+	@NonNull private final BotConfig config;
 
 	@Contract(pure = true, value = "_, _, _, _ -> new")
 	public static @NonNull ActionRow create(@Nullable final AchievementEntity.Type type, final int points, final int page, final long maxPages) {
@@ -37,7 +42,7 @@ public final class AchievementListButtons implements ButtonAdapter {
 	}
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
+	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) throws BotException {
 		final var buttonParts = event.getComponentId().split(":");
 		final AchievementEntity.Type type;
 		final int points = Integer.parseInt(buttonParts[2]);
@@ -47,7 +52,7 @@ public final class AchievementListButtons implements ButtonAdapter {
 		} else type = null;
 		final var achievements = achievementRepository.selectByTypeAndPoints(type, points);
 		if (page < achievements.size()) {
-			return interactionHook.editOriginalEmbeds(AchievementEmbed.of(achievements.get(page), page + 1, achievements.size()))
+			return interactionHook.editOriginalEmbeds(new AchievementEmbed(achievements.get(page), config, page + 1, achievements.size()))
 					.setComponents(AchievementListButtons.create(type, points, page, achievements.size()));
 		} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
 	}
