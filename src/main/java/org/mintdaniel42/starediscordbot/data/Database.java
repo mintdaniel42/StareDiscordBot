@@ -38,7 +38,13 @@ public final class Database implements AutoCloseable {
 		profileRepository.deleteById(uuid);
 		try {
 			userRepository.deleteById(uuid);
+		} catch (BotException _) {
+		}
+		try {
 			hnsUserRepository.deleteById(uuid);
+		} catch (BotException _) {
+		}
+		try {
 			pgUserRepository.deleteById(uuid);
 		} catch (BotException _) {
 		}
