@@ -6,7 +6,6 @@ json = "20240303"
 slf4j = "2.0.16"
 lombok = "1.18.34"
 buildConfig = "5.4.0"
-jcp = "7.1.2"
 avaje-jsonb = "2.1"
 ioutils = "2.16.1"
 wisp = "2.5.0"
@@ -28,7 +27,6 @@ jdbc-mariadb = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = 
 json = { module = "org.json:json", version.ref = "json" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
-jcp = { module = "com.igormaznitsa:jcp", version.ref = "jcp" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 avaje-jsonb = { module = "io.avaje:avaje-jsonb", version.ref = "avaje-jsonb" }
 avaje-jsonb-generator = { module = "io.avaje:avaje-jsonb-generator", version.ref = "avaje-jsonb" }
