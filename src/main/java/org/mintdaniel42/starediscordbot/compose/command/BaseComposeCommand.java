@@ -1,9 +1,6 @@
 package org.mintdaniel42.starediscordbot.compose.command;
 
-import com.codahale.metrics.MetricRegistry;
-import jakarta.inject.Inject;
 import lombok.NonNull;
-import lombok.Setter;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -25,8 +22,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class BaseComposeCommand extends Composer<CommandContext> implements CommandAdapter {
-	@NonNull @Setter(onMethod_ = @Inject) private MetricRegistry metrics;
-
 	/* ========== OPTIONS META ========== */
 	protected static void requireOptionCount(@NonNull final CommandContext context, final int atLeast) throws CommandIncompleteException {
 		if (context.getOptionCount() < atLeast) {
@@ -189,7 +184,7 @@ public abstract class BaseComposeCommand extends Composer<CommandContext> implem
 
 	@Override
 	public final @NonNull MessageEditData handle(@NonNull final SlashCommandInteractionEvent event) {
-		try (final var _ = metrics.timer(getCommandId()).time()) {
+		try {
 			return compose(new CommandContext(event));
 		} catch (IllegalArgumentException _) {
 			return response("one_of_your_options_was_invalid");

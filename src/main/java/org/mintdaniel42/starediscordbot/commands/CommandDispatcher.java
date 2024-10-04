@@ -1,5 +1,6 @@
 package org.mintdaniel42.starediscordbot.commands;
 
+import com.codahale.metrics.MetricRegistry;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import java.util.List;
 @Slf4j
 public final class CommandDispatcher extends ListenerAdapter {
 	@NonNull private final List<CommandAdapter> commandAdapters;
+	@NonNull private final MetricRegistry metricRegistry;
 	@NonNull private final BotConfig config;
 
 	@Override
@@ -53,7 +55,7 @@ public final class CommandDispatcher extends ListenerAdapter {
 	}
 
 	private void respond(@NonNull final InteractionHook interactionHook, @NonNull final CommandAdapter adapter, @NonNull final SlashCommandInteractionEvent event) {
-		try {
+		try (final var _ = metricRegistry.timer(adapter.getCommandId()).time()) {
 			if (!adapter.hasPermission(config, event.getMember())) {
 				interactionHook.editOriginal(R.Strings.ui("you_do_not_have_the_permission_to_use_this_command"))
 						.queue();
