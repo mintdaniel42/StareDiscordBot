@@ -1,9 +1,16 @@
-package org.mintdaniel42.starediscordbot.commands.group;
+package org.mintdaniel42.starediscordbot.commands.group.user;
 
+import io.avaje.inject.RequiresBean;
+import io.avaje.inject.RequiresProperty;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.jetbrains.annotations.Nullable;
 import org.mintdaniel42.starediscordbot.BotConfig;
@@ -14,8 +21,11 @@ import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
 import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.Permission;
+import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
+@RequiresBean(UserGroup.class)
+@RequiresProperty(value = "feature.command.group.user.remove.enabled", equalTo = "true")
 @Singleton
 public final class GroupUserRemoveCommand extends BaseComposeCommand {
 	@NonNull private final GroupRepository groupRepository;
@@ -35,6 +45,12 @@ public final class GroupUserRemoveCommand extends BaseComposeCommand {
 					.build());
 			return response("the_user_s_was_removed_from_the_group_s", profile.getUsername(), group.getName());
 		}
+	}
+
+	@Inject
+	public void register(@NonNull @Named("group user") SubcommandGroupData group) {
+		group.addSubcommands(new SubcommandData("remove", R.Strings.ui("remove_user_from_group"))
+				.addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true));
 	}
 
 	@Override

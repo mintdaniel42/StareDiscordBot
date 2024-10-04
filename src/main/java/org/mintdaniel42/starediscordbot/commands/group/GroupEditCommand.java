@@ -1,13 +1,22 @@
 package org.mintdaniel42.starediscordbot.commands.group;
 
+import io.avaje.inject.RequiresBean;
+import io.avaje.inject.RequiresProperty;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
+import org.mintdaniel42.starediscordbot.data.entity.GroupEntity;
 import org.mintdaniel42.starediscordbot.data.entity.RequestEntity;
 import org.mintdaniel42.starediscordbot.data.repository.*;
 import org.mintdaniel42.starediscordbot.embeds.GroupEmbed;
@@ -18,6 +27,8 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@RequiresBean(GroupCommand.class)
+@RequiresProperty(value = "feature.command.group.edit.enabled", equalTo = "true")
 @Singleton
 public final class GroupEditCommand extends BaseComposeCommand {
 	@NonNull private final GroupRepository groupRepository;
@@ -52,6 +63,18 @@ public final class GroupEditCommand extends BaseComposeCommand {
 					.setEmbeds(GroupEmbed.of(group, userRepository, hnsUserRepository, profileRepository))
 					.build();
 		}
+	}
+
+	@Inject
+	public void register(@NonNull @Named("group") SlashCommandData command) {
+		command.addSubcommands(new SubcommandData("edit", R.Strings.ui("edit_group"))
+				.addOption(OptionType.STRING, "tag", R.Strings.ui("group_tag"), true, true)
+				.addOption(OptionType.STRING, "name", R.Strings.ui("group_name"))
+				.addOption(OptionType.STRING, "leader", R.Strings.ui("group_leader"), false, true)
+				.addOptions(new OptionData(OptionType.STRING, "relation", R.Strings.ui("group_relation"))
+						.addChoice(R.Strings.ui("enemy"), GroupEntity.Relation.enemy.name())
+						.addChoice(R.Strings.ui("neutral"), GroupEntity.Relation.neutral.name())
+						.addChoice(R.Strings.ui("ally"), GroupEntity.Relation.ally.name())));
 	}
 
 	@Override
