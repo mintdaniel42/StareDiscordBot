@@ -49,9 +49,6 @@ java {
     }
 }
 
-tasks.preprocess {
-    dependsOn generateBuildConfig
-    setSources(sourceSets.main.java.srcDirs)
 
 tasks.test {
     useJUnitPlatform()
