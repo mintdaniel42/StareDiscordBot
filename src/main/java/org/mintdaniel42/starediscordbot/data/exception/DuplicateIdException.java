@@ -1,4 +1,4 @@
-package org.mintdaniel42.starediscordbot.data.exceptions;
+package org.mintdaniel42.starediscordbot.data.exception;
 
 import org.mintdaniel42.starediscordbot.exception.BotException;
 

@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.data.entity.*;
-import org.mintdaniel42.starediscordbot.data.exceptions.NonExistentKeyException;
+import org.mintdaniel42.starediscordbot.data.exception.NonExistentKeyException;
 import org.mintdaniel42.starediscordbot.data.repository.*;
 import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
