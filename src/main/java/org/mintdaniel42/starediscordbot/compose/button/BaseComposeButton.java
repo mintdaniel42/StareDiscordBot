@@ -19,9 +19,7 @@ public abstract class BaseComposeButton extends Composer<ButtonContext> implemen
 		try {
 			return interactionHook.editOriginal(compose(new ButtonContext(event)));
 		} catch (BotException e) {
-			return interactionHook.editOriginal(response()
-					.setContent(e.getMessage())
-					.build());
+			return interactionHook.editOriginal(response(e.getMessage()));
 		}
 	}
 

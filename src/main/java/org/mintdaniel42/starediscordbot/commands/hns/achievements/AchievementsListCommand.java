@@ -38,9 +38,9 @@ public final class AchievementsListCommand extends BaseComposeCommand {
 		final var achievements = achievementRepository.selectByTypeAndPoints(type, points);
 		requireBounds(0, page, achievements.size());
 		return response()
-				.setEmbeds(new AchievementEmbed(achievements.get(page), config, page, achievements.size()))
-				.setComponents(AchievementListButtons.create(type, points, page, achievements.size()))
-				.build();
+				.addEmbed(new AchievementEmbed(achievements.get(page), config, page, achievements.size()))
+				.addComponent(AchievementListButtons.create(type, points, page, achievements.size()))
+				.compose();
 	}
 
 	@Inject

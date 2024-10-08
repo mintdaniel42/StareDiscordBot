@@ -46,9 +46,9 @@ public final class AchievementsAddCommand extends BaseComposeCommand {
 		final var achievement = builder.build();
 		achievementRepository.insert(achievement);
 		return response()
-				.setContent(R.Strings.ui("the_achievement_was_successfully_created"))
-				.setEmbeds(new AchievementEmbed(achievement, config, 0, 1))
-				.build();
+				.setText(R.Strings.ui("the_achievement_was_successfully_created"))
+				.addEmbed(new AchievementEmbed(achievement, config, 0, 1))
+				.compose();
 	}
 
 	@Inject

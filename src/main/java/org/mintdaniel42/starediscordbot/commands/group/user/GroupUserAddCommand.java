@@ -20,7 +20,6 @@ import org.mintdaniel42.starediscordbot.data.repository.GroupRepository;
 import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
 import org.mintdaniel42.starediscordbot.exception.BotException;
-import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Permission;
 import org.mintdaniel42.starediscordbot.utils.R;
 
@@ -42,11 +41,7 @@ public final class GroupUserAddCommand extends BaseComposeCommand {
 		userRepository.update(user.toBuilder()
 				.groupTag(tag)
 				.build());
-		return response()
-				.setContent(R.Strings.ui("the_user_s_was_added_to_the_group_s",
-						MCHelper.getUsername(profileRepository, profile.getUuid()),
-						group.getName()))
-				.build();
+		return response("the_user_s_was_added_to_the_group_s", profile.getUsername(), group.getName());
 	}
 
 	@Inject

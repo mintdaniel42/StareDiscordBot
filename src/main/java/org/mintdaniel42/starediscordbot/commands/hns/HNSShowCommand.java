@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.mintdaniel42.starediscordbot.buttons.misc.GroupButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.HNSShowButton;
@@ -39,13 +38,14 @@ public final class HNSShowCommand extends BaseComposeCommand {
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
 		final var hnsUser = requireEntity(hnsUserRepository, profile.getUuid());
 		final var user = requireEntity(userRepository, profile.getUuid());
-		final var groupOptional = nullableEntity(groupRepository, user.getGroupTag());
+		final var groupButton = nullableEntity(groupRepository, user.getGroupTag())
+				.map(GroupButton::create)
+				.orElseGet(GroupButton::disabled);
 		return response()
-				.setEmbeds(HNSBasicUserEmbed.of(hnsUser, user, profile, false))
-				.setComponents(ActionRow.of(HNSShowButton.create(HNSShowButton.Type.more, profile.getUuid()),
-						groupOptional.map(GroupButton::create)
-								.orElseGet(GroupButton::disabled)))
-				.build();
+				.addEmbed(HNSBasicUserEmbed.of(hnsUser, user, profile, false))
+				.addComponent(HNSShowButton.create(HNSShowButton.Type.more, profile.getUuid()))
+				.addComponent(groupButton)
+				.compose();
 	}
 
 	@Inject

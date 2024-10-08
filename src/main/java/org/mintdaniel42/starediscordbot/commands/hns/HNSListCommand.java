@@ -36,9 +36,9 @@ public final class HNSListCommand extends BaseComposeCommand {
 		requireBounds(0, page, pageCount);
 		final var entries = hnsUserRepository.selectAll(page * BuildConfig.entriesPerPage, BuildConfig.entriesPerPage);
 		return response()
-				.setEmbeds(ListEmbed.createHnsList(profileRepository, entries, page, pageCount))
-				.setComponents(HNSListButtons.create(page, pageCount))
-				.build();
+				.addEmbed(ListEmbed.createHnsList(profileRepository, entries, page, pageCount))
+				.addComponent(HNSListButtons.create(page, pageCount))
+				.compose();
 	}
 
 	@Inject

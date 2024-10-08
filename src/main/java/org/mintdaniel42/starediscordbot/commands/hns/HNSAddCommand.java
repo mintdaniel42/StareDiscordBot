@@ -47,9 +47,9 @@ public final class HNSAddCommand extends BaseComposeCommand {
 		userRepository.upsert(user);
 		hnsUserRepository.insert(hnsUser);
 		return response()
-				.setContent(R.Strings.ui("the_entry_was_successfully_created"))
-				.setEmbeds(HNSFullUserEmbed.of(hnsUser, profile, false))
-				.build();
+				.setText(R.Strings.ui("the_entry_was_successfully_created"))
+				.addEmbed(HNSFullUserEmbed.of(hnsUser, profile, false))
+				.compose();
 	}
 
 	@Inject

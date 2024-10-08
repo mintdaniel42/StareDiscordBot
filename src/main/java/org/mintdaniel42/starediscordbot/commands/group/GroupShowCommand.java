@@ -38,9 +38,9 @@ public final class GroupShowCommand extends BaseComposeCommand {
 		final var tag = requireStringOption(context, "tag");
 		final var group = requireEntity(groupRepository, tag);
 		return response()
-				.setEmbeds(GroupEmbed.of(group, userRepository, hnsUserRepository, profileRepository))
-				.setComponents(GroupListButtons.create(group, 0, (long) Math.ceil((double) userRepository.selectByGroupTag(group.getTag()).size() / BuildConfig.entriesPerPage)))
-				.build();
+				.addEmbed(GroupEmbed.of(group, userRepository, hnsUserRepository, profileRepository))
+				.addComponent(GroupListButtons.create(group, 0, (long) Math.ceil((double) userRepository.selectByGroupTag(group.getTag()).size() / BuildConfig.entriesPerPage)))
+				.compose();
 	}
 
 	@Inject

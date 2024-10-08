@@ -53,9 +53,9 @@ public final class HNSEditCommand extends BaseComposeCommand {
 		} else {
 			hnsUserRepository.update(hnsUser);
 			return response()
-					.setContent(R.Strings.ui("the_entry_was_successfully_updated"))
-					.setEmbeds(HNSFullUserEmbed.of(hnsUser, profile, false))
-					.build();
+					.setText(R.Strings.ui("the_entry_was_successfully_updated"))
+					.addEmbed(HNSFullUserEmbed.of(hnsUser, profile, false))
+					.compose();
 		}
 	}
 

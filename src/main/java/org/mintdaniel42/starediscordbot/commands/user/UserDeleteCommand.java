@@ -34,9 +34,7 @@ public final class UserDeleteCommand extends BaseComposeCommand {
 	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
 		database.deleteUserData(profile.getUuid());
-		return response()
-				.setContent(R.Strings.ui("the_user_s_was_successfully_deleted", profile.getUsername()))
-				.build();
+		return response("the_user_s_was_successfully_deleted", profile.getUsername());
 	}
 
 	@Inject

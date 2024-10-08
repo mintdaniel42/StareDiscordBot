@@ -59,9 +59,9 @@ public final class GroupEditCommand extends BaseComposeCommand {
 		} else {
 			groupRepository.update(group);
 			return response()
-					.setContent(R.Strings.ui("the_entry_was_successfully_updated"))
-					.setEmbeds(GroupEmbed.of(group, userRepository, hnsUserRepository, profileRepository))
-					.build();
+					.setText(R.Strings.ui("the_entry_was_successfully_updated"))
+					.addEmbed(GroupEmbed.of(group, userRepository, hnsUserRepository, profileRepository))
+					.compose();
 		}
 	}
 

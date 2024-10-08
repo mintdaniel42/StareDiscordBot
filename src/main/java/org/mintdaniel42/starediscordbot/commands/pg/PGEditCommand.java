@@ -53,9 +53,9 @@ public final class PGEditCommand extends BaseComposeCommand {
 		} else {
 			pgUserRepository.update(pgUser);
 			return response()
-					.setContent(R.Strings.ui("the_entry_was_successfully_updated"))
-					.setEmbeds(PGUserEmbed.of(pgUser, profile, false))
-					.build();
+					.setText(R.Strings.ui("the_entry_was_successfully_updated"))
+					.addEmbed(PGUserEmbed.of(pgUser, profile, false))
+					.compose();
 		}
 	}
 

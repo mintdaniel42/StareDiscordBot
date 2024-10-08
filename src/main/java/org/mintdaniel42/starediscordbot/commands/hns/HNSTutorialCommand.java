@@ -31,17 +31,17 @@ public final class HNSTutorialCommand extends BaseComposeCommand {
 	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		return nullableStringOption(context, "page", page -> {
 			if (R.Tutorials.get(page) instanceof final TutorialEntity tutorialEntity) {
-				return response().setEmbeds(TutorialEmbed.of(tutorialEntity)).build();
-			} else return response().setContent(R.Strings.ui("this_page_does_not_exist")).build();
+				return response().addEmbed(TutorialEmbed.of(tutorialEntity)).compose();
+			} else return response("this_page_does_not_exist");
 		}).orElseGet(() -> Arrays.stream(R.Tutorials.list())
 				.sorted()
 				.findFirst()
 				.map(tutorialEntity -> response()
-						.setEmbeds(TutorialEmbed.of(tutorialEntity))
-						.setComponents(TutorialListButtons.create(tutorialEntity),
-								TutorialSuggestionButtons.create(tutorialEntity))
-						.build())
-				.orElseGet(() -> response().setContent(R.Strings.ui("no_entries_available")).build()));
+						.addEmbed(TutorialEmbed.of(tutorialEntity))
+						.addComponent(TutorialListButtons.create(tutorialEntity))
+						.addComponent(TutorialSuggestionButtons.create(tutorialEntity))
+						.compose())
+				.orElseGet(() -> response("no_entries_available")));
 	}
 
 	@Inject

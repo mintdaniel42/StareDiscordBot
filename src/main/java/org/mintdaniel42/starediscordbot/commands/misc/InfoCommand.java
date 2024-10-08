@@ -35,15 +35,15 @@ public final class InfoCommand extends BaseComposeCommand {
 	@Override
 	public @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		return response()
-				.setEmbeds(new InfoEmbed(config,
+				.addEmbed(new InfoEmbed(config,
 						metaDataRepository.selectFirst().version(),
 						profileRepository.count(),
 						hnsUserRepository.count(),
 						pgUserRepository.count(),
 						groupRepository.count(),
 						spotRepository.count()))
-				.setComponents(InfoButtons.create())
-				.build();
+				.addComponent(InfoButtons.create())
+				.compose();
 	}
 
 	@Bean

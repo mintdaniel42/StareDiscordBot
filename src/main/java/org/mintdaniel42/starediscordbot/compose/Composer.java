@@ -3,7 +3,6 @@ package org.mintdaniel42.starediscordbot.compose;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.PropertyKey;
@@ -18,7 +17,6 @@ import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
 import org.mintdaniel42.starediscordbot.utils.Permission;
-import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -70,16 +68,15 @@ public abstract class Composer<CONTEXT extends Context> {
 
 	/* ========== FACTORY METHOD FOR NEW MESSAGE EDIT BUILDER ========== */
 	@Contract(value = " -> new", pure = true)
-	protected static @NonNull MessageEditBuilder response() {
-		return new MessageEditBuilder()
-				.setReplace(true);
+	protected static @NonNull ResponseComposer response() {
+		return new ResponseComposer();
 	}
 
 	@Contract(value = "_, _ -> new", pure = true)
 	protected static @NonNull MessageEditData response(@NonNull @PropertyKey(resourceBundle = "ui") final String message, @NonNull final Object... args) {
 		return response()
-				.setContent(R.Strings.ui(message, args))
-				.build();
+				.setText(message, args)
+				.compose();
 	}
 
 	/* ========== PREVENT EXECUTION ========== */

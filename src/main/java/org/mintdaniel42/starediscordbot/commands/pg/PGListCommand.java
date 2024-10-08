@@ -36,9 +36,9 @@ public final class PGListCommand extends BaseComposeCommand {
 		requireBounds(0, page, pageCount);
 		var entries = pgUserRepository.selectAll(page * BuildConfig.entriesPerPage, BuildConfig.entriesPerPage);
 		return response()
-				.setEmbeds(ListEmbed.createPgList(profileRepository, entries, page, pageCount))
-				.setComponents(PGListButtons.create(page, pageCount))
-				.build();
+				.addEmbed(ListEmbed.createPgList(profileRepository, entries, page, pageCount))
+				.addComponent(PGListButtons.create(page, pageCount))
+				.compose();
 	}
 
 	@Inject

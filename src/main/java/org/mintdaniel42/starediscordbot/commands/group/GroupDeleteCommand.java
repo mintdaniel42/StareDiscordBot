@@ -32,9 +32,7 @@ public final class GroupDeleteCommand extends BaseComposeCommand {
 	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		final var tag = requireStringOption(context, "tag");
 		groupRepository.deleteById(tag);
-		return response()
-				.setContent(R.Strings.ui("the_group_was_successfully_deleted"))
-				.build();
+		return response("the_group_was_successfully_deleted");
 	}
 
 	@Inject

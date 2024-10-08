@@ -32,7 +32,7 @@ public final class ApproveButton extends BaseComposeButton {
 		requireButtonPartCount(context, 1);
 		database.mergeRequest(Long.parseLong(requireButtonPart(context, 0)));
 		return response()
-				.setComponents(ActionRow.of(create(-1)))
-				.build();
+				.addComponent(ActionRow.of(create(-1)))
+				.compose();
 	}
 }

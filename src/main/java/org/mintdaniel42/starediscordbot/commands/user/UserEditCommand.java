@@ -56,9 +56,9 @@ public final class UserEditCommand extends BaseComposeCommand {
 		} else {
 			userRepository.update(user);
 			return response()
-					.setContent(R.Strings.ui("the_entry_was_successfully_updated"))
-					.setEmbeds(UserEmbed.of(user, group, profile, false))
-					.build();
+					.setText(R.Strings.ui("the_entry_was_successfully_updated"))
+					.addEmbed(UserEmbed.of(user, group, profile, false))
+					.compose();
 		}
 	}
 

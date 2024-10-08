@@ -40,9 +40,9 @@ public final class GroupUserShowCommand extends BaseComposeCommand {
 		if (user.getGroupTag() != null) {
 			final var group = requireEntity(groupRepository, user.getGroupTag());
 			return response()
-					.setEmbeds(GroupEmbed.of(group, userRepository, hnsUserRepository, profileRepository))
-					.setComponents(GroupListButtons.create(group, 0, (long) Math.ceil((double) userRepository.selectByGroupTag(group.getTag()).size() / BuildConfig.entriesPerPage)))
-					.build();
+					.addEmbed(GroupEmbed.of(group, userRepository, hnsUserRepository, profileRepository))
+					.addComponent(GroupListButtons.create(group, 0, (long) Math.ceil((double) userRepository.selectByGroupTag(group.getTag()).size() / BuildConfig.entriesPerPage)))
+					.compose();
 		} else return response("the_user_s_is_not_in_any_group", profile.getUsername());
 	}
 

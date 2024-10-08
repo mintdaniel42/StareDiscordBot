@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.mintdaniel42.starediscordbot.buttons.misc.GroupButton;
 import org.mintdaniel42.starediscordbot.buttons.misc.HNSShowButton;
@@ -41,11 +40,10 @@ public final class HNSShowMoreCommand extends BaseComposeCommand {
 		final var user = requireEntity(userRepository, profile.getUuid());
 		final var groupOptional = nullableEntity(groupRepository, user.getGroupTag());
 		return response()
-				.setEmbeds(HNSMoreUserEmbed.of(hnsUser, user, groupOptional.orElse(null), profile, false))
-				.setComponents(ActionRow.of(HNSShowButton.create(HNSShowButton.Type.basic, profile.getUuid()),
-						groupOptional.map(GroupButton::create)
-								.orElseGet(GroupButton::disabled)))
-				.build();
+				.addEmbed(HNSMoreUserEmbed.of(hnsUser, user, groupOptional.orElse(null), profile, false))
+				.addComponent(HNSShowButton.create(HNSShowButton.Type.basic, profile.getUuid()))
+				.addComponent(groupOptional.map(GroupButton::create).orElseGet(GroupButton::disabled))
+				.compose();
 	}
 
 	@Inject

@@ -46,9 +46,9 @@ public final class PGAddCommand extends BaseComposeCommand {
 		userRepository.upsert(user);
 		pgUserRepository.insert(pgUser);
 		return response()
-				.setContent(R.Strings.ui("the_entry_was_successfully_created"))
-				.setEmbeds(PGUserEmbed.of(pgUser, profile, false))
-				.build();
+				.setText(R.Strings.ui("the_entry_was_successfully_created"))
+				.addEmbed(PGUserEmbed.of(pgUser, profile, false))
+				.compose();
 	}
 
 	@Inject

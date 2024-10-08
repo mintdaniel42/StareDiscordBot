@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.mintdaniel42.starediscordbot.buttons.misc.GroupButton;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
@@ -37,11 +36,11 @@ public final class PGShowCommand extends BaseComposeCommand {
 	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
 		return response()
-				.setEmbeds(PGUserEmbed.of(requireEntity(pgUserRepository, profile.getUuid()), requireEntity(profileRepository, profile.getUuid()), false))
-				.setComponents(
-						ActionRow.of(nullableEntity(groupRepository, requireEntity(userRepository, profile.getUuid()).getGroupTag()).map(GroupButton::create)
-								.orElseGet(GroupButton::disabled)))
-				.build();
+				.addEmbed(PGUserEmbed.of(requireEntity(pgUserRepository, profile.getUuid()), requireEntity(profileRepository, profile.getUuid()), false))
+				.addComponent(nullableEntity(groupRepository, requireEntity(userRepository, profile.getUuid()).getGroupTag())
+						.map(GroupButton::create)
+						.orElseGet(GroupButton::disabled))
+				.compose();
 	}
 
 	@Inject

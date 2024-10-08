@@ -51,9 +51,9 @@ public final class GroupCreateCommand extends BaseComposeCommand {
 				.build();
 		groupRepository.insert(group);
 		return response()
-				.setContent(R.Strings.ui("the_group_was_successfully_created"))
-				.setEmbeds(GroupEmbed.of(group, userRepository, hnsUserRepository, profileRepository, 0, false))
-				.build();
+				.setText("the_group_was_successfully_created")
+				.addEmbed(GroupEmbed.of(group, userRepository, hnsUserRepository, profileRepository, 0, false))
+				.compose();
 	}
 
 	@Inject
