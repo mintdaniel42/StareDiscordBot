@@ -14,7 +14,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResponseComposer {
+public final class ResponseComposer {
 	@NonNull private final List<MessageEmbed> embeds = new ArrayList<>();
 	@NonNull private final List<LayoutComponent> components = new ArrayList<>();
 	@Nullable private String text;
@@ -25,37 +25,25 @@ public class ResponseComposer {
 	}
 
 	public @NonNull ResponseComposer addEmbed(@NonNull final MessageEmbed embed) {
-		return addEmbed(embed, true);
-	}
-
-	public @NonNull ResponseComposer addEmbed(@NonNull final MessageEmbed embed, final boolean condition) {
-		if (condition) embeds.add(embed);
+		embeds.add(embed);
 		return this;
 	}
 
 	public @NonNull ResponseComposer addComponent(@NonNull final LayoutComponent component) {
-		return addComponent(component, true);
-	}
-
-	public @NonNull ResponseComposer addComponent(@NonNull final LayoutComponent component, final boolean condition) {
-		if (condition) components.add(component);
+		components.add(component);
 		return this;
 	}
 
 	public @NonNull ResponseComposer addComponent(@NonNull final ItemComponent component) {
-		return addComponent(component, true);
-	}
-
-	public @NonNull ResponseComposer addComponent(@NonNull final ItemComponent component, final boolean condition) {
-		if (condition) components.add(ActionRow.of(component));
+		components.add(ActionRow.of(component));
 		return this;
 	}
 
 	public MessageEditData compose() {
 		return new MessageEditBuilder()
 				.setReplace(true)
-				.setEmbeds(embeds)
 				.setContent(text)
+				.setEmbeds(embeds)
 				.setComponents(components)
 				.build();
 	}
