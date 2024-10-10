@@ -12,12 +12,14 @@ public class V24Migration implements Migration {
 	@NonNull private final RequestDao requestDao;
 	@NonNull private final SpotDao spotDao;
 	@NonNull private final UserDao userDao;
+	@NonNull private final ProfileDao profileDao;
 
 	public V24Migration(@NonNull final Config config) {
 		metaDataDao = new MetaDataDaoImpl(config);
 		requestDao = new RequestDaoImpl(config);
 		spotDao = new SpotDaoImpl(config);
 		userDao = new UserDaoImpl(config);
+		profileDao = new ProfileDaoImpl(config);
 	}
 
 	@Override
@@ -27,6 +29,7 @@ public class V24Migration implements Migration {
 		requestDao.renameColumnGroupTag();
 		requestDao.renameColumnType();
 		metaDataDao.dropTable();
+		profileDao.renameTable();
 		return Version.V2_4.ordinal();
 	}
 }

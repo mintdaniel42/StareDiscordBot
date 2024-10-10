@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Builder
 @Entity(immutable = true, metamodel = @Metamodel(suffix = "Meta"))
-@Table(name = "usernames")
+@Table(name = "profiles")
 @Value
 public class ProfileEntity {
 	@NonNull @Id UUID uuid;

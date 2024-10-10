@@ -15,7 +15,7 @@ public class UnknownMigration implements Migration {
 	@NonNull private final PGUserDao pgUserDao;
 	@NonNull private final RequestDao requestDao;
 	@NonNull private final UserDao userDao;
-	@NonNull private final UsernameDao usernameDao;
+	@NonNull private final ProfileDao profileDao;
 
 	public UnknownMigration(@NonNull final Config config) {
 		achievementDao = new AchievementDaoImpl(config);
@@ -25,7 +25,7 @@ public class UnknownMigration implements Migration {
 		pgUserDao = new PGUserDaoImpl(config);
 		requestDao = new RequestDaoImpl(config);
 		userDao = new UserDaoImpl(config);
-		usernameDao = new UsernameDaoImpl(config);
+		profileDao = new ProfileDaoImpl(config);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class UnknownMigration implements Migration {
 		pgUserDao.createTable();
 		requestDao.createTable();
 		userDao.createTable();
-		usernameDao.createTable();
+		profileDao.createTable();
 		return Version.V2_3.ordinal();
 	}
 }

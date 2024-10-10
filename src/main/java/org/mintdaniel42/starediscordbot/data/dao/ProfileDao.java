@@ -5,7 +5,7 @@ import org.seasar.doma.Script;
 import org.seasar.doma.Sql;
 
 @Dao
-public interface UsernameDao {
+public interface ProfileDao {
 	@Sql("""
 			CREATE TABLE IF NOT EXISTS usernames (
 			    uuid CHAR(36) PRIMARY KEY NOT NULL,
@@ -15,4 +15,11 @@ public interface UsernameDao {
 			""")
 	@Script
 	void createTable();
+
+	@Sql("""
+			ALTER TABLE usernames
+			RENAME TO profiles
+			""")
+	@Script
+	void renameTable();
 }
