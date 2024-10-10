@@ -25,6 +25,7 @@ module starediscordbot.core {
 	requires com.codahale.metrics;
 	requires io.avaje.inject.aop;
 	requires java.naming;
+	requires com.coreoz.wisp;
 	provides InjectExtension with org.mintdaniel42.starediscordbot.StarediscordbotModule;
 	provides JsonbExtension with org.mintdaniel42.starediscordbot.data.entity.jsonb.GeneratedJsonComponent;
 }
