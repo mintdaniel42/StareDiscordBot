@@ -10,6 +10,8 @@ import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.data.dao.MetaDataDao;
 import org.mintdaniel42.starediscordbot.data.entity.*;
 import org.mintdaniel42.starediscordbot.data.exception.NonExistentKeyException;
+import org.mintdaniel42.starediscordbot.data.migration.UnknownMigration;
+import org.mintdaniel42.starediscordbot.data.migration.V24Migration;
 import org.mintdaniel42.starediscordbot.data.repository.*;
 import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.MCHelper;
@@ -17,24 +19,24 @@ import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.UUID;
 
-@Getter
 @RequiredArgsConstructor
 @Singleton
 @Slf4j
 public final class Database implements AutoCloseable {
 	private static final int targetVersion = Version.V2_4.ordinal();
+	@NonNull private final UnknownMigration unknownMigration;
+	@NonNull private final V24Migration v24Migration;
 	@NonNull private final DatabaseConfig config;
-	@NonNull private final Migrator migrator;
-	@NonNull private final AchievementRepository achievementRepository;
-	@NonNull private final GroupRepository groupRepository;
-	@NonNull private final HNSUserRepository hnsUserRepository;
-	@NonNull private final MapRepository mapRepository;
-	@NonNull private final MetaDataDao metaDataDao;
-	@NonNull private final PGUserRepository pgUserRepository;
-	@NonNull private final RequestRepository requestRepository;
-	@NonNull private final SpotRepository spotRepository;
-	@NonNull private final ProfileRepository profileRepository;
-	@NonNull private final UserRepository userRepository;
+	@Getter @NonNull private final AchievementRepository achievementRepository;
+	@Getter @NonNull private final GroupRepository groupRepository;
+	@Getter @NonNull private final HNSUserRepository hnsUserRepository;
+	@Getter @NonNull private final MapRepository mapRepository;
+	@Getter @NonNull private final MetaDataDao metaDataDao;
+	@Getter @NonNull private final PGUserRepository pgUserRepository;
+	@Getter @NonNull private final RequestRepository requestRepository;
+	@Getter @NonNull private final SpotRepository spotRepository;
+	@Getter @NonNull private final ProfileRepository profileRepository;
+	@Getter @NonNull private final UserRepository userRepository;
 
 	public void deleteUserData(@NonNull final UUID uuid) throws BotException {
 		profileRepository.deleteById(uuid);
@@ -64,9 +66,7 @@ public final class Database implements AutoCloseable {
 	}
 
 	public void prepareDatabase() {
-		if (metaDataDao.getVersion() == targetVersion) return;
-		migrator.onUpgrade(metaDataDao.getVersion(), targetVersion);
-		metaDataDao.setVersion(targetVersion);
+		if (metaDataDao.getVersion() != targetVersion) runMigrations();
 	}
 
 	public void cleanDatabase() {
@@ -109,5 +109,17 @@ public final class Database implements AutoCloseable {
 	@Override
 	public void close() throws Exception {
 		config.close();
+	}
+
+	private void runMigrations() {
+		int version = metaDataDao.getVersion();
+		do {
+			version = switch (version) {
+				case 0 -> unknownMigration.apply(version);
+				case 1 -> v24Migration.apply(version);
+				default -> targetVersion;
+			};
+		} while (version != targetVersion);
+		metaDataDao.setVersion(version);
 	}
 }
