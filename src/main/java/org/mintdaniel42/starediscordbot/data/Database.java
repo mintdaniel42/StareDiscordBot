@@ -64,6 +64,7 @@ public final class Database implements AutoCloseable {
 	}
 
 	public void prepareDatabase() {
+		if (metaDataDao.getVersion() == targetVersion) return;
 		migrator.onUpgrade(metaDataDao.getVersion(), targetVersion);
 		metaDataDao.setVersion(targetVersion);
 	}
