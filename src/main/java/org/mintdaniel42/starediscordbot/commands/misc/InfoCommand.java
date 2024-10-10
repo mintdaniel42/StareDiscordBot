@@ -11,9 +11,11 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.mintdaniel42.starediscordbot.BotConfig;
+import org.mintdaniel42.starediscordbot.Version;
 import org.mintdaniel42.starediscordbot.buttons.list.InfoButtons;
 import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
 import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
+import org.mintdaniel42.starediscordbot.data.dao.MetaDataDao;
 import org.mintdaniel42.starediscordbot.data.repository.*;
 import org.mintdaniel42.starediscordbot.embeds.InfoEmbed;
 import org.mintdaniel42.starediscordbot.exception.BotException;
@@ -24,7 +26,7 @@ import org.mintdaniel42.starediscordbot.utils.R;
 @RequiredArgsConstructor
 @Singleton
 public final class InfoCommand extends BaseComposeCommand {
-	@NonNull final MetaDataRepository metaDataRepository;
+	@NonNull final MetaDataDao metaDataDao;
 	@NonNull final HNSUserRepository hnsUserRepository;
 	@NonNull final PGUserRepository pgUserRepository;
 	@NonNull final ProfileRepository profileRepository;
@@ -36,7 +38,7 @@ public final class InfoCommand extends BaseComposeCommand {
 	public @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
 		return response()
 				.addEmbed(new InfoEmbed(config,
-						metaDataRepository.selectFirst().version(),
+						Version.values()[metaDataDao.getVersion()],
 						profileRepository.count(),
 						hnsUserRepository.count(),
 						pgUserRepository.count(),

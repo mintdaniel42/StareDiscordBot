@@ -4,7 +4,7 @@ import lombok.NonNull;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.mintdaniel42.starediscordbot.BotConfig;
-import org.mintdaniel42.starediscordbot.data.entity.MetaDataEntity;
+import org.mintdaniel42.starediscordbot.Version;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.lang.management.ManagementFactory;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class InfoEmbed extends MessageEmbed {
-	public InfoEmbed(@NonNull final BotConfig config, @NonNull final MetaDataEntity.Version version, final int usernameCount, final int hnsCount, final int pgCount, final int groupCount, final int spotCount) {
+	public InfoEmbed(@NonNull final BotConfig config, @NonNull final Version version, final int usernameCount, final int hnsCount, final int pgCount, final int groupCount, final int spotCount) {
 		super(
 				null,
 				null,
@@ -38,7 +38,7 @@ public class InfoEmbed extends MessageEmbed {
 		return String.format("%02dh:%02dm:%02ds", hours, minutes, seconds);
 	}
 
-	private static @NonNull List<Field> createFields(@NonNull final MetaDataEntity.Version version, final int usernameCount, final int hnsCount, final int pgCount, final int groupCount, final int spotCount) {
+	private static @NonNull List<Field> createFields(@NonNull final Version version, final int usernameCount, final int hnsCount, final int pgCount, final int groupCount, final int spotCount) {
 		return List.of(
 				new Field(R.Strings.ui("version"), "%s - \"%s\"".formatted(version.name().replace('_', '.'), version.getTitle()), false),
 				new Field(R.Strings.ui("uptime"), getUptime(), false),

@@ -1,8 +1,6 @@
 package org.mintdaniel42.starediscordbot.data.dao;
 
-import org.seasar.doma.Dao;
-import org.seasar.doma.Script;
-import org.seasar.doma.Sql;
+import org.seasar.doma.*;
 
 @Dao
 public interface MetaDataDao {
@@ -14,4 +12,23 @@ public interface MetaDataDao {
 			""")
 	@Script
 	void createTable();
+
+	@Sql("""
+			DROP TABLE IF EXISTS metadata
+			""")
+	@Script
+	void dropTable();
+
+	@Sql("""
+			PRAGMA user_version = /*^ version */'UNKNOWN'
+			""")
+	@Update
+	@SuppressWarnings("UnusedReturnValue")
+	int setVersion(final int version);
+
+	@Sql("""
+			PRAGMA user_version
+			""")
+	@Select
+	int getVersion();
 }

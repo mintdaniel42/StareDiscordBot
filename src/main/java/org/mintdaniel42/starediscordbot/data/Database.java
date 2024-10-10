@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mintdaniel42.starediscordbot.Version;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
+import org.mintdaniel42.starediscordbot.data.dao.MetaDataDao;
 import org.mintdaniel42.starediscordbot.data.entity.*;
 import org.mintdaniel42.starediscordbot.data.exception.NonExistentKeyException;
 import org.mintdaniel42.starediscordbot.data.repository.*;
@@ -20,14 +22,14 @@ import java.util.UUID;
 @Singleton
 @Slf4j
 public final class Database implements AutoCloseable {
-	@NonNull private static final MetaDataEntity.Version targetVersion = MetaDataEntity.Version.V2_4;
+	private static final int targetVersion = Version.V2_4.ordinal();
 	@NonNull private final DatabaseConfig config;
 	@NonNull private final Migrator migrator;
 	@NonNull private final AchievementRepository achievementRepository;
 	@NonNull private final GroupRepository groupRepository;
 	@NonNull private final HNSUserRepository hnsUserRepository;
 	@NonNull private final MapRepository mapRepository;
-	@NonNull private final MetaDataRepository metaDataRepository;
+	@NonNull private final MetaDataDao metaDataDao;
 	@NonNull private final PGUserRepository pgUserRepository;
 	@NonNull private final RequestRepository requestRepository;
 	@NonNull private final SpotRepository spotRepository;
@@ -62,8 +64,8 @@ public final class Database implements AutoCloseable {
 	}
 
 	public void prepareDatabase() {
-		migrator.onUpgrade(metaDataRepository.selectFirst().version(), targetVersion);
-		metaDataRepository.upsert(new MetaDataEntity(0, targetVersion));
+		migrator.onUpgrade(metaDataDao.getVersion(), targetVersion);
+		metaDataDao.setVersion(targetVersion);
 	}
 
 	public void cleanDatabase() {

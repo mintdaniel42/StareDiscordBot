@@ -2,8 +2,8 @@ package org.mintdaniel42.starediscordbot.data;
 
 import jakarta.inject.Singleton;
 import lombok.NonNull;
+import org.mintdaniel42.starediscordbot.Version;
 import org.mintdaniel42.starediscordbot.data.dao.*;
-import org.mintdaniel42.starediscordbot.data.entity.MetaDataEntity;
 import org.seasar.doma.jdbc.Config;
 
 @Singleton
@@ -30,17 +30,17 @@ public final class Migrator {
 		usernameDao = new UsernameDaoImpl(config);
 	}
 
-	public void onUpgrade(@NonNull MetaDataEntity.Version current, @NonNull final MetaDataEntity.Version to) {
+	public void onUpgrade(int current, final int to) {
 		while (current != to) {
 			current = switch (current) {
-				case UNKNOWN -> migrateUnknownToV2_3();
-				case V2_3 -> migrateV2_3ToV2_4();
+				case 0 -> migrateUnknownToV2_3();
+				case 1 -> migrateV2_3ToV2_4();
 				default -> to;
 			};
 		}
 	}
 
-	private @NonNull MetaDataEntity.Version migrateUnknownToV2_3() {
+	private int migrateUnknownToV2_3() {
 		achievementDao.createTable();
 		groupDao.createTable();
 		hnsUserDao.createTable();
@@ -49,14 +49,15 @@ public final class Migrator {
 		requestDao.createTable();
 		userDao.createTable();
 		usernameDao.createTable();
-		return MetaDataEntity.Version.V2_3;
+		return Version.V2_3.ordinal();
 	}
 
-	private @NonNull MetaDataEntity.Version migrateV2_3ToV2_4() {
+	private int migrateV2_3ToV2_4() {
 		spotDao.createTable();
 		userDao.renameColumnGroupTag();
 		requestDao.renameColumnGroupTag();
 		requestDao.renameColumnType();
-		return MetaDataEntity.Version.V2_4;
+		metaDataDao.dropTable();
+		return Version.V2_4.ordinal();
 	}
 }
