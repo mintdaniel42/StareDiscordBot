@@ -66,7 +66,7 @@ public final class Database implements AutoCloseable {
 		metaDataRepository.upsert(new MetaDataEntity(0, targetVersion));
 	}
 
-	public void cleanDatabase() throws BotException {
+	public void cleanDatabase() {
 		// perform cleaning
 		try {
 			requestRepository.deleteByAge(System.currentTimeMillis() - BuildConfig.maxRequestAge);
@@ -91,7 +91,7 @@ public final class Database implements AutoCloseable {
 									.build());
 							fetched++;
 						}
-					} catch (RuntimeException e) {
+					} catch (BotException | RuntimeException e) {
 						log.error(R.Strings.log("could_not_autofetch_usernames"), e);
 					}
 				}
