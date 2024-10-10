@@ -1,5 +1,7 @@
 package org.mintdaniel42.starediscordbot;
 
+import com.coreoz.wisp.Scheduler;
+import com.coreoz.wisp.schedule.Schedules;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +16,14 @@ import org.mintdaniel42.starediscordbot.di.DI;
 import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
 
+import java.time.Duration;
+
 @RequiredArgsConstructor
 @Singleton
 @Slf4j
 public final class Bot {
 	@NonNull private final Database database;
-	//@NonNull private final Scheduler scheduler;
+	@NonNull private final Scheduler scheduler;
 	@NonNull private final BotConfig config;
 
 	public static void main(@NonNull final String... args) throws BotException {
@@ -28,7 +32,7 @@ public final class Bot {
 	}
 
 	@SuppressWarnings("ResultOfMethodCallIgnored")
-	public void run() throws BotException {
+	public void run() {
 		final var jda = JDABuilder.createDefault(config.getToken())
 				.addEventListeners(DI.list(ListenerAdapter.class).toArray())
 				.build();
@@ -39,13 +43,13 @@ public final class Bot {
 
 		database.prepareDatabase();
 
-		/*scheduler.schedule(
+		scheduler.schedule(
 				database::cleanDatabase, Schedules.afterInitialDelay(
 						Schedules.fixedFrequencySchedule(
 								Duration.ofMillis(BuildConfig.cleaningInterval)
 						),
 						Duration.ZERO)
-		);*/
+		);
 	}
 
 	private void onReady(@NonNull final GuildReadyEvent event) {
