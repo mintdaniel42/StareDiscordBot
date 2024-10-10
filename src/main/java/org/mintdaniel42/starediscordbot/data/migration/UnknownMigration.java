@@ -7,7 +7,7 @@ import org.mintdaniel42.starediscordbot.data.dao.*;
 import org.seasar.doma.jdbc.Config;
 
 @Prototype
-public class UnknownMigration implements Migration {
+public final class UnknownMigration implements Migration {
 	@NonNull private final AchievementDao achievementDao;
 	@NonNull private final GroupDao groupDao;
 	@NonNull private final HNSUserDao hnsUserDao;

@@ -7,7 +7,7 @@ import org.mintdaniel42.starediscordbot.data.dao.*;
 import org.seasar.doma.jdbc.Config;
 
 @Prototype
-public class V24Migration implements Migration {
+public final class V24Migration implements Migration {
 	@NonNull private final MetaDataDao metaDataDao;
 	@NonNull private final RequestDao requestDao;
 	@NonNull private final SpotDao spotDao;
