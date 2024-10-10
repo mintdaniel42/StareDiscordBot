@@ -23,7 +23,6 @@ import java.util.UUID;
 @Singleton
 @Slf4j
 public final class Database implements AutoCloseable {
-	private static final int targetVersion = Version.V2_4.ordinal();
 	@NonNull private final UnknownMigration unknownMigration;
 	@NonNull private final V24Migration v24Migration;
 	@NonNull private final DatabaseConfig config;
@@ -66,7 +65,7 @@ public final class Database implements AutoCloseable {
 	}
 
 	public void prepareDatabase() {
-		if (metaDataDao.getVersion() != targetVersion) runMigrations();
+		if (metaDataDao.getVersion() != Version.getLatest().ordinal()) runMigrations();
 	}
 
 	public void cleanDatabase() {
@@ -117,9 +116,9 @@ public final class Database implements AutoCloseable {
 			version = switch (version) {
 				case 0 -> unknownMigration.apply(version);
 				case 1 -> v24Migration.apply(version);
-				default -> targetVersion;
+				default -> Version.getLatest().ordinal();
 			};
-		} while (version != targetVersion);
+		} while (version != Version.getLatest().ordinal());
 		metaDataDao.setVersion(version);
 	}
 }
