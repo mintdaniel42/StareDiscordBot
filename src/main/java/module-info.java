@@ -1,11 +1,19 @@
 import com.codahale.metrics.MetricRegistry;
 import io.avaje.inject.Component;
 import io.avaje.inject.spi.InjectExtension;
+import io.avaje.inject.spi.InjectPlugin;
 import io.avaje.jsonb.spi.JsonbExtension;
+import org.mintdaniel42.starediscordbot.plugin.PluginLoader;
 import org.seasar.doma.jdbc.criteria.Entityql;
 
 @Component.Import({Entityql.class, MetricRegistry.class})
 module starediscordbot.core {
+	uses org.mintdaniel42.starediscordbot.plugin.Plugin;
+	opens org.mintdaniel42.starediscordbot.compose;
+	opens org.mintdaniel42.starediscordbot.plugin;
+	provides InjectExtension with org.mintdaniel42.starediscordbot.StarediscordbotModule;
+	provides InjectPlugin with PluginLoader;
+	provides JsonbExtension with org.mintdaniel42.starediscordbot.data.entity.jsonb.GeneratedJsonComponent;
 	requires static lombok;
 	requires static kotlin.stdlib;
 	requires static org.jetbrains.annotations;
@@ -26,6 +34,4 @@ module starediscordbot.core {
 	requires io.avaje.inject.aop;
 	requires java.naming;
 	requires com.coreoz.wisp;
-	provides InjectExtension with org.mintdaniel42.starediscordbot.StarediscordbotModule;
-	provides JsonbExtension with org.mintdaniel42.starediscordbot.data.entity.jsonb.GeneratedJsonComponent;
 }
