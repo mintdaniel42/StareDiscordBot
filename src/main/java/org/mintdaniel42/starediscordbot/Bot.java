@@ -25,7 +25,7 @@ public final class Bot {
 	@NonNull private final Scheduler scheduler;
 	@NonNull private final BotConfig config;
 
-	public static void main() {
+	public static void main(@NonNull final String... args) {
 		if (!BuildConfig.production) log.info(R.Strings.log("running_in_dev_mode"));
 		DI.get(Bot.class).run();
 	}
