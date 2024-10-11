@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.data.Database;
 import org.mintdaniel42.starediscordbot.di.DI;
-import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.time.Duration;
@@ -26,7 +25,7 @@ public final class Bot {
 	@NonNull private final Scheduler scheduler;
 	@NonNull private final BotConfig config;
 
-	public static void main(@NonNull final String... args) throws BotException {
+	public static void main() {
 		if (!BuildConfig.production) log.info(R.Strings.log("running_in_dev_mode"));
 		DI.get(Bot.class).run();
 	}
