@@ -13,16 +13,18 @@ import java.util.ServiceLoader;
 
 @Slf4j
 public final class PluginLoader implements InjectPlugin {
+	@NonNull private final ServiceLoader<Plugin> plugins = ServiceLoader.load(Plugin.class);
+
 	@Override
 	public void apply(@NonNull final BeanScopeBuilder builder) {
-		for (final var plugin : ServiceLoader.load(Plugin.class)) {
+		for (final var plugin : plugins) {
 			if (Config.enabled("plugin." + plugin.getPluginId() + ".enabled", true)) {
 				log.info(R.Strings.log("loading_plugin_s", plugin.getPluginId()));
 				builder.bean(Plugin.class, plugin);
-				if (plugin instanceof CommandAdapter commandAdapter) {
+				if (plugin instanceof final CommandAdapter commandAdapter) {
 					builder.bean(CommandAdapter.class, commandAdapter);
 				}
-				if (plugin instanceof BaseRepository<?, ?> baseRepository) {
+				if (plugin instanceof final BaseRepository<?, ?> baseRepository) {
 					builder.bean(BaseRepository.class, baseRepository);
 				}
 			}
