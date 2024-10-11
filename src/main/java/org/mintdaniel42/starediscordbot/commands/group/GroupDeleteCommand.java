@@ -1,27 +1,53 @@
 package org.mintdaniel42.starediscordbot.commands.group;
 
+import io.avaje.inject.RequiresBean;
+import io.avaje.inject.RequiresProperty;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
-import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
+import org.jetbrains.annotations.Nullable;
+import org.mintdaniel42.starediscordbot.BotConfig;
+import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
+import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
 import org.mintdaniel42.starediscordbot.data.repository.GroupRepository;
+import org.mintdaniel42.starediscordbot.exception.BotException;
+import org.mintdaniel42.starediscordbot.utils.Permission;
 import org.mintdaniel42.starediscordbot.utils.R;
-import org.mintdaniel42.starediscordbot.utils.Status;
 
 @RequiredArgsConstructor
-public final class GroupDeleteCommand implements CommandAdapter {
+@RequiresBean(GroupCommand.class)
+@RequiresProperty(value = "feature.command.group.delete.enabled", equalTo = "true")
+@Singleton
+public final class GroupDeleteCommand extends BaseComposeCommand {
 	@NonNull private final GroupRepository groupRepository;
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
-		if (event.getOption("tag") instanceof final OptionMapping tagMapping) {
-			if (groupRepository.deleteByTag(tagMapping.getAsString()).equals(Status.SUCCESS)) {
-				return interactionHook.editOriginal(R.Strings.ui("the_group_was_successfully_deleted"));
-			} else return interactionHook.editOriginal(R.Strings.ui("the_group_could_not_be_deleted"));
-		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
+	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
+		final var tag = requireStringOption(context, "tag");
+		groupRepository.deleteById(tag);
+		return response("the_group_was_successfully_deleted");
+	}
+
+	@Inject
+	public void register(@NonNull @Named("group") SlashCommandData command) {
+		command.addSubcommands(new SubcommandData("delete", R.Strings.ui("delete_group"))
+				.addOption(OptionType.STRING, "tag", R.Strings.ui("group_tag"), true, true));
+	}
+
+	@Override
+	public @NonNull String getCommandId() {
+		return "group delete";
+	}
+
+	@Override
+	public boolean hasPermission(@NonNull final BotConfig config, @Nullable final Member member) {
+		return Permission.hasP4(config, member);
 	}
 }

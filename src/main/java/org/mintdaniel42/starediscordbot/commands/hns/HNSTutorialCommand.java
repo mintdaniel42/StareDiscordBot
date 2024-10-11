@@ -1,41 +1,57 @@
 package org.mintdaniel42.starediscordbot.commands.hns;
 
+import io.avaje.inject.RequiresBean;
+import io.avaje.inject.RequiresProperty;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.mintdaniel42.starediscordbot.buttons.list.TutorialListButtons;
 import org.mintdaniel42.starediscordbot.buttons.misc.TutorialSuggestionButtons;
-import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
+import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
+import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
 import org.mintdaniel42.starediscordbot.data.entity.TutorialEntity;
 import org.mintdaniel42.starediscordbot.embeds.TutorialEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.util.Arrays;
 
 @RequiredArgsConstructor
-public final class HNSTutorialCommand implements CommandAdapter {
+@RequiresBean(HNSCommand.class)
+@RequiresProperty(value = "feature.command.hns.tutorial.enabled", equalTo = "true")
+@Singleton
+public final class HNSTutorialCommand extends BaseComposeCommand {
+	@Override
+	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
+		return nullableStringOption(context, "page", page -> {
+			if (R.Tutorials.get(page) instanceof final TutorialEntity tutorialEntity) {
+				return response().addEmbed(TutorialEmbed.of(tutorialEntity)).compose();
+			} else return response("this_page_does_not_exist");
+		}).orElseGet(() -> Arrays.stream(R.Tutorials.list())
+				.sorted()
+				.findFirst()
+				.map(tutorialEntity -> response()
+						.addEmbed(TutorialEmbed.of(tutorialEntity))
+						.addComponent(TutorialListButtons.create(tutorialEntity))
+						.addComponent(TutorialSuggestionButtons.create(tutorialEntity))
+						.compose())
+				.orElseGet(() -> response("no_entries_available")));
+	}
+
+	@Inject
+	public void register(@NonNull @Named("hns") SlashCommandData command) {
+		command.addSubcommands(new SubcommandData("tutorial", R.Strings.ui("show_the_tutorial"))
+				.addOption(OptionType.STRING, "page", R.Strings.ui("page"), false, true));
+	}
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
-		if (event.getOption("page") instanceof OptionMapping pageMapping) {
-			if (R.Tutorials.get(pageMapping.getAsString()) instanceof TutorialEntity tutorialEntity) {
-				return interactionHook.editOriginalEmbeds(TutorialEmbed.of(tutorialEntity))
-						.setComponents(TutorialSuggestionButtons.create(tutorialEntity));
-			} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
-		} else {
-			final var tutorialModelOptional = Arrays.stream(R.Tutorials.list())
-					.sorted()
-					.findFirst();
-			if (tutorialModelOptional.isPresent()) {
-				final var tutorialModel = tutorialModelOptional.get();
-				return interactionHook.editOriginalEmbeds(TutorialEmbed.of(tutorialModel))
-						.setComponents(TutorialListButtons.create(tutorialModel),
-								TutorialSuggestionButtons.create(tutorialModel));
-			} else return interactionHook.editOriginal(R.Strings.ui("no_entries_available"));
-		}
+	public @NonNull String getCommandId() {
+		return "hns tutorial";
 	}
 }

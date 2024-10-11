@@ -1,21 +1,21 @@
 package org.mintdaniel42.starediscordbot.buttons.misc;
 
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.jetbrains.annotations.Contract;
-import org.mintdaniel42.starediscordbot.buttons.ButtonAdapter;
+import org.mintdaniel42.starediscordbot.compose.button.BaseComposeButton;
+import org.mintdaniel42.starediscordbot.compose.button.ButtonContext;
 import org.mintdaniel42.starediscordbot.data.Database;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
-import org.mintdaniel42.starediscordbot.utils.Status;
 
 @RequiredArgsConstructor
-public final class ApproveButton implements ButtonAdapter {
+@Singleton
+public final class ApproveButton extends BaseComposeButton {
 	@NonNull private final Database database;
 
 	@Contract(pure = true, value = "_ -> new")
@@ -28,9 +28,11 @@ public final class ApproveButton implements ButtonAdapter {
 	}
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final ButtonInteractionEvent event) {
-		if (database.mergeRequest(Long.parseLong(event.getComponentId().split(":")[1])).equals(Status.SUCCESS)) {
-			return interactionHook.editOriginalComponents(ActionRow.of(create(-1)));
-		} else return interactionHook.editOriginal(R.Strings.ui("request_could_not_be_merged"));
+	protected @NonNull MessageEditData compose(@NonNull final ButtonContext context) throws BotException {
+		requireButtonPartCount(context, 1);
+		database.mergeRequest(Long.parseLong(requireButtonPart(context, 0)));
+		return response()
+				.addComponent(ActionRow.of(create(-1)))
+				.compose();
 	}
 }

@@ -6,12 +6,19 @@ json = "20240303"
 slf4j = "2.0.16"
 lombok = "1.18.34"
 buildConfig = "5.4.0"
-jcp = "7.1.2"
 avaje-jsonb = "2.1"
 ioutils = "2.16.1"
-wisp = "2.4.0"
-verbalexpressions = "1.8"
+wisp = "1bc85164dd"
 doma = "2.62.0"
+bucket4j = "8.13.1"
+avaje-inject = "10.3"
+avaje-config = "4.0"
+dropwizard-metrics = "4.2.0"
+jetbrains-annotations = "24.1.0"
+jakarta-inject = "2.0.1"
+jupiter = "5.10.0"
+mockito = "5.13.0"
+shadow = "8.3.3"
 
 [libraries]
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
@@ -20,18 +27,27 @@ jdbc-mariadb = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = 
 json = { module = "org.json:json", version.ref = "json" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
-jcp = { module = "com.igormaznitsa:jcp", version.ref = "jcp" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 avaje-jsonb = { module = "io.avaje:avaje-jsonb", version.ref = "avaje-jsonb" }
 avaje-jsonb-generator = { module = "io.avaje:avaje-jsonb-generator", version.ref = "avaje-jsonb" }
+avaje-inject = { module = "io.avaje:avaje-inject", version.ref = "avaje-inject" }
+avaje-inject-generator = { module = "io.avaje:avaje-inject-generator", version.ref = "avaje-inject" }
+avaje-config = { module = "io.avaje:avaje-config", version.ref = "avaje-config" }
+dropwizard-metrics = { module = "io.dropwizard.metrics:metrics-core", version.ref = "dropwizard-metrics" }
 ioutils = { module = "commons-io:commons-io", version.ref = "ioutils" }
-wisp = { module = "com.coreoz:wisp", version.ref = "wisp" }
-verbalexpressions = { module = "ru.lanwen.verbalregex:java-verbal-expressions", version.ref = "verbalexpressions" }
+wisp = { module = "com.github.Coreoz:Wisp", version.ref = "wisp" }
 doma-core = { module = "org.seasar.doma:doma-core", version.ref = "doma" }
 doma-processor = { module = "org.seasar.doma:doma-processor", version.ref = "doma" }
+bucket4j = { module = "com.bucket4j:bucket4j_jdk17-core", version.ref = "bucket4j" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+jakarta-inject = { module = "jakarta.inject:jakarta.inject-api", version.ref = "jakarta-inject" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "jupiter" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "jupiter" }
+mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 
 [plugins]
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 
 [bundles]
 jdbc-all = ["jdbc-sqlite", "jdbc-mariadb"]

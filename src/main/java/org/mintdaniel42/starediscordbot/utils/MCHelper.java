@@ -8,8 +8,10 @@ import okhttp3.Request;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
-import org.mintdaniel42.starediscordbot.data.entity.UsernameEntity;
-import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
+import org.mintdaniel42.starediscordbot.data.entity.ProfileEntity;
+import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
+import org.mintdaniel42.starediscordbot.di.DI;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -17,18 +19,18 @@ import java.util.UUID;
 @UtilityClass
 @Slf4j
 public class MCHelper {
-    public @Nullable UUID getUuid(@NonNull final UsernameRepository usernameRepository, @NonNull final String username) {
-        final var usernameOptional = usernameRepository.selectByUsername(username);
+    public @Nullable UUID getUuid(@NonNull final ProfileRepository profileRepository, @NonNull final String username) throws BotException {
+        final var usernameOptional = profileRepository.selectByUsername(username);
         if (usernameOptional.isPresent()) return usernameOptional.get().getUuid();
         else {
-            final var okHttpClient = new OkHttpClient();
             final var request = new Request.Builder().url("https://playerdb.co/api/player/minecraft/" + username).build();
-            try (final var response = okHttpClient.newCall(request).execute()) {
+            final var client = DI.get(OkHttpClient.class);
+            try (final var response = client.newCall(request).execute()) {
                 if (response.body() instanceof ResponseBody responseBody) {
                     final var jsonObject = new JSONObject(responseBody.string()).getJSONObject("data").getJSONObject("player");
                     final var uuid = UUID.fromString(jsonObject.getString("id"));
                     final var caseAwareUsername = jsonObject.getString("username");
-                    usernameRepository.insert(UsernameEntity.builder()
+                    profileRepository.insert(ProfileEntity.builder()
                             .uuid(uuid)
                             .username(caseAwareUsername)
                             .lastUpdated(System.currentTimeMillis())
@@ -42,16 +44,16 @@ public class MCHelper {
         }
     }
 
-    public @Nullable String getUsername(@NonNull UsernameRepository usernameRepository, @NonNull UUID uuid) {
-        final var usernameOptional = usernameRepository.selectByUUID(uuid);
+    public @Nullable String getUsername(@NonNull ProfileRepository profileRepository, @NonNull UUID uuid) throws BotException {
+        final var usernameOptional = profileRepository.selectById(uuid);
         if (usernameOptional.isPresent()) return usernameOptional.get().getUsername();
         else {
-            final var okHttpClient = new OkHttpClient();
             final var request = new Request.Builder().url("https://playerdb.co/api/player/minecraft/" + uuid).build();
-            try (final var response = okHttpClient.newCall(request).execute()) {
+            final var client = DI.get(OkHttpClient.class);
+            try (final var response = client.newCall(request).execute()) {
                 if (response.body() instanceof ResponseBody responseBody) {
                     final var username = new JSONObject(responseBody.string()).getJSONObject("data").getJSONObject("player").getString("username");
-                    usernameRepository.insert(UsernameEntity.builder()
+                    profileRepository.insert(ProfileEntity.builder()
                             .uuid(uuid)
                             .username(username)
                             .lastUpdated(System.currentTimeMillis())

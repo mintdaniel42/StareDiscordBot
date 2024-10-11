@@ -1,30 +1,61 @@
 package org.mintdaniel42.starediscordbot.commands.misc;
 
+import io.avaje.inject.Bean;
+import io.avaje.inject.Factory;
+import io.avaje.inject.RequiresProperty;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
+import org.mintdaniel42.starediscordbot.BotConfig;
+import org.mintdaniel42.starediscordbot.Version;
 import org.mintdaniel42.starediscordbot.buttons.list.InfoButtons;
-import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
-import org.mintdaniel42.starediscordbot.data.repository.HNSUserRepository;
-import org.mintdaniel42.starediscordbot.data.repository.MetaDataRepository;
-import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
+import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
+import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
+import org.mintdaniel42.starediscordbot.data.dao.MetaDataDao;
+import org.mintdaniel42.starediscordbot.data.repository.*;
 import org.mintdaniel42.starediscordbot.embeds.InfoEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
+import org.mintdaniel42.starediscordbot.utils.R;
 
+@Factory
+@RequiresProperty(value = "feature.command.info", equalTo = "true")
 @RequiredArgsConstructor
-public final class InfoCommand implements CommandAdapter {
-	@NonNull final MetaDataRepository metaDataRepository;
+@Singleton
+public final class InfoCommand extends BaseComposeCommand {
+	@NonNull final MetaDataDao metaDataDao;
 	@NonNull final HNSUserRepository hnsUserRepository;
-	@NonNull final UsernameRepository usernameRepository;
+	@NonNull final PGUserRepository pgUserRepository;
+	@NonNull final ProfileRepository profileRepository;
+	@NonNull final GroupRepository groupRepository;
+	@NonNull final SpotRepository spotRepository;
+	@NonNull final BotConfig config;
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
-		return interactionHook.editOriginalEmbeds(InfoEmbed.of(metaDataRepository.selectFirst().version(),
-						usernameRepository.countEntries(),
-						hnsUserRepository.countEntries(),
-						0))
-				.setComponents(InfoButtons.create());
+	public @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
+		return response()
+				.addEmbed(new InfoEmbed(config,
+						Version.values()[metaDataDao.getVersion()],
+						profileRepository.count(),
+						hnsUserRepository.count(),
+						pgUserRepository.count(),
+						groupRepository.count(),
+						spotRepository.count()))
+				.addComponent(InfoButtons.create())
+				.compose();
+	}
+
+	@Bean
+	@Named("info")
+	public SlashCommandData build() {
+		return Commands.slash("info", R.Strings.ui("show_bot_information"));
+	}
+
+	@Override
+	public @NonNull String getCommandId() {
+		return "info";
 	}
 }

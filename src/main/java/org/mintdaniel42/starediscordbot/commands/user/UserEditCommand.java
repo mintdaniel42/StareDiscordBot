@@ -1,71 +1,77 @@
 package org.mintdaniel42.starediscordbot.commands.user;
 
+import io.avaje.inject.RequiresBean;
+import io.avaje.inject.RequiresProperty;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
+import org.mintdaniel42.starediscordbot.BotConfig;
 import org.mintdaniel42.starediscordbot.buttons.misc.ApproveButton;
-import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
+import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
+import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
 import org.mintdaniel42.starediscordbot.data.entity.RequestEntity;
-import org.mintdaniel42.starediscordbot.data.entity.UserEntity;
 import org.mintdaniel42.starediscordbot.data.repository.GroupRepository;
+import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.data.repository.RequestRepository;
 import org.mintdaniel42.starediscordbot.data.repository.UserRepository;
-import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
 import org.mintdaniel42.starediscordbot.embeds.UserEmbed;
-import org.mintdaniel42.starediscordbot.utils.*;
-
-import java.util.UUID;
+import org.mintdaniel42.starediscordbot.exception.BotException;
+import org.mintdaniel42.starediscordbot.utils.Permission;
+import org.mintdaniel42.starediscordbot.utils.R;
 
 @RequiredArgsConstructor
-public final class UserEditCommand implements CommandAdapter {
+@RequiresBean(UserCommand.class)
+@RequiresProperty(value = "feature.command.user.edit.enabled", equalTo = "true")
+@Singleton
+public final class UserEditCommand extends BaseComposeCommand {
 	@NonNull private final UserRepository userRepository;
 	@NonNull private final RequestRepository requestRepository;
 	@NonNull private final GroupRepository groupRepository;
-	@NonNull private final UsernameRepository usernameRepository;
-
+	@NonNull private final ProfileRepository profileRepository;
+	@NonNull private final BotConfig config;
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
-		if (event.getOption("username") instanceof OptionMapping usernameMapping && event.getOptions().size() >= 2) {
-			if (MCHelper.getUuid(usernameRepository, usernameMapping.getAsString()) instanceof UUID uuid) {
-				final var userOptional = userRepository.selectByUUID(uuid);
-				final var usernameOptional = usernameRepository.selectByUUID(uuid);
-				if (userOptional.isPresent() && usernameOptional.isPresent()) {
-					final var user = UserEntity.merge(event.getOptions(), userOptional.get().toBuilder());
-					final var groupOptional = groupRepository.selectByTag(user.getGroupTag());
-					if (!DCHelper.hasRole(event.getMember(), Options.getEditRoleId()) && !DCHelper.hasRole(event.getMember(), Options.getCreateRoleId())) {
-						long timestamp = System.currentTimeMillis();
-						if (event.getGuild() instanceof Guild guild) {
-							if (guild.getTextChannelById(Options.getRequestChannelId()) instanceof TextChannel requestChannel) {
-								if (event.getMember() instanceof Member member) {
-									if (requestRepository.insert(RequestEntity.from(timestamp, user)).equals(Status.SUCCESS)) {
-										requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
-														member.getAsMention(),
-														timestamp))
-												.setActionRow(ApproveButton.create(timestamp))
-												.addEmbeds(UserEmbed.of(user, groupOptional.orElse(null), usernameOptional.get(), true))
-												.queue();
-										return interactionHook.editOriginal(R.Strings.ui("the_entry_change_was_successfully_requested"));
-									} else
-										return interactionHook.editOriginal(R.Strings.ui("the_entry_could_not_be_updated"));
-								} else
-									return interactionHook.editOriginal(R.Strings.ui("the_user_requesting_a_change_could_not_be_found"));
-							} else
-								return interactionHook.editOriginal(R.Strings.ui("the_request_channel_could_not_be_found"));
-						} else return interactionHook.editOriginal(R.Strings.ui("the_guild_could_not_be_found"));
-					} else if (!userRepository.update(user).equals(Status.SUCCESS)) {
-						return interactionHook.editOriginal(R.Strings.ui("the_entry_could_not_be_updated"));
-					} else return interactionHook.editOriginal(R.Strings.ui("the_entry_was_successfully_updated"))
-							.setEmbeds(UserEmbed.of(user, groupOptional.orElse(null), usernameOptional.get(), true));
-				} else return interactionHook.editOriginal(R.Strings.ui("this_user_entry_does_not_exist"));
-			} else return interactionHook.editOriginal(R.Strings.ui("this_username_does_not_exist"));
-		} else return interactionHook.editOriginal(R.Strings.ui("your_command_was_incomplete"));
+	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
+		requireOptionCount(context, 2);
+		final var profile = requireProfile(profileRepository, requireStringOption(context, "username"));
+		final var user = merge(context, requireEntity(userRepository, profile.getUuid()).toBuilder());
+		final var group = nullableEntity(groupRepository, user.getGroupTag()).orElse(null);
+		if (!requirePermission(config, context.getMember(), Permission.p2)) {
+			final var timestamp = System.currentTimeMillis();
+			final var requestChannel = requireChannel(context, config.getGuildId(), config.getRequestChannelId());
+			requestRepository.insert(RequestEntity.from(timestamp, user));
+			requestChannel.sendMessage(R.Strings.ui("the_user_s_requested_an_edit_you_can_approve_it_with_approve_s",
+							context.getMember().getAsMention(),
+							timestamp))
+					.setActionRow(ApproveButton.create(timestamp))
+					.addEmbeds(UserEmbed.of(user, group, profile, true))
+					.queue();
+			return response("the_entry_change_was_successfully_requested");
+		} else {
+			userRepository.update(user);
+			return response()
+					.setText(R.Strings.ui("the_entry_was_successfully_updated"))
+					.addEmbed(UserEmbed.of(user, group, profile, false))
+					.compose();
+		}
+	}
+
+	@Inject
+	public void register(@NonNull @Named("user") SlashCommandData command) {
+		command.addSubcommands(new SubcommandData("edit", R.Strings.ui("edit_a_user_entry"))
+				.addOption(OptionType.STRING, "username", R.Strings.ui("minecraft_username"), true, true)
+				.addOption(OptionType.STRING, "note", R.Strings.ui("note"))
+				.addOption(OptionType.USER, "discord", R.Strings.ui("discord_tag")));
+	}
+
+	@Override
+	public @NonNull String getCommandId() {
+		return "user edit";
 	}
 }

@@ -2,66 +2,60 @@ package org.mintdaniel42.starediscordbot;
 
 import com.coreoz.wisp.Scheduler;
 import com.coreoz.wisp.schedule.Schedules;
+import jakarta.inject.Singleton;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.mintdaniel42.starediscordbot.build.BuildConfig;
-import org.mintdaniel42.starediscordbot.buttons.ButtonDispatcher;
-import org.mintdaniel42.starediscordbot.commands.AutoCompletionHandler;
-import org.mintdaniel42.starediscordbot.commands.CommandDispatcher;
-import org.mintdaniel42.starediscordbot.commands.CommandList;
 import org.mintdaniel42.starediscordbot.data.Database;
-import org.mintdaniel42.starediscordbot.data.DatabaseConfig;
-import org.mintdaniel42.starediscordbot.utils.Options;
+import org.mintdaniel42.starediscordbot.di.DI;
 import org.mintdaniel42.starediscordbot.utils.R;
 
 import java.time.Duration;
-import java.util.Arrays;
 
+@RequiredArgsConstructor
+@Singleton
 @Slf4j
-public final class Bot extends ListenerAdapter {
-	public Bot(@NonNull final Database database) {
-		JDABuilder.createLight(Options.getToken())
-				.addEventListeners(
-						new AutoCompletionHandler(database),
-						new CommandDispatcher(database),
-						new ButtonDispatcher(database),
-						this
-				)
+public final class Bot {
+	@NonNull private final Database database;
+	@NonNull private final Scheduler scheduler;
+	@NonNull private final BotConfig config;
+
+	public static void main() {
+		if (!BuildConfig.production) log.info(R.Strings.log("running_in_dev_mode"));
+		DI.get(Bot.class).run();
+	}
+
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+	public void run() {
+		final var jda = JDABuilder.createDefault(config.getToken())
+				.addEventListeners(DI.list(ListenerAdapter.class).toArray())
 				.build();
+
+		jda.listenOnce(GuildReadyEvent.class)
+				.filter(e -> e.getGuild().getIdLong() == config.getGuildId())
+				.subscribe(this::onReady);
 
 		database.prepareDatabase();
 
-		final var scheduler = new Scheduler();
-
 		scheduler.schedule(
-				database::cleanDatabase,
-				Schedules.afterInitialDelay((timestamp, _, _) -> timestamp + BuildConfig.cleaningInterval - (timestamp % BuildConfig.cleaningInterval),
+				database::cleanDatabase, Schedules.afterInitialDelay(
+						Schedules.fixedFrequencySchedule(
+								Duration.ofMillis(BuildConfig.cleaningInterval)
+						),
 						Duration.ZERO)
 		);
 	}
 
-	public static void main(@NonNull final String[] args) {
-		//#if dev
-		log.info(R.Strings.log("running_in_dev_mode"));
-		//#endif
-		new Bot(new Database(new DatabaseConfig()));
-	}
-
-	@Override
-	public void onGuildReady(@NonNull final GuildReadyEvent event) {
-		// check if correct guild
-		if (event.getGuild().getIdLong() == Options.getGuildId()) {
-			// setup commands
-			event.getGuild()
-					.updateCommands()
-					.addCommands(Arrays.stream(CommandList.values())
-							.map(CommandList::get)
-							.toArray(CommandData[]::new))
-					.queue();
-		}
+	private void onReady(@NonNull final GuildReadyEvent event) {
+		// setup commands
+		event.getGuild()
+				.updateCommands()
+				.addCommands(DI.list(SlashCommandData.class))
+				.queue();
 	}
 }

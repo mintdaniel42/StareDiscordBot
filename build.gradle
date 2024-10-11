@@ -1,22 +1,11 @@
 import java.util.concurrent.TimeUnit
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath(libs.jcp)
-    }
-}
-
 plugins {
     id 'java'
     id 'application'
     alias(libs.plugins.buildConfig)
+    alias(libs.plugins.shadow)
 }
-
-apply plugin: "com.igormaznitsa.jcp"
 
 repositories {
     mavenCentral()
@@ -29,44 +18,49 @@ dependencies {
     implementation(libs.json)
     implementation(libs.slf4j.api)
     implementation(libs.slf4j.simple)
-    implementation(libs.lombok)
     implementation(libs.avaje.jsonb)
+    implementation(libs.avaje.inject)
+    implementation(libs.avaje.config)
     implementation(libs.ioutils)
     implementation(libs.wisp)
-    implementation(libs.verbalexpressions)
     implementation(libs.doma.core)
+    implementation(libs.bucket4j)
+    implementation(libs.dropwizard.metrics)
+    testImplementation(libs.junit.jupiter.engine)
+    testImplementation(libs.junit.jupiter.params)
+    testImplementation(libs.mockito)
+    compileOnly(libs.lombok)
+    compileOnly(libs.jetbrains.annotations)
+    compileOnly(libs.jakarta.inject)
+    testCompileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
     annotationProcessor(libs.doma.processor)
     annotationProcessor(libs.avaje.jsonb.generator)
+    annotationProcessor(libs.avaje.inject.generator)
 }
 
 group = 'org.mintdaniel42.starediscordbot'
-version = '2.3'
+version = '2.4'
 application.mainClass = "${project.group}.Bot"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(22)
+        languageVersion = JavaLanguageVersion.of(23)
     }
 }
 
-tasks.preprocess {
-    dependsOn generateBuildConfig
-    setSources(sourceSets.main.java.srcDirs)
 
-    keepComments = 'remove_jcp_only'
-    unknownVarAsFalse = true
-    setVars(["dev": System.getenv("DEV") == "1"])
+tasks.test {
+    useJUnitPlatform()
+    jvmArgs(['--enable-preview'])
 }
 
-tasks.preprocess.outputs.upToDateWhen {
-    false
+tasks.withType(JavaCompile).each {
+    it.options.compilerArgs += ['--enable-preview']
 }
 
 tasks.compileJava {
-    dependsOn preprocess
-    source = preprocess.target
-    options.compilerArgs = ['-Adoma.domain.converters=org.mintdaniel42.starediscordbot.data.domain.DomainConvertersProvider']
+    options.compilerArgs += ['-Adoma.domain.converters=org.mintdaniel42.starediscordbot.data.domain.DomainConvertersProvider']
 }
 
 tasks.jar {
@@ -77,6 +71,10 @@ tasks.jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+}
+
+tasks.shadowJar {
+    minimize()
 }
 
 buildConfig {
@@ -91,5 +89,6 @@ buildConfig {
         buildConfigField(int, "entriesPerPage", 10)
 
         buildConfigField(boolean, "autoFetch", true)
+        buildConfigField(boolean, "production", !(System.getenv("DEV") == "1"))
     }
 }

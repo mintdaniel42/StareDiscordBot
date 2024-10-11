@@ -1,23 +1,31 @@
 package org.mintdaniel42.starediscordbot.commands;
 
 import lombok.NonNull;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+import org.mintdaniel42.starediscordbot.BotConfig;
+import org.mintdaniel42.starediscordbot.bucket.RateLimited;
 
 /**
- * Implementing this interface is equivalent to implementing the logic for a command.
- * It has to be registered in {@link CommandDispatcher}
+ * Implementing this interface is equivalent to implementing the logic for a command
  */
-@FunctionalInterface
-public interface CommandAdapter {
+public interface CommandAdapter extends RateLimited {
 	/**
-	 * @param interactionHook this is the {@link InteractionHook} which has to be used for responses
 	 * @param event           contains read-only data like {@link OptionMapping}, should not be used for responding
-	 * @return the {@link WebhookMessageEditAction} returned by calling an interactionHook edit action
+	 * @return {@link MessageEditData} the response to be sent
 	 */
 	@NonNull
-	WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event);
+	MessageEditData handle(@NonNull final SlashCommandInteractionEvent event);
+
+	@NonNull
+	String getCommandId();
+
+	@Contract("_, null -> false")
+	default boolean hasPermission(@NonNull final BotConfig config, @Nullable final Member member) {
+		return member != null;
+	}
 }

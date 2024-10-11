@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 import org.jetbrains.annotations.Nullable;
-import org.mintdaniel42.starediscordbot.utils.Options;
 
 @Builder(toBuilder = true)
 @Value
@@ -16,7 +15,7 @@ public class TutorialEntity implements Comparable<TutorialEntity> {
 	@NonNull String title;
 	@Nullable String summary;
 	@NonNull String description;
-	@Builder.Default int color = Options.getColorNormal();
+	int color;
 	@Nullable String thumbnailUrl;
 	@Nullable String imageUrl;
 	@NonNull String[] similar;

@@ -1,38 +1,54 @@
 package org.mintdaniel42.starediscordbot.commands.pg;
 
+import io.avaje.inject.RequiresBean;
+import io.avaje.inject.RequiresProperty;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageEditAction;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
+import org.mintdaniel42.starediscordbot.build.BuildConfig;
 import org.mintdaniel42.starediscordbot.buttons.list.PGListButtons;
-import org.mintdaniel42.starediscordbot.commands.CommandAdapter;
-import org.mintdaniel42.starediscordbot.data.entity.PGUserEntity;
+import org.mintdaniel42.starediscordbot.compose.command.BaseComposeCommand;
+import org.mintdaniel42.starediscordbot.compose.command.CommandContext;
 import org.mintdaniel42.starediscordbot.data.repository.PGUserRepository;
-import org.mintdaniel42.starediscordbot.data.repository.UsernameRepository;
+import org.mintdaniel42.starediscordbot.data.repository.ProfileRepository;
 import org.mintdaniel42.starediscordbot.embeds.ListEmbed;
+import org.mintdaniel42.starediscordbot.exception.BotException;
 import org.mintdaniel42.starediscordbot.utils.R;
 
-import java.util.List;
-
 @RequiredArgsConstructor
-public final class PGListCommand implements CommandAdapter {
+@RequiresBean(PGCommand.class)
+@RequiresProperty(value = "feature.command.pg.list.enabled", equalTo = "true")
+@Singleton
+public final class PGListCommand extends BaseComposeCommand {
 	@NonNull private final PGUserRepository pgUserRepository;
-	@NonNull private final UsernameRepository usernameRepository;
+	@NonNull private final ProfileRepository profileRepository;
 
 	@Override
-	public @NonNull WebhookMessageEditAction<Message> handle(@NonNull final InteractionHook interactionHook, @NonNull final SlashCommandInteractionEvent event) {
-		final int page;
-		if (event.getOption("page") instanceof final OptionMapping pageMapping) {
-			page = pageMapping.getAsInt() - 1;
-		} else page = 0;
-		final var pageCount = pgUserRepository.countPages();
-		if (pageCount > page && page >= 0) {
-			List<PGUserEntity> entries = pgUserRepository.selectByPage(page);
-			return interactionHook.editOriginalEmbeds(ListEmbed.createPgList(usernameRepository, entries, page, pageCount))
-					.setComponents(PGListButtons.create(page, pageCount));
-		} else return interactionHook.editOriginal(R.Strings.ui("this_page_does_not_exist"));
+	protected @NonNull MessageEditData compose(@NonNull final CommandContext context) throws BotException {
+		final var page = nullableIntegerOption(context, "page").orElse(1) - 1;
+		final var pageCount = (int) Math.ceil((double) pgUserRepository.count() / BuildConfig.entriesPerPage);
+		requireBounds(0, page, pageCount);
+		var entries = pgUserRepository.selectAll(page * BuildConfig.entriesPerPage, BuildConfig.entriesPerPage);
+		return response()
+				.addEmbed(ListEmbed.createPgList(profileRepository, entries, page, pageCount))
+				.addComponent(PGListButtons.create(page, pageCount))
+				.compose();
+	}
+
+	@Inject
+	public void register(@NonNull @Named("pg") SlashCommandData command) {
+		command.addSubcommands(new SubcommandData("list", R.Strings.ui("list_partygames_entries"))
+				.addOption(OptionType.INTEGER, "page", R.Strings.ui("page"), false, true));
+	}
+
+	@Override
+	public @NonNull String getCommandId() {
+		return "pg list";
 	}
 }
