@@ -23,7 +23,7 @@ public final class PluginLoader implements InjectPlugin {
 					builder.bean(CommandAdapter.class, commandAdapter);
 				}
 				if (plugin instanceof BaseRepository<?, ?> baseRepository) {
-					builder.bean(CommandAdapter.class, baseRepository);
+					builder.bean(BaseRepository.class, baseRepository);
 				}
 			}
 		}
