@@ -6,12 +6,12 @@ on:
     types: [ published ]
 
 jobs:
-  check:
+  test:
     uses: ./.github/workflows/check.yml
 
   packages:
     needs:
-      - check
+      - test
     runs-on: ubuntu-latest
 
     permissions:
